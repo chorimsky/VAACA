@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style> html { scroll-behavior: smooth; } body { margin: 0; } a { color: #0E2A44; } a:hover { color: #1AA6B3; } .vaaca-serif { font-family:'Source Serif 4',Georgia,serif; } </style>
+</helmet>
+<div id="top" style="font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; color:#33393E; background:#FAFAF8;">
+  <div style="height:3px; background:linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C);"></div>
+  <dc-import name="VAACA Nav" active="governance" hint-size="100%,72px"></dc-import>
+
+  <div style="max-width:1180px; margin:0 auto; padding:56px 32px 64px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#1F7A4D; margin-bottom:10px;">Governance</div>
+    <h1 class="vaaca-serif" style="font-size:32px; font-weight:600; max-width:720px; line-height:1.3; margin:0 0 26px; color:#0E2A44;">Nine founding seats. No single interest holds a majority.</h1>
+    <div style="display:grid; grid-template-columns:repeat(3,minmax(200px,1fr)); gap:14px;">
+      <sc-for list="{{ seats }}" as="seat" hint-placeholder-count="9">
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:12px; padding:16px 18px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6B7680;">Seat {{ seat.n }}</div>
+          <div style="font-size:14px; font-weight:700; color:#0E2A44; margin-top:4px;">{{ seat.name }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <dc-import name="VAACA Footer" hint-size="100%,320px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  seats = [
+    { n: 1, name: 'Legal — CEMAC financial markets' }, { n: 2, name: 'Regulated financial institution' },
+    { n: 3, name: 'Payments / PSP' }, { n: 4, name: 'VASP / exchange operator' },
+    { n: 5, name: 'Compliance / AML professional' }, { n: 6, name: 'Cybersecurity / infrastructure' },
+    { n: 7, name: 'Academic / research' }, { n: 8, name: 'Consumer / market integrity' },
+    { n: 9, name: 'Convenor' },
+  ];
+  renderVals() { return { seats: this.seats }; }
+}
+</script>
+</body>
+</html>

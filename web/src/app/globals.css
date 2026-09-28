@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   VAACA design tokens — lifted verbatim from the Claude Design bundle.
+   Names follow the role the colour plays in the prototypes, not its hue, so
+   swapping a brand colour later touches one line here instead of 21 pages.
+--------------------------------------------------------------------------- */
+@theme {
+  /* Brand */
+  --color-navy: #0e2a44;
+  --color-navy-deep: #091c30;
+  --color-navy-grad: #163a56;
+  --color-navy-grad-alt: #123350;
+  /* #1aa6b3 is the brand accent. It only reaches 2.9:1 on white, so it is
+     reserved for fills, borders and decoration on dark surfaces; teal *text*
+     and teal buttons on light surfaces use the deeper pair below. */
+  --color-teal: #1aa6b3;
+  --color-teal-bright: #5fe0e0;
+  --color-teal-deep: #0e7a86; /* 5.1:1 on white — teal buttons */
+  --color-teal-ink: #0c6e79; /* 6.0:1 on white — teal text */
+  --color-gold: #b5730c;
+  --color-green: #1f7a4d;
+  --color-blue: #1d6fa5;
+
+  /* Surfaces */
+  --color-canvas: #fafaf8;
+  --color-canvas-alt: #f4f4f1;
+  --color-canvas-head: #f7f7f4;
+  --color-line: #e3e3dd;
+  --color-line-soft: #ededea;
+
+  /* Type */
+  --color-body: #33393e;
+  --color-body-soft: #4b545a;
+  --color-body-softer: #5b6672;
+  /* The hero lays a 10% gold and a 10% teal radial wash over the canvas,
+     which darkens the effective background to rgb(243,236,224). #656e77
+     measured 4.96:1 on bare canvas but only 4.43:1 there — this clears
+     4.5:1 against the washed surface too. */
+  --color-muted: #636c75;
+
+  /* On-dark */
+  --color-on-dark: #b9c4ce;
+  --color-on-dark-soft: #8ca0ae;
+  --color-on-dark-faint: #7c8d99; /* was #5c6b75 — 3.1:1 on navy-deep */
+  --color-on-dark-card: #aebbc5;
+  --color-on-dark-mute: #a9b7c2;
+
+  /* Status tints */
+  --color-tint-green: #eff6f1;
+  --color-tint-gold: #fcebcb;
+  --color-tint-blue: #eaf3fb;
+  --color-tint-red: #fbe2de;
+  --color-red: #a8322a; /* was #c0392b — 4.4:1 on its own tint */
+  --color-gold-ink: #8a5709; /* gold text on tint-gold; #b5730c is 3.3:1 there */
+
+  /* Document-review palette — the Founding Document System page runs a
+     warmer, greener variant of the brand and shares no surface colours
+     with the rest of the site. */
+  --color-doc-canvas: #f8f8f5;
+  --color-doc-ink: #143f3c;
+  --color-doc-body: #3e605b;
+  --color-doc-muted: #587169; /* was #6e8a84 — 3.5:1 on the doc canvas */
+  --color-doc-line: #e3e7dc;
+  --color-doc-head: #f5f5ee;
+  --color-doc-footer-ink: #b9cec7;
+  --color-doc-tint-v: #e1f0e6;
+  --color-doc-tint-p: #e1f1f5;
+  --color-doc-amber: #e68908;
+  --color-doc-stone: #b9cec7;
+
+  /* The nav collapses to a hamburger at 880px in the prototypes — that sits
+     between Tailwind's md/lg stops, so it gets its own named breakpoint. */
+  --breakpoint-nav: 880px;
+
+  /* Families */
+  --font-sans: "General Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+}
+
+/* These belong in @layer base: unlayered rules beat every layered utility
+   regardless of specificity, so a bare `a { color }` outside a layer would
+   silently override `text-white` on link-styled buttons. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    /* General Sans is a geometric sans; grayscale smoothing keeps its thin
+       weights from looking heavy on macOS. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings are short and set large, so balancing beats a ragged last line
+     with one orphaned word. Body copy uses `pretty`, which only prevents
+     orphans and does not reflow the whole block. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  /* Figures, scores and table numbers should align in a column. */
+  table,
+  time,
+  .vaaca-figure {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-teal) 26%, transparent);
+    color: var(--color-navy);
+  }
+
+  /* The prototypes style bare anchors globally; keeping that here means page
+     markup doesn't repeat a link colour on every <a>. */
+  a {
+    color: var(--color-navy);
+  }
+  a:hover {
+    color: var(--color-teal-ink);
+  }
+
+  /* The focus ring needs 3:1 against both the component and its background;
+     the brand teal only reaches 2.9:1 on white, so the ring uses the deeper
+     tone and a slight thickening.
+
+     teal-ink clears that on every light surface (5.7:1 on canvas) but reaches
+     only 2.5:1 on navy — and the header, footer and hero are navy, with links
+     in them. The inner canvas-coloured ring fills the outline offset: it
+     disappears into light surfaces, where the teal outline is doing the work,
+     and reads at 14:1 on the dark ones, so a focused control is always
+     outlined by whichever of the two contrasts with what is behind it. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2.5px solid var(--color-teal-ink);
+    outline-offset: 2px;
+    border-radius: 3px;
+    box-shadow: 0 0 0 2px var(--color-canvas);
+  }
+}
+
+/* Hero backdrop — two offset radial washes, from the landing page. */
+.vaaca-pattern {
+  background-image:
+    radial-gradient(
+      circle at 18% 20%,
+      rgb(181 115 12 / 0.1) 0,
+      transparent 42%
+    ),
+    radial-gradient(circle at 82% 78%, rgb(26 166 179 / 0.1) 0, transparent 46%);
+}
+
+@keyframes vaaca-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vaaca-fade-in {
+  animation: vaaca-fade-in 0.35s ease both;
+}
+
+@keyframes vaaca-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+.vaaca-indeterminate {
+  animation: vaaca-indeterminate 1.1s ease-in-out infinite;
+}
+
+/* Respect a reduced-motion preference across every animation and the
+   smooth-scroll behaviour set above. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,78 @@
+/**
+ * CEMAC member-state outlines, as SVG path data. Geometry only — slugs,
+ * statuses and chapter copy live in `lib/chapters.ts`, keyed by `code`.
+ *
+ * Derived from the public-domain Natural Earth country borders
+ * (github.com/johan/world.geo.json), projected equirectangular with a
+ * cos(mean-latitude) correction on x and simplified to ~1.6 viewBox units.
+ * The region spans only ~28° of latitude, so distortion at this size is
+ * negligible. Small offshore islands drop out at this simplification — the
+ * outlines are mainland only.
+ *
+ * Shared viewBox: `0 0 655.35 1000`.
+ */
+
+export const CEMAC_VIEWBOX = "0 0 655.35 1000";
+
+export type CemacCode = "CMR" | "GAB" | "COG" | "TCD" | "CAF" | "GNQ";
+
+export type CemacState = {
+  code: CemacCode;
+  /** Label used on the map itself. */
+  short: string;
+  name: string;
+  path: string;
+  /** Area-weighted centroid, for label placement. */
+  centroid: [number, number];
+  /** Small countries get an offset label joined by a leader line. */
+  labelOffset?: [number, number];
+};
+
+export const CEMAC_STATES: CemacState[] = [
+  {
+    code: "TCD",
+    short: "Chad",
+    name: "Chad",
+    centroid: [350.2, 284.1],
+    path: "M208.5 370.9L211.9 354.3L189.7 353.5L189.7 330.9L175.3 317.9L190.3 271.6L234.5 238.4L236.4 192.7L249.7 121.4L257.3 106.2L242.9 94.2L242.3 83L229.3 73.9L220.8 19.2L255.8 0L394.2 67.3L532.6 134.6L534.3 274.1L504.4 271.7L488.6 297.6L479.4 319.3L486.6 327.5L475.2 338.3L479.1 352.8L470.2 367.5L466.7 380.4L478.9 378.4L486.1 391.9L486.5 412.3L499.3 422.7L498.8 431.2L476.9 437.2L459.3 451.4L434.2 489.8L401.5 506.1L368 503.9L358.2 507.1L361.7 519.5L343.6 531.8L328.8 545.5L285.1 559L276.5 551L270.7 550.3L264.3 559.4L235.6 562L241.1 552.5L230.1 528.3L225.3 513.7L210.1 507.7L189.7 487.2L197.2 470.6L213 474.2L222.8 471.7L242.2 472L223.3 440L224.6 416.7L222.2 393.4L208.5 370.9Z",
+  },
+  {
+    code: "CAF",
+    short: "C.A.R.",
+    name: "Central African Republic",
+    centroid: [412.4, 592.9],
+    path: "M235.6 562L264.3 559.4L270.7 550.3L276.5 551L285.1 559L328.8 545.5L343.6 531.8L361.7 519.5L358.2 507.1L368 503.9L401.5 506.1L434.2 489.8L459.3 451.4L476.9 437.2L498.8 431.2L502.8 446.3L522.8 468.2L522.9 482.6L517.3 497.2L519.5 508.1L531.5 518.3L557.9 533.6L576.9 547.8L577.3 559.3L600.6 577.6L615.1 592.8L623.8 613.9L649.8 627.8L655.4 638.9L643.9 642.6L621.6 641.8L595.5 638.1L582.6 641.2L577.4 649.7L566.2 650.8L552.5 643.3L513.9 660.9L498.1 657.3L493.3 660L482.9 681.3L457 674.4L431.6 670.9L409.5 658L381 646L362.4 657.4L348.9 675.2L345.8 699.7L323.5 697.8L300 691.8L279.3 710.5L261.1 743.2L257.4 733L255.9 717L240 705.7L227.2 687.5L224.2 674.9L207.8 656.5L210.6 646.1L207.2 631.3L209.9 604L218.2 597.6L235.6 562Z",
+  },
+  {
+    code: "CMR",
+    short: "Cameroon",
+    name: "Cameroon",
+    centroid: [143.1, 623.8],
+    path: "M159.2 743.2L154.9 741.3L134.3 745.8L113.2 741.1L96.7 743.4L40.3 742.6L45.3 714.9L31.8 691.6L15.9 685.7L8.9 669.9L0 664.9L0.4 655.2L9.3 630.3L25.8 596.4L35.9 596L56.5 575.5L69.7 574.9L89.2 589.3L113 577.5L116.3 562.9L124.1 548.7L129.4 530.9L148 516.5L155 491.8L162.4 484L167.3 465.7L176.4 443.3L205.7 416.1L207.5 404.4L211.3 398.1L197.5 384.1L198.7 372.9L208.5 370.9L222.2 393.4L224.6 416.7L223.3 440L242.2 472L222.8 471.7L213 474.2L197.2 470.6L189.7 487.2L210.1 507.7L225.3 513.7L230.1 528.3L241.1 552.5L235.6 562L218.2 597.6L209.9 604L207.2 631.3L210.6 646.1L207.8 656.5L224.2 674.9L227.2 687.5L240 705.7L255.9 717L257.4 733L261.1 743.2L258.6 762.2L231 753.9L203 744.6L159.2 743.2Z",
+  },
+  {
+    code: "GNQ",
+    short: "Eq. Guinea",
+    name: "Equatorial Guinea",
+    centroid: [65.1, 765],
+    labelOffset: [-118, 46],
+    path: "M34.8 787.4L28.3 782.1L40.3 742.6L96.7 743.4L97 785.7L46.6 785.4L34.8 787.4Z",
+  },
+  {
+    code: "GAB",
+    short: "Gabon",
+    name: "Gabon",
+    centroid: [111, 845.6],
+    path: "M90.4 962.8L54.7 927.3L31.8 898.3L10.7 862L11.8 850.3L19.4 839.1L27.8 813.5L34.8 787.4L46.6 785.4L97 785.7L96.7 743.4L113.2 741.1L134.3 745.8L154.9 741.3L159.2 743.2L156.7 758.5L166.4 776.7L192.2 773.8L200.8 780.8L185.8 821.5L202.2 842.3L206 869.8L201.6 893.1L191 909.8L160.3 908.3L141.8 891.4L139 907L115.6 911.3L103.7 920.1L116.8 943.4L90.4 962.8Z",
+  },
+  {
+    code: "COG",
+    short: "Congo",
+    name: "Republic of the Congo",
+    centroid: [230.6, 852.4],
+    path: "M156.4 991L143.4 978.9L132.9 984.8L118.9 1000L90.4 962.8L116.8 943.4L103.7 920.1L115.6 911.3L139 907L141.8 891.4L160.3 908.3L191 909.8L201.6 893.1L206 869.8L202.2 842.3L185.8 821.5L200.8 780.8L192.2 773.8L166.4 776.7L156.7 758.5L159.2 743.2L203 744.6L231 753.9L258.6 762.2L261.1 743.2L279.3 710.5L300 691.8L323.5 697.8L345.8 699.7L343.7 720.9L333.3 739.7L326.5 761.7L322.2 792.8L324 812.7L318.4 824.9L317.5 837.8L313.5 849.1L290.7 866L274.8 884.1L259.7 918.3L260.9 947.2L252.1 958.4L231.9 975.6L211.5 997.6L198.5 991.4L196.3 981.4L177.4 981.1L165.5 994.6L156.4 991Z",
+  },
+];
+
+export const getCemacState = (code: CemacCode) =>
+  CEMAC_STATES.find((s) => s.code === code)!;

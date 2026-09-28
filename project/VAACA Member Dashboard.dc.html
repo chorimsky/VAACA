@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; }
+  a { color: #0E2A44; }
+  a:hover { color: #1AA6B3; }
+  @keyframes vaacaFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .vaaca-serif { font-family:'Source Serif 4',Georgia,serif; }
+</style>
+</helmet>
+
+<div style="font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; color:#33393E; background:#FAFAF8; min-height:100vh;">
+
+  <!-- TOP BAR -->
+  <div style="background:#0E2A44; padding:16px 32px;">
+    <div style="max-width:1280px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+      <a href="./CAVAA Landing Page.dc.html" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
+        <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18.5" stroke="#B5730C" stroke-width="1" opacity="0.4"></circle>
+          <line x1="20" y1="20" x2="8" y2="8" stroke="#1AA6B3" stroke-width="1.8"></line>
+          <line x1="20" y1="20" x2="32" y2="8" stroke="#1AA6B3" stroke-width="1.8"></line>
+          <line x1="20" y1="20" x2="8" y2="32" stroke="#1AA6B3" stroke-width="1.8"></line>
+          <line x1="20" y1="20" x2="32" y2="32" stroke="#1AA6B3" stroke-width="1.8"></line>
+          <circle cx="20" cy="20" r="5.5" fill="#fff"></circle>
+          <circle cx="8" cy="8" r="3" fill="#B5730C"></circle>
+          <circle cx="32" cy="8" r="3" fill="#1AA6B3"></circle>
+          <circle cx="8" cy="32" r="3" fill="#1AA6B3"></circle>
+          <circle cx="32" cy="32" r="3" fill="#B5730C"></circle>
+        </svg>
+        <b style="font-size:14.5px; color:#fff;">VAACA Member Dashboard</b>
+      </a>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span style="font-size:11.5px; color:#8A96A0; margin-right:4px;">Preview as:</span>
+        <sc-for list="{{ roleOptions }}" as="r" hint-placeholder-count="5">
+          <button onClick="{{ r.select }}" style="{{ r.style }}">{{ r.label }}</button>
+        </sc-for>
+        <a href="./VAACA Login.dc.html" style="margin-left:6px; font-size:12.5px; font-weight:600; color:#B9C4CE; text-decoration:none;" style-hover="color:#fff;">Log out</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1280px; margin:0 auto; padding:36px 32px 64px; animation:vaacaFadeIn .35s ease both;">
+    <div style="margin-bottom:28px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#1F7A4D; margin-bottom:6px;">{{ role.classLabel }}</div>
+      <div class="vaaca-serif" style="font-size:27px; font-weight:600; color:#0E2A44;">{{ role.greeting }}</div>
+      <div style="font-size:14px; color:#4B545A; margin-top:6px; max-width:680px; line-height:1.6;">{{ role.subline }}</div>
+    </div>
+
+    <!-- STAT ROW -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:26px;">
+      <sc-for list="{{ role.stats }}" as="s" hint-placeholder-count="3">
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:12px; padding:18px 20px;">
+          <div style="font-size:11px; color:#6B7680; text-transform:uppercase; letter-spacing:0.05em;">{{ s.label }}</div>
+          <div style="font-size:26px; font-weight:700; color:#0E2A44; margin-top:6px;">{{ s.value }}</div>
+          <sc-if value="{{ s.note }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#8A96A0; margin-top:4px;">{{ s.note }}</div></sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:20px; align-items:start;">
+      <!-- MAIN PANEL -->
+      <div style="background:#fff; border:1px solid #E3E3DD; border-radius:14px; padding:24px; min-width:0;">
+        <div style="font-weight:700; font-size:15px; color:#0E2A44; margin-bottom:16px;">{{ role.mainTitle }}</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ role.mainItems }}" as="it" hint-placeholder-count="4">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 16px; background:#F7F7F4; border-radius:10px; transition:background .15s;" style-hover="background:#F0F0EC;">
+              <div style="min-width:0;">
+                <div style="font-size:13.5px; font-weight:600; color:#0E2A44;">{{ it.title }}</div>
+                <div style="font-size:12px; color:#6B7680; margin-top:3px;">{{ it.sub }}</div>
+              </div>
+              <span style="font-size:11px; font-weight:600; padding:4px 11px; border-radius:999px; white-space:nowrap; {{ it.tagStyle }}">{{ it.tag }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- SIDE PANEL -->
+      <div style="display:flex; flex-direction:column; gap:16px; min-width:0;">
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:14px; padding:22px;">
+          <div style="font-weight:700; font-size:14.5px; color:#0E2A44; margin-bottom:14px;">Quick actions</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <sc-for list="{{ role.actions }}" as="a" hint-placeholder-count="3">
+              <div style="font-size:13px; font-weight:600; color:#0E2A44; padding:11px 14px; background:#F4F4F1; border-radius:8px; cursor:pointer; transition:background .15s;" style-hover="background:#E9EAE6;">{{ a }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#0E2A44; border-radius:14px; padding:22px;">
+          <div style="font-weight:700; font-size:14px; color:#fff; margin-bottom:8px;">{{ role.noteTitle }}</div>
+          <div style="font-size:12.5px; color:#B9C4CE; line-height:1.6;">{{ role.noteBody }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { role: (new URLSearchParams(location.search).get('role')) || 'A' };
+
+  roles = {
+    A: {
+      classLabel: 'Class A — Operating VASP', greeting: 'Welcome back, Kamdem Fintech Ltd.',
+      subline: 'Track your PSAN Regulatory Readiness score and respond to secretariat requests.',
+      stats: [
+        { label: 'Readiness score', value: '11 / 24' }, { label: 'Rating', value: 'T2' },
+        { label: 'Open action items', value: '3' },
+      ],
+      mainTitle: 'Readiness domain scores',
+      mainItems: [
+        { title: 'D1 · Governance', sub: 'Board structure and policies submitted', tag: 'Scored 2/3', tagStyle: 'background:#EFF6F1;color:#1F7A4D;' },
+        { title: 'D2 · AML/CFT', sub: 'Awaiting ANIF travel-rule guidance (Gap G3)', tag: 'Capped 1/3', tagStyle: 'background:#FCEBCB;color:#B5730C;' },
+        { title: 'D3 · Custody & Security', sub: 'Cold-storage attestation under review', tag: 'In review', tagStyle: 'background:#EAF3FB;color:#1D6FA5;' },
+        { title: 'D5 · Consumer Protection', sub: 'No redress channel exists yet (Gap G6)', tag: 'Blocked', tagStyle: 'background:#FBE2DE;color:#C0392B;' },
+      ],
+      actions: ['Upload compliance document', 'Message the secretariat', 'View full Readiness Framework'],
+      noteTitle: 'Status', noteBody: 'Your application is active but not yet regulator-ready. 3 of 10 CAVAA-tracked instruction gaps directly cap your score.',
+    },
+    B: {
+      classLabel: 'Class B — Adjacent Institution', greeting: 'Welcome back, Afriland Payments',
+      subline: 'Manage your referral pipeline and partnership touchpoints with VASP applicants.',
+      stats: [
+        { label: 'Active referrals', value: '2' }, { label: 'Partnership MOUs', value: '1' }, { label: 'Working groups', value: '1' },
+      ],
+      mainTitle: 'Referral pipeline',
+      mainItems: [
+        { title: 'Coinbridge SARL', sub: 'Referred to Readiness Framework intake', tag: 'Stage 2', tagStyle: 'background:#EAF3FB;color:#1D6FA5;' },
+        { title: 'NovaChain PSP', sub: 'Awaiting compliance introduction call', tag: 'Stage 1', tagStyle: 'background:#F4F4F1;color:#6B7680;' },
+        { title: 'AML/CFT working group', sub: 'Monthly technical session, next Oct 14', tag: 'Ongoing', tagStyle: 'background:#EFF6F1;color:#1F7A4D;' },
+      ],
+      actions: ['Refer a new applicant', 'View MOU status', 'Join a working group'],
+      noteTitle: 'Role', noteBody: 'As an adjacent institution, you hold full voting rights but are not directly scored against the Readiness Framework.',
+    },
+    C: {
+      classLabel: 'Class C — Professional Member', greeting: 'Welcome back, Aïcha N.',
+      subline: 'Track your certifications, working-group participation and training credits.',
+      stats: [
+        { label: 'CE credits', value: '6 / 10' }, { label: 'Certifications', value: '1' }, { label: 'Working groups', value: '2' },
+      ],
+      mainTitle: 'Professional development',
+      mainItems: [
+        { title: 'PSAN Readiness Assessor (Level 1)', sub: 'Certified — expires Sept 2027', tag: 'Active', tagStyle: 'background:#EFF6F1;color:#1F7A4D;' },
+        { title: 'AML/CFT working group', sub: 'Contributing to travel-rule guidance draft', tag: 'Ongoing', tagStyle: 'background:#EAF3FB;color:#1D6FA5;' },
+        { title: 'Consumer Protection working group', sub: 'Not yet joined', tag: 'Open', tagStyle: 'background:#F4F4F1;color:#6B7680;' },
+      ],
+      actions: ['Log continuing-education hours', 'Join a working group', 'Download member directory'],
+      noteTitle: 'Voting status', noteBody: 'Class C members hold limited voting rights on professional-standards matters only.',
+    },
+    D: {
+      classLabel: 'Class D — Academic / Research', greeting: 'Welcome back, Dr. Eyenga M.',
+      subline: 'Access the research library and submit data requests to the secretariat.',
+      stats: [
+        { label: 'Papers published', value: '2' }, { label: 'Data requests', value: '1 pending' }, { label: 'Academy courses', value: '0' },
+      ],
+      mainTitle: 'Research activity',
+      mainItems: [
+        { title: 'CEMAC VASP Market Sizing (2026)', sub: 'Submitted for secretariat review', tag: 'In review', tagStyle: 'background:#EAF3FB;color:#1D6FA5;' },
+        { title: 'AML/CFT typologies dataset', sub: 'Access request pending approval', tag: 'Pending', tagStyle: 'background:#FCEBCB;color:#B5730C;' },
+        { title: 'VAACA Academy — Readiness Framework 101', sub: 'Not yet launched', tag: 'Planned', tagStyle: 'background:#F4F4F1;color:#6B7680;' },
+      ],
+      actions: ['Submit a paper', 'Request dataset access', 'Propose a research partnership'],
+      noteTitle: 'Access', noteBody: 'Academic members hold limited voting rights and priority access to anonymized market data once VAACA Intelligence launches.',
+    },
+    E: {
+      classLabel: 'Class E — Institutional Partner', greeting: 'Welcome back, COSUMAF Liaison Office',
+      subline: 'Observer-status access to aggregate readiness data and consultation activity.',
+      stats: [
+        { label: 'Active applicants tracked', value: '1' }, { label: 'Consultations open', value: '2' }, { label: 'Briefings this quarter', value: '1' },
+      ],
+      mainTitle: 'Regulatory engagement',
+      mainItems: [
+        { title: 'Aggregate Readiness Framework report', sub: 'Q3 2026 — no case-level applicant data included', tag: 'Published', tagStyle: 'background:#EFF6F1;color:#1F7A4D;' },
+        { title: 'Consultation: custody prudential standard', sub: 'VAACA response drafted, awaiting your comments', tag: 'Open', tagStyle: 'background:#EAF3FB;color:#1D6FA5;' },
+        { title: 'Founding Declaration briefing', sub: 'Yaoundé, October 2026', tag: 'Scheduled', tagStyle: 'background:#F4F4F1;color:#6B7680;' },
+      ],
+      actions: ['Comment on a consultation', 'Request a briefing', 'Download aggregate report'],
+      noteTitle: 'Observer status', noteBody: 'Institutional members do not vote and never receive case-level applicant data — only aggregate, anonymized reporting.',
+    },
+  };
+
+  roleLabels = { A: 'VASP Operator', B: 'Adjacent Institution', C: 'Professional', D: 'Academic', E: 'Institutional Partner' };
+
+  renderVals() {
+    const key = this.state.role;
+    const role = this.roles[key];
+    const roleOptions = Object.keys(this.roleLabels).map(k => ({
+      label: this.roleLabels[k],
+      select: () => this.setState({ role: k }),
+      style: k === key
+        ? 'background:#1AA6B3;color:#fff;border:none;padding:7px 13px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;'
+        : 'background:transparent;color:#B9C4CE;border:1px solid rgba(255,255,255,0.2);padding:7px 13px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;',
+    }));
+    return { role, roleOptions };
+  }
+}
+</script>
+</body>
+</html>

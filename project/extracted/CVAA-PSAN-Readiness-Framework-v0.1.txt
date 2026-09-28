@@ -1,0 +1,581 @@
+
+CAMEROON	VIRTUAL	ASSET	ASSOCIATION	·	IN	FORMATION
+PSAN	Regulatory	Readiness	Framework
+
+
+
+
+
+
+
+
+--- PAGE BREAK ---
+
+
+0.	Status	and	reading	conventions
+Status:
+
+Publication	note:
+
+
+Evidence	convention
+
+Label
+Meaning
+[V]	VERIFIED
+
+[I]	INTERPRETATION
+
+[P]	PROPOSAL
+
+
+
+
+1.	Why	this	document	exists
+[V]
+
+
+
+[V]
+
+[V]
+
+
+[V]
+
+[I]
+
+
+
+
+[P]
+
+
+2.	Gate	One	—	Perimeter	test
+Question:	does	your	activity	require	a	PSAN	agrément?
+[V]
+
+#
+Service
+Typical	local	form
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[V]
+
+[I]
+
+
+Custody.
+
+
+
+Counterparty.
+
+
+[I]
+
+
+
+
+
+--- PAGE BREAK ---
+
+
+[P]
+
+two-tier	regime
+
+
+
+
+3.	Gate	Two	—	Requalification	test
+This	is	the	gate	the	market	ignores,	and	it	is	the	more	dangerous	one.
+[V]
+
+
+[V]
+
+
+[I]
+
+
+even	without	any	specific	text	naming	it
+
+
+
+[I]
+
+
+
+
+
+
+
+[I]
+
+you	can	be	fully	outside	the	PSAN	regime	and	still	be	conducting	an	unauthorised	public
+offering.
+
+
+[V]
+
+[P]
+
+requalification	doctrine
+
+
+
+4.	Gate	Three	—	Which	regulator
+[V]
+
+
+[V]
+
+
+[I]
+
+
+
+
+[I]
+
+Direct	exposure	for	any	crypto-to-mobile-money	settlement	business	operating	in	Cameroon	today.
+
+
+
+
+[P]
+
+inter-institutional	fintech	committee
+
+
+
+
+5.	The	Readiness	Framework	—	eight	domains
+[P]
+
+no	regulatory	force
+
+
+
+
+D1	—	Corporate	and	governance
+Anchor	[I]:
+
+Artefacts:
+
+
+
+L1
+
+L2
+
+L3
+
+D2	—	Capital	and	financial	soundness
+
+--- PAGE BREAK ---
+
+
+Anchor	[I]:
+
+Artefacts:
+
+
+L1
+
+L2
+
+L3
+
+D3	—	AML/CFT
+Anchor	[V]:
+
+
+
+Artefacts:
+
+
+
+
+L1
+
+L2
+
+L3
+
+
+[I]
+
+
+
+
+D4	—	Travel	Rule	and	counterparty	diligence
+Anchor	[I]:
+
+Artefacts:
+
+
+L1
+
+L2
+
+L3
+
+
+D5	—	Custody	and	asset	segregation
+Anchor	[I]:
+
+Artefacts:
+
+
+
+L1
+
+L2
+
+L3
+
+D6	—	Cybersecurity	and	operational	resilience
+Anchor	[I]:
+
+Artefacts:
+
+
+
+L1
+
+L2
+
+L3
+
+
+D7	—	Client	protection	and	market	conduct
+Anchor	[I]:
+
+
+Artefacts:
+
+
+L1
+
+L2
+
+L3
+
+D8	—	Reporting	and	supervisory	readiness
+Anchor	[I]:
+
+Artefacts:
+
+
+L1
+
+L2
+
+
+L3
+
+Scoring	[P]:
+
+Readiness	Score	=	points	÷	24.
+
+
+
+6.	PSAN	INSTRUCTION	GAP	REGISTER
+[P]
+
+
+
+--- PAGE BREAK ---
+
+
+ID
+Gap
+Status
+Operational	consequence
+Association's	proposed	default
+G1
+
+
+
+[V]
+
+
+
+
+
+
+G2
+
+
+
+[V]
+
+
+
+
+
+G3
+
+
+
+[V]
+
+
+
+
+
+G4
+
+
+
+[V]
+
+
+
+
+G5
+
+
+
+[V]
+
+
+
+
+
+G6
+
+
+
+[V]
+
+
+
+
+
+
+
+
+G7
+
+
+
+
+[V]
+
+
+
+
+
+
+
+G8
+
+
+[V]
+
+
+
+
+
+G9
+
+
+
+[V]
+
+
+
+
+
+G10
+
+
+[V]
+
+
+
+
+
+[I]
+
+
+
+[V]
+
+
+[I]
+
+
+7.	Interim	dossier	structure
+[P]
+
+
+
+--- PAGE BREAK ---
+
+
+PART	A	—	APPLICANT
+		A1		Application	letter	and	services	requested	(S1–S8)
+		A2		Statutes	and	registration	certificate
+		A3		Shareholding	and	beneficial	ownership	to	natural	persons
+		A4		Governance:	board,	management,	organisation	chart
+		A5		Fit-and-proper	file	per	effective	manager
+PART	B	—	ACTIVITY
+		B1		Business	plan	and	24-month	projections
+		B2		Service	description	mapped	to	S1–S8
+		B3		Client	segments,	channels,	geographies
+		B4		Perimeter	analysis	(Gate	One)	and	requalification	analysis	(Gate	Two)
+		B5		Fee	schedule	and	revenue	model
+PART	C	—	FINANCIAL
+		C1		Audited	or	reviewed	accounts
+		C2		Capital	adequacy	statement
+		C3		Wind-down	and	client-asset	return	plan
+PART	D	—	COMPLIANCE
+		D1		Article	92	written	AML/CFT	undertaking
+		D2		Article	93	institutional	risk	assessment
+		D3		KYC/KYB,	sanctions,	PEP	procedures
+		D4		Transaction	monitoring	and	STR	procedure;	ANIF	interface
+		D5		Compliance	officer	appointment	and	CV
+		D6		Travel	Rule	capability	statement
+PART	E	—	TECHNICAL
+		E1		System	architecture	and	data	flows
+		E2		Key	management	and	custody	policy
+		E3		Segregation	and	proof-of-reserves	methodology
+		E4		Security	assessment	and	penetration	test
+		E5		BCP/DRP	with	test	evidence
+		E6		Outsourcing	and	third-party	register
+PART	F	—	CLIENT	PROTECTION
+		F1		Risk	disclosures	and	terms	of	service
+		F2		Complaints	procedure
+		F3		Marketing	and	promotion	policy
+		F4		Conflicts	of	interest	policy
+PART	G	—	SUPERVISION
+		G1		Reporting	capability	statement
+		G2		Audit	trail	and	retention	specification
+		G3		Regulatory	contact	designation
+8.	How	the	Association	uses	this
+[P]
+
+Publish	it.
+
+
+
+Assess	against	it.
+
+
+
+File	it.
+
+
+
+Aggregate	it.
+
+
+
+Version	it.
+
+[V]
+
+
+9.	Proposed	thresholds
+[P]
+
+
+
+Tier
+Trigger
+Regime	proposed
+T0	—	Registration
+
+
+
+T1	—	Standard
+agrément
+
+
+T2	—	Systemic
+
+
+
+
+10.	Immediate	work	items
+
+--- PAGE BREAK ---
+
+
+#
+Item
+Owner
+Output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[P]
+
+
+
+Annex	—	Source	register
+Primary
+
+
+
+
+International	reference
+
+
+
+Secondary
+
+Village	de	la	Justice
+
+
+Prepared	for	founding-coalition	review.	Not	for	circulation	outside	the	coalition	until	legal	review	at	item	2	is	complete.
+
+--- PAGE BREAK ---
+

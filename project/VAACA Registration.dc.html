@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; }
+  a { color: #0E2A44; }
+  a:hover { color: #1AA6B3; }
+  input, select { font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; }
+  input:focus, select:focus { outline: 2px solid #1AA6B3; outline-offset: 1px; }
+  @keyframes vaacaFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .vaaca-serif { font-family:'Source Serif 4',Georgia,serif; }
+</style>
+</helmet>
+
+<div style="font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; color:#33393E; background:#FAFAF8; min-height:100vh; display:flex; flex-direction:column;">
+
+  <div style="height:3px; background:linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C);"></div>
+
+  <!-- NAV -->
+  <div style="max-width:1180px; margin:0 auto; padding:20px 32px; width:100%; box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+    <a href="./CAVAA Landing Page.dc.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+      <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18.5" stroke="#B5730C" stroke-width="1" opacity="0.4"></circle>
+        <line x1="20" y1="20" x2="8" y2="8" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <line x1="20" y1="20" x2="32" y2="8" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <line x1="20" y1="20" x2="8" y2="32" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <line x1="20" y1="20" x2="32" y2="32" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <circle cx="20" cy="20" r="5.5" fill="#0E2A44"></circle>
+        <circle cx="8" cy="8" r="3" fill="#B5730C"></circle>
+        <circle cx="32" cy="8" r="3" fill="#1AA6B3"></circle>
+        <circle cx="8" cy="32" r="3" fill="#1AA6B3"></circle>
+        <circle cx="32" cy="32" r="3" fill="#B5730C"></circle>
+      </svg>
+      <div style="line-height:1.2;">
+        <b style="font-size:16px; color:#0E2A44; letter-spacing:0.01em;">VAACA</b>
+        <div style="font-size:10.5px; color:#6B7680; letter-spacing:0.02em;">Virtual Assets Association of Central Africa</div>
+      </div>
+    </a>
+    <div style="font-size:13.5px; font-weight:500;">Already a member? <a href="./VAACA Login.dc.html" style="color:#0E2A44; font-weight:700;">Log in</a></div>
+  </div>
+
+  <!-- BODY -->
+  <div style="flex:1; display:flex; align-items:flex-start; justify-content:center; padding:24px 32px 64px;">
+    <div style="width:100%; max-width:640px;">
+
+      <!-- STEP INDICATOR -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:30px;">
+        <sc-for list="{{ stepMeta }}" as="s" hint-placeholder-count="3">
+          <div style="flex:1; display:flex; align-items:center; gap:8px;">
+            <div style="width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; {{ s.circleStyle }}">{{ s.n }}</div>
+            <div style="font-size:12.5px; font-weight:600; {{ s.labelStyle }}">{{ s.label }}</div>
+            <sc-if value="{{ s.showLine }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1; height:1px; background:#E3E3DD;"></div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- STEP 1: CLASS -->
+      <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}" style="animation:vaacaFadeIn .35s ease both;">
+        <div class="vaaca-serif" style="font-size:26px; font-weight:600; color:#0E2A44; margin-bottom:8px;">Choose your membership class</div>
+        <div style="font-size:14px; color:#4B545A; margin-bottom:26px; line-height:1.6;">Membership is open and non-exclusive — every applicant meeting a class's criteria is admitted.</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ classOptions }}" as="cls" hint-placeholder-count="5">
+            <div onClick="{{ cls.select }}" style="cursor:pointer; background:#fff; border:2px solid {{ cls.borderColor }}; border-radius:12px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; transition:border-color .15s, transform .15s;" style-hover="transform:translateY(-1px); box-shadow:0 6px 16px -10px rgba(14,42,68,.3);">
+              <div>
+                <div style="font-weight:700; font-size:14.5px; color:#0E2A44;">{{ cls.letter }}</div>
+                <div style="font-size:12.5px; color:#6B7680; margin-top:4px;">{{ cls.who }}</div>
+              </div>
+              <div style="width:20px; height:20px; border-radius:50%; border:2px solid {{ cls.borderColor }}; background:{{ cls.dotBg }}; flex-shrink:0;"></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:30px;">
+          <button onClick="{{ goStep2 }}" disabled="{{ !selectedClass }}" style="background:{{ nextBtnBg }}; color:#fff; border:none; padding:13px 28px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">Continue</button>
+        </div>
+      </sc-if>
+
+      <!-- STEP 2: DETAILS -->
+      <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}" style="animation:vaacaFadeIn .35s ease both;">
+        <div class="vaaca-serif" style="font-size:26px; font-weight:600; color:#0E2A44; margin-bottom:8px;">Tell us about you</div>
+        <div style="font-size:14px; color:#4B545A; margin-bottom:26px; line-height:1.6;">Applying as <b style="color:#0E2A44;">{{ selectedClassLabel }}</b>.</div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <label style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-size:12.5px; font-weight:600; color:#0E2A44;">Full name / Organization name</span>
+            <input type="text" value="{{ form.name }}" onChange="{{ setName }}" placeholder="e.g. Kamdem Fintech Ltd." style="padding:12px 14px; border-radius:8px; border:1px solid #E3E3DD; font-size:14px;" />
+          </label>
+          <label style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-size:12.5px; font-weight:600; color:#0E2A44;">Email</span>
+            <input type="email" value="{{ form.email }}" onChange="{{ setEmail }}" placeholder="you@example.com" style="padding:12px 14px; border-radius:8px; border:1px solid #E3E3DD; font-size:14px;" />
+          </label>
+          <label style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-size:12.5px; font-weight:600; color:#0E2A44;">Country</span>
+            <select value="{{ form.country }}" onChange="{{ setCountry }}" style="padding:12px 14px; border-radius:8px; border:1px solid #E3E3DD; font-size:14px; background:#fff;">
+              <sc-for list="{{ countryOptions }}" as="c" hint-placeholder-count="6">
+                <option value="{{ c }}">{{ c }}</option>
+              </sc-for>
+            </select>
+          </label>
+          <label style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-size:12.5px; font-weight:600; color:#0E2A44;">Password</span>
+            <input type="password" value="{{ form.password }}" onChange="{{ setPassword }}" placeholder="At least 8 characters" style="padding:12px 14px; border-radius:8px; border:1px solid #E3E3DD; font-size:14px;" />
+          </label>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:30px;">
+          <button onClick="{{ goStep1 }}" style="background:#fff; border:1px solid #E3E3DD; color:#0E2A44; padding:13px 24px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">Back</button>
+          <button onClick="{{ goStep3 }}" disabled="{{ !detailsValid }}" style="background:{{ detailsBtnBg }}; color:#fff; border:none; padding:13px 28px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">Review</button>
+        </div>
+      </sc-if>
+
+      <!-- STEP 3: REVIEW -->
+      <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}" style="animation:vaacaFadeIn .35s ease both;">
+        <div class="vaaca-serif" style="font-size:26px; font-weight:600; color:#0E2A44; margin-bottom:8px;">Review your application</div>
+        <div style="font-size:14px; color:#4B545A; margin-bottom:26px; line-height:1.6;">Membership status is never a substitute for regulatory authorization.</div>
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:14px; padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F0F0EC; padding-bottom:12px;">
+            <span style="font-size:12.5px; color:#6B7680;">Class</span><span style="font-size:13.5px; font-weight:600; color:#0E2A44;">{{ selectedClassLabel }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F0F0EC; padding-bottom:12px;">
+            <span style="font-size:12.5px; color:#6B7680;">Name</span><span style="font-size:13.5px; font-weight:600; color:#0E2A44;">{{ form.name }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F0F0EC; padding-bottom:12px;">
+            <span style="font-size:12.5px; color:#6B7680;">Email</span><span style="font-size:13.5px; font-weight:600; color:#0E2A44;">{{ form.email }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="font-size:12.5px; color:#6B7680;">Country</span><span style="font-size:13.5px; font-weight:600; color:#0E2A44;">{{ form.country }}</span>
+          </div>
+        </div>
+        <label style="display:flex; align-items:flex-start; gap:10px; margin-top:18px; cursor:pointer;">
+          <input type="checkbox" checked="{{ agreed }}" onChange="{{ toggleAgree }}" style="margin-top:3px;" />
+          <span style="font-size:12.5px; color:#4B545A; line-height:1.6;">I confirm this information is accurate and understand VAACA membership is not a substitute for regulatory authorization.</span>
+        </label>
+        <div style="display:flex; justify-content:space-between; margin-top:22px;">
+          <button onClick="{{ goStep2 }}" style="background:#fff; border:1px solid #E3E3DD; color:#0E2A44; padding:13px 24px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">Back</button>
+          <button onClick="{{ submit }}" disabled="{{ !agreed }}" style="background:{{ submitBtnBg }}; color:#fff; border:none; padding:13px 28px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">Submit Application</button>
+        </div>
+      </sc-if>
+
+      <!-- STEP 4: CONFIRMATION -->
+      <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}" style="animation:vaacaFadeIn .4s ease both;">
+        <div style="text-align:center; padding:40px 0;">
+          <div style="width:56px; height:56px; border-radius:50%; background:#EFF6F1; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#1F7A4D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+          <div style="font-size:22px; font-weight:700; color:#0E2A44; margin-bottom:10px;">Application received</div>
+          <div style="font-size:14px; color:#4B545A; max-width:440px; margin:0 auto 26px; line-height:1.65;">The secretariat will review your Class {{ selectedClassLabel }} application and follow up at {{ form.email }}. There is currently no live intake — this confirms your interest ahead of the Charter's ratification.</div>
+          <a href="./VAACA Login.dc.html" style="display:inline-block; background:#0E2A44; color:#fff; padding:12px 24px; border-radius:8px; font-weight:600; font-size:14px; text-decoration:none;">Log in to your dashboard</a>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding:20px 32px; text-align:center; font-size:12px; color:#8A96A0;">VAACA · Virtual Assets Association of Central Africa · In Formation</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    step: 1,
+    selectedClass: null,
+    form: { name: '', email: '', country: 'Cameroon', password: '' },
+    agreed: false,
+  };
+  classes = [
+    { key: 'A', letter: 'A — Operating', who: 'VASPs / exchanges' },
+    { key: 'B', letter: 'B — Adjacent', who: 'Banks, PSPs, telcos' },
+    { key: 'C', letter: 'C — Professional', who: 'Individuals (legal, compliance, security)' },
+    { key: 'D', letter: 'D — Academic', who: 'Researchers, universities' },
+    { key: 'E', letter: 'E — Institutional', who: 'Regulators, ministries, partners' },
+  ];
+  countries = ['Cameroon', 'Gabon', 'Republic of the Congo', 'Chad', 'Central African Republic', 'Equatorial Guinea'];
+
+  renderVals() {
+    const { step, selectedClass, form, agreed } = this.state;
+    const detailsValid = form.name.trim().length > 1 && /\S+@\S+\.\S+/.test(form.email) && form.password.length >= 8;
+    const stepLabels = ['Class', 'Details', 'Review'];
+    const stepMeta = stepLabels.map((label, i) => {
+      const n = i + 1;
+      const active = n <= step;
+      return {
+        n,
+        label,
+        showLine: n < 3,
+        circleStyle: active ? 'background:#0E2A44;color:#fff;' : 'background:#E9EAE6;color:#8A96A0;',
+        labelStyle: active ? 'color:#0E2A44;' : 'color:#8A96A0;',
+      };
+    });
+    const classOptions = this.classes.map(c => ({
+      ...c,
+      select: () => this.setState({ selectedClass: c.key }),
+      borderColor: selectedClass === c.key ? '#1AA6B3' : '#E3E3DD',
+      dotBg: selectedClass === c.key ? '#1AA6B3' : '#fff',
+    }));
+    const selectedClassLabel = this.classes.find(c => c.key === selectedClass)?.letter || '';
+
+    return {
+      isStep1: step === 1, isStep2: step === 2, isStep3: step === 3, isStep4: step === 4,
+      stepMeta, classOptions, selectedClass, selectedClassLabel,
+      form, countryOptions: this.countries,
+      detailsValid, agreed,
+      nextBtnBg: selectedClass ? '#0E2A44' : '#B9C0C6',
+      detailsBtnBg: detailsValid ? '#0E2A44' : '#B9C0C6',
+      submitBtnBg: agreed ? '#1AA6B3' : '#B9C0C6',
+      goStep1: () => this.setState({ step: 1 }),
+      goStep2: () => selectedClass && this.setState({ step: 2 }),
+      goStep3: () => detailsValid && this.setState({ step: 3 }),
+      submit: () => {
+        if (!agreed) return;
+        try { localStorage.setItem('vaaca_demo_account', JSON.stringify({ email: form.email, classKey: selectedClass, name: form.name })); } catch (e) {}
+        this.setState({ step: 4 });
+      },
+      toggleAgree: () => this.setState({ agreed: !this.state.agreed }),
+      setName: e => this.setState({ form: { ...this.state.form, name: e.target.value } }),
+      setEmail: e => this.setState({ form: { ...this.state.form, email: e.target.value } }),
+      setCountry: e => this.setState({ form: { ...this.state.form, country: e.target.value } }),
+      setPassword: e => this.setState({ form: { ...this.state.form, password: e.target.value } }),
+    };
+  }
+}
+</script>
+</body>
+</html>

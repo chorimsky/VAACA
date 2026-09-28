@@ -1,0 +1,30 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# The local JSON data store: member and staff records, scrypt password
+# hashes, and password-reset tokens. Never commit this.
+data/
+
+# Environment
+.env*
+!.env.example
+
+# Confidential source documents.
+#
+# The three founding documents are working drafts for legal review — the app
+# itself withholds them from anyone without a staff session, and its own footer
+# says they are "not for circulation outside the coalition until legal review
+# is complete". This repository is public, so they are excluded.
+#
+# The app handles their absence: a document whose file is missing from disk
+# reports itself unavailable rather than offering a link that 404s. To publish
+# them, delete these two lines and commit the files.
+web/documents/*.pdf
+project/uploads/*.pdf
+
+# macOS
+.DS_Store

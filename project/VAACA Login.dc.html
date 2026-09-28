@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; }
+  a { color: #0E2A44; }
+  a:hover { color: #1AA6B3; }
+  input:focus { outline: 2px solid #1AA6B3; outline-offset: 1px; }
+  @keyframes vaacaFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .vaaca-serif { font-family:'Source Serif 4',Georgia,serif; }
+</style>
+</helmet>
+
+<div style="font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; color:#33393E; background:#FAFAF8; min-height:100vh; display:flex; flex-direction:column;">
+
+  <div style="height:3px; background:linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C);"></div>
+
+  <div style="max-width:1180px; margin:0 auto; padding:20px 32px; width:100%; box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+    <a href="./CAVAA Landing Page.dc.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+      <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18.5" stroke="#B5730C" stroke-width="1" opacity="0.4"></circle>
+        <line x1="20" y1="20" x2="8" y2="8" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <line x1="20" y1="20" x2="32" y2="8" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <line x1="20" y1="20" x2="8" y2="32" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <line x1="20" y1="20" x2="32" y2="32" stroke="#1AA6B3" stroke-width="1.6"></line>
+        <circle cx="20" cy="20" r="5.5" fill="#0E2A44"></circle>
+        <circle cx="8" cy="8" r="3" fill="#B5730C"></circle>
+        <circle cx="32" cy="8" r="3" fill="#1AA6B3"></circle>
+        <circle cx="8" cy="32" r="3" fill="#1AA6B3"></circle>
+        <circle cx="32" cy="32" r="3" fill="#B5730C"></circle>
+      </svg>
+      <div style="line-height:1.2;">
+        <b style="font-size:16px; color:#0E2A44; letter-spacing:0.01em;">VAACA</b>
+        <div style="font-size:10.5px; color:#6B7680; letter-spacing:0.02em;">Virtual Assets Association of Central Africa</div>
+      </div>
+    </a>
+    <div style="font-size:13.5px; font-weight:500;">Not a member yet? <a href="./VAACA Registration.dc.html" style="color:#0E2A44; font-weight:700;">Apply</a></div>
+  </div>
+
+  <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:24px 32px 64px;">
+    <div style="width:100%; max-width:400px;">
+
+      <sc-if value="{{ !loggedIn }}" hint-placeholder-val="{{ true }}">
+        <div class="vaaca-serif" style="font-size:26px; font-weight:600; color:#0E2A44; margin-bottom:8px; text-align:center;">Member Portal</div>
+        <div style="font-size:13.5px; color:#4B545A; margin-bottom:28px; text-align:center; line-height:1.6;">Log in to manage your accession status and profile.</div>
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:14px; padding:26px;">
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <label style="display:flex; flex-direction:column; gap:6px;">
+              <span style="font-size:12.5px; font-weight:600; color:#0E2A44;">Email</span>
+              <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="you@example.com" style="padding:12px 14px; border-radius:8px; border:1px solid #E3E3DD; font-size:14px;" />
+            </label>
+            <label style="display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:12.5px; font-weight:600; color:#0E2A44;">Password</span>
+                <span style="font-size:12px; font-weight:600; color:#1AA6B3; cursor:pointer;">Forgot password?</span>
+              </div>
+              <input type="password" value="{{ password }}" onChange="{{ setPassword }}" placeholder="••••••••" style="padding:12px 14px; border-radius:8px; border:1px solid #E3E3DD; font-size:14px;" />
+            </label>
+            <sc-if value="{{ showError }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:12.5px; color:#C0392B; background:#FBE2DE; border-radius:8px; padding:10px 12px;">Enter a valid email and password (8+ characters) to continue.</div>
+            </sc-if>
+            <button onClick="{{ login }}" style="background:#0E2A44; color:#fff; border:none; padding:13px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; margin-top:4px;">Log in</button>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:18px; font-size:12.5px; color:#8A96A0; line-height:1.6;">No live intake yet — the founding coalition is still being assembled. This demonstrates the intended member portal flow.</div>
+      </sc-if>
+
+      <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:14px; padding:32px; text-align:center; animation:vaacaFadeIn .35s ease both;">
+          <div style="width:52px; height:52px; border-radius:50%; background:#EFF6F1; display:flex; align-items:center; justify-content:center; margin:0 auto 18px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#1F7A4D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+          <div style="font-size:19px; font-weight:700; color:#0E2A44; margin-bottom:8px;">Signed in as {{ email }}</div>
+          <div style="font-size:13px; color:#4B545A; margin-bottom:22px; line-height:1.6;">Continue to your member dashboard.</div>
+          <div style="display:flex; gap:10px; justify-content:center;">
+            <a href="{{ dashboardHref }}" style="background:#0E2A44; color:#fff; text-decoration:none; padding:11px 22px; border-radius:8px; font-weight:600; font-size:13.5px;">Go to Dashboard</a>
+            <button onClick="{{ logout }}" style="background:#fff; border:1px solid #E3E3DD; color:#0E2A44; padding:11px 22px; border-radius:8px; font-weight:600; font-size:13.5px; cursor:pointer;">Log out</button>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <div style="padding:20px 32px; text-align:center; font-size:12px; color:#8A96A0;">VAACA · Virtual Assets Association of Central Africa · In Formation</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { email: '', password: '', loggedIn: false, showError: false, classKey: 'A' };
+  componentDidMount() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('vaaca_demo_account') || 'null');
+      if (saved && saved.email) this.setState({ email: saved.email });
+    } catch (e) {}
+  }
+  renderVals() {
+    const { email, password, loggedIn, showError, classKey } = this.state;
+    return {
+      email, password, loggedIn, showError,
+      setEmail: e => this.setState({ email: e.target.value }),
+      setPassword: e => this.setState({ password: e.target.value }),
+      login: () => {
+        const valid = /\S+@\S+\.\S+/.test(email) && password.length >= 8;
+        let ck = 'A';
+        try {
+          const saved = JSON.parse(localStorage.getItem('vaaca_demo_account') || 'null');
+          if (saved && saved.email === email && saved.classKey) ck = saved.classKey;
+        } catch (e) {}
+        this.setState({ loggedIn: valid, showError: !valid, classKey: ck });
+      },
+      logout: () => this.setState({ loggedIn: false, email: '', password: '' }),
+      dashboardHref: './VAACA Member Dashboard.dc.html?role=' + classKey,
+    };
+  }
+}
+</script>
+</body>
+</html>

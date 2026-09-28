@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style> html { scroll-behavior: smooth; } body { margin: 0; } a { color: #0E2A44; } a:hover { color: #1AA6B3; } .vaaca-serif { font-family:'Source Serif 4',Georgia,serif; } </style>
+</helmet>
+<div id="top" style="font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; color:#33393E; background:#FAFAF8;">
+  <div style="height:3px; background:linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C);"></div>
+  <dc-import name="VAACA Nav" active="standards" hint-size="100%,72px"></dc-import>
+
+  <div style="max-width:1180px; margin:0 auto; padding:56px 32px 64px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#1F7A4D; margin-bottom:10px;">Standards</div>
+    <h1 class="vaaca-serif" style="font-size:34px; font-weight:600; color:#0E2A44; margin:0 0 10px; letter-spacing:-0.01em;">VAACA Framework 01 — PSAN Regulatory Readiness</h1>
+    <div style="font-size:14.5px; color:#4B545A; max-width:720px; line-height:1.6; margin-bottom:30px;">Three perimeter gates decide whether an activity is in scope. Eight readiness domains, scored on a 24-point scale, decide whether it can be presented to a regulator today.</div>
+    <div style="display:grid; grid-template-columns:repeat(3,minmax(180px,1fr)); gap:14px; margin-bottom:24px;">
+      <div style="background:#fff; border:1px solid #E3E3DD; border-radius:12px; padding:18px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6B7680;">Gate 1</div>
+        <div style="font-weight:700; font-size:14.5px; color:#0E2A44; margin-top:4px;">Perimeter Test</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E3E3DD; border-radius:12px; padding:18px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6B7680;">Gate 2</div>
+        <div style="font-weight:700; font-size:14.5px; color:#0E2A44; margin-top:4px;">Requalification Test</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E3E3DD; border-radius:12px; padding:18px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6B7680;">Gate 3</div>
+        <div style="font-weight:700; font-size:14.5px; color:#0E2A44; margin-top:4px;">Regulator Test</div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4,minmax(140px,1fr)); gap:10px;">
+      <sc-for list="{{ domains }}" as="d" hint-placeholder-count="8">
+        <div style="background:#F4F4F1; border-radius:10px; padding:12px 14px;">
+          <div style="font-size:10.5px; font-family:'IBM Plex Mono',monospace; color:#6B7680;">{{ d.id }}</div>
+          <div style="font-size:13px; font-weight:600; color:#0E2A44; margin-top:2px;">{{ d.name }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="max-width:1180px; margin:0 auto; padding:0 32px 64px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#1F7A4D; margin-bottom:10px;">Roadmap</div>
+    <h2 style="font-size:24px; font-weight:600; max-width:720px; line-height:1.4; margin:0 0 26px; color:#0E2A44;">What VAACA is building next.</h2>
+    <div style="display:grid; grid-template-columns:repeat(4,minmax(180px,1fr)); gap:14px;">
+      <sc-for list="{{ subBrands }}" as="sb" hint-placeholder-count="4">
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:12px; padding:18px;">
+          <div style="font-weight:700; font-size:14.5px; color:#0E2A44;">{{ sb.name }}</div>
+          <div style="font-size:12.5px; color:#6B7680; margin-top:6px; line-height:1.5;">{{ sb.desc }}</div>
+          <div style="margin-top:10px; font-size:10.5px; font-weight:600; color:{{ sb.statusColor }};">{{ sb.status }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <dc-import name="VAACA Footer" hint-size="100%,320px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  domains = [
+    { id: 'D1', name: 'Governance' }, { id: 'D2', name: 'AML/CFT' },
+    { id: 'D3', name: 'Custody & Security' }, { id: 'D4', name: 'Capital & Solvency' },
+    { id: 'D5', name: 'Consumer Protection' }, { id: 'D6', name: 'Market Integrity' },
+    { id: 'D7', name: 'Tech & Ops Resilience' }, { id: 'D8', name: 'Reporting & Disclosure' },
+  ];
+  subBrands = [
+    { name: 'VAACA Standards', desc: 'Frameworks, guidelines and readiness certification.', status: 'In development', statusColor: '#1F7A4D' },
+    { name: 'VAACA Policy', desc: 'Regulatory intelligence and consultation responses.', status: 'Planned', statusColor: '#6B7680' },
+    { name: 'VAACA Intelligence', desc: 'Market research and country-level data.', status: 'Planned', statusColor: '#6B7680' },
+    { name: 'VAACA Academy', desc: 'Professional training and certification.', status: 'Planned', statusColor: '#6B7680' },
+  ];
+  renderVals() { return { domains: this.domains, subBrands: this.subBrands }; }
+}
+</script>
+</body>
+</html>

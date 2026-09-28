@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style> html { scroll-behavior: smooth; } body { margin: 0; } a { color: #0E2A44; } a:hover { color: #1AA6B3; } .vaaca-serif { font-family:'Source Serif 4',Georgia,serif; } </style>
+</helmet>
+<div id="top" style="font-family:'General Sans',ui-sans-serif,system-ui,sans-serif; color:#33393E; background:#FAFAF8;">
+  <div style="height:3px; background:linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C);"></div>
+  <dc-import name="VAACA Nav" active="ecosystem" hint-size="100%,72px"></dc-import>
+
+  <div style="max-width:1180px; margin:0 auto; padding:56px 32px 64px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#1F7A4D; margin-bottom:10px;">Ecosystem</div>
+<h1 class="vaaca-serif" style="font-size:34px; font-weight:600; max-width:720px; line-height:1.3; margin:0 0 26px; color:#0E2A44; letter-spacing:-0.01em;">One ecosystem, connected around shared standards.</h1>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;">
+      <sc-for list="{{ ecosystemGroups }}" as="g" hint-placeholder-count="8">
+        <div style="background:#fff; border:1px solid #E3E3DD; border-radius:999px; padding:9px 18px; font-size:13.5px; font-weight:600; color:#0E2A44;">{{ g }}</div>
+      </sc-for>
+    </div>
+    <div style="font-size:13px; font-weight:600; color:#6B7680; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:16px;">Priority institutions</div>
+    <div style="display:flex; flex-wrap:wrap; border:1px solid #E3E3DD; border-radius:12px; background:#fff; overflow:hidden;">
+      <sc-for list="{{ institutionNames }}" as="inst" hint-placeholder-count="5">
+        <div style="flex:1; min-width:110px; padding:18px 16px; text-align:center; font-size:14.5px; font-weight:700; color:#0E2A44; border-right:1px solid #E3E3DD;">{{ inst }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="background:#F4F4F1; padding:64px 32px;">
+    <div style="max-width:1180px; margin:0 auto;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#1F7A4D; margin-bottom:10px;">Policy &amp; Regulatory Engagement</div>
+      <h2 style="font-size:24px; font-weight:600; max-width:720px; line-height:1.4; margin:0 0 26px; color:#0E2A44;">Engagement posture, not lobbying.</h2>
+      <div style="background:#fff; border:1px solid #E3E3DD; border-radius:14px; overflow:hidden;">
+        <sc-for list="{{ institutionPostures }}" as="ip" hint-placeholder-count="4">
+          <div style="display:grid; grid-template-columns:120px 1fr; gap:20px; padding:18px 22px; border-bottom:1px solid #EDEDE8;">
+            <div style="font-weight:700; font-size:14px; color:#0E2A44;">{{ ip.name }}</div>
+            <div style="font-size:13px; color:#5B6672; line-height:1.55;">{{ ip.posture }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <dc-import name="VAACA Footer" hint-size="100%,320px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  ecosystemGroups = ['Banks', 'VASPs & Exchanges', 'Fintechs & PSPs', 'Regulators', 'Investors', 'Academia', 'Legal & Compliance', 'Consumers'];
+  institutionNames = ['COBAC', 'COSUMAF', 'BEAC', 'GABAC', 'CNEF'];
+  institutionPostures = [
+    { name: 'COSUMAF', posture: 'Primary Gate 3 target — most plausible eventual PSAN licensing authority.' },
+    { name: 'CNEF', posture: 'Regulates consumer relationships with financial institutions — relevant to consumer protection (D5).' },
+    { name: 'ANIF', posture: 'Early technical contact — needed to close AML/CFT travel-rule gap.' },
+    { name: 'GABAC', posture: 'Standards-setting counterpart for the AML/CFT domain.' },
+  ];
+  renderVals() { return { ecosystemGroups: this.ecosystemGroups, institutionNames: this.institutionNames, institutionPostures: this.institutionPostures }; }
+}
+</script>
+</body>
+</html>
