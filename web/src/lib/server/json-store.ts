@@ -16,9 +16,46 @@ import path from "node:path";
  * anywhere but a single long-lived server.
  */
 
+/**
+ * Where the store lives.
+ *
+ * On Vercel the deployment filesystem is read-only apart from `/tmp`, so
+ * defaulting to `./data` there made the very first read fail: seeding writes a
+ * file, `mkdir` returned EACCES, and every page that touches a store rendered
+ * nothing. `/tmp` is writable, but it is per-instance and lost on redeploy or
+ * scale-out — fine for a preview, not persistence. Point `VAACA_DATA_DIR` at a
+ * real volume, or replace this module with a database client, before this
+ * holds anything that matters.
+ */
 export const DATA_DIR = process.env.VAACA_DATA_DIR
   ? path.resolve(process.env.VAACA_DATA_DIR)
-  : path.join(process.cwd(), "data");
+  : process.env.VERCEL
+    ? "/tmp/vaaca-data"
+    : path.join(process.cwd(), "data");
+
+/** A filesystem that will not accept writes, rather than a bug in a mutation. */
+const isUnwritable = (error: unknown) => {
+  const code = (error as NodeJS.ErrnoException | null)?.code;
+  return (
+    code === "EROFS" ||
+    code === "EACCES" ||
+    code === "EPERM" ||
+    code === "ENOSPC"
+  );
+};
+
+/** Raised when the store cannot be written, so callers can say so plainly. */
+export class StoreUnavailableError extends Error {
+  constructor(name: string, cause: unknown) {
+    super(`The data store is read-only; ${name} could not be written.`);
+    this.name = "StoreUnavailableError";
+    this.cause = cause;
+  }
+}
+
+export const isStoreUnavailable = (
+  error: unknown,
+): error is StoreUnavailableError => error instanceof StoreUnavailableError;
 
 const filePath = (name: string) => path.join(DATA_DIR, name);
 
@@ -33,10 +70,15 @@ export async function readStore<T>(name: string, fallback: T): Promise<T> {
 /** Write via a temp file + rename so a crash can't leave a half-written file. */
 async function writeFileAtomic(name: string, value: unknown): Promise<void> {
   const target = filePath(name);
-  await mkdir(path.dirname(target), { recursive: true });
-  const tmp = `${target}.${randomUUID()}.tmp`;
-  await writeFile(tmp, JSON.stringify(value, null, 2), "utf8");
-  await rename(tmp, target);
+  try {
+    await mkdir(path.dirname(target), { recursive: true });
+    const tmp = `${target}.${randomUUID()}.tmp`;
+    await writeFile(tmp, JSON.stringify(value, null, 2), "utf8");
+    await rename(tmp, target);
+  } catch (error) {
+    if (isUnwritable(error)) throw new StoreUnavailableError(name, error);
+    throw error;
+  }
 }
 
 /**
@@ -76,14 +118,26 @@ export async function writeStore<T, R>(
   });
 }
 
-/** Seeds a file on first read, then returns it. */
+/**
+ * Seeds a file on first read, then returns it.
+ *
+ * Reading must never depend on being able to write. If the store cannot be
+ * persisted, the seed is still returned, so a read-only deployment renders its
+ * starting data instead of failing — writes are what should complain, not
+ * reads.
+ */
 export async function readOrSeed<T>(name: string, seed: () => T): Promise<T> {
   const existing = await readStore<T | null>(name, null);
   if (existing !== null) return existing;
 
-  return writeStore<T | null, T>(name, null, async (current) => {
-    if (current !== null) return { next: current, result: current };
-    const value = seed();
-    return { next: value, result: value };
-  });
+  try {
+    return await writeStore<T | null, T>(name, null, async (current) => {
+      if (current !== null) return { next: current, result: current };
+      const value = seed();
+      return { next: value, result: value };
+    });
+  } catch (error) {
+    if (isStoreUnavailable(error)) return seed();
+    throw error;
+  }
 }

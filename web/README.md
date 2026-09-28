@@ -496,6 +496,47 @@ The dashboard reads `?role=` on the server rather than through
 `useSearchParams`. With the client-side read it rendered blank until hydration;
 now it arrives complete, and an unrecognised role falls back to Class A.
 
+## Deploying
+
+The store is JSON files, and a serverless filesystem is read-only apart from
+`/tmp`. That is not a caveat you can leave for later: seeding a store *writes*
+a file, so on Vercel the first read of `documents`, `seats` or `applications`
+failed with `EACCES` and every page touching one rendered nothing.
+
+Two things follow, both now handled:
+
+- **Reading never depends on writing.** If the store cannot be persisted,
+  `readOrSeed` returns the seed anyway, so a read-only deployment renders its
+  starting data. Writes are what complain — they raise
+  `StoreUnavailableError` with the file that could not be written, rather than
+  an opaque `EACCES` stack.
+- **`DATA_DIR` defaults to `/tmp/vaaca-data` on Vercel**, which is writable, so
+  the internal surfaces work. `/tmp` is per-instance and lost on redeploy or
+  scale-out, so this is fine for a preview and is **not** persistence.
+
+```bash
+npm run test:readonly   # every public page must render against an unwritable store
+```
+
+That check exists because the failure returns HTTP 200: a server component that
+throws mid-render streams a shell, so status codes alone report a healthy site.
+
+### Environment
+
+| Variable | Needed | Notes |
+|---|---|---|
+| `SESSION_SECRET` | **Required in production** | 32+ random chars. Sessions throw without it. |
+| `VAACA_DATA_DIR` | Strongly recommended | A persistent volume. Without it, data is ephemeral. |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical origin for sitemap, robots and social cards. |
+| `STAFF_SEED_EMAIL` / `STAFF_SEED_PASSWORD` | First run only | Seeds one staff account, or use `npm run staff:add`. |
+
+Without a seeded staff account there is no way into `/admin`,
+`/operating-system` or `/documents` — the public site works, the internal
+surfaces have no one to let in.
+
+For anything beyond a preview, replace `lib/server/json-store.ts` with a
+database client. Every read and write already goes through it.
+
 ## Before this handles real data
 
 `../project/BACKEND_NOTES.md` is the spec. Two items are load-bearing:
