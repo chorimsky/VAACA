@@ -35,7 +35,11 @@ export default async function AdminPage() {
         return [
           app.id,
           member
-            ? { memberId: member.id, scores: await getScores(member.id) }
+            ? {
+                memberId: member.id,
+                status: member.status,
+                scores: await getScores(member.id),
+              }
             : null,
         ] as const;
       }),

@@ -526,6 +526,54 @@ async function run() {
   }
 
   /* ---------------------------------------------------------------- */
+  section("One country list");
+  // The registration form, the endpoint that validates it, and the chapter
+  // pages were three separately maintained lists. They now derive from one, so
+  // assert the observable consequence: every CEMAC state the API accepts has a
+  // chapter, and vice versa.
+  const CEMAC = [
+    ["Cameroon", "cameroon"],
+    ["Gabon", "gabon"],
+    ["Republic of the Congo", "congo"],
+    ["Chad", "chad"],
+    ["Central African Republic", "car"],
+    ["Equatorial Guinea", "equatorial-guinea"],
+  ];
+  for (const [country, slug] of CEMAC) {
+    const r = await req(
+      "/api/applications",
+      json({
+        name: `List Check ${slug}`,
+        email: `list-${slug}-${uniq}@testbed.cm`,
+        country,
+        classKey: "C",
+        password: "a-long-enough-password",
+      }),
+    );
+    check(`API accepts "${country}"`, r.status, 201);
+    check(
+      `  and /chapters/${slug} exists`,
+      (await req(`/chapters/${slug}`)).status,
+      200,
+    );
+  }
+  check(
+    "a non-CEMAC state is still refused",
+    (
+      await req(
+        "/api/applications",
+        json({
+          name: "Outside Ltd",
+          email: `outside-${uniq}@testbed.cm`,
+          country: "Nigeria",
+          classKey: "C",
+          password: "a-long-enough-password",
+        }),
+      )
+    ).status,
+    400,
+  );
+
   section("Registration validation");
   const bad = [
     [{}, "all fields missing"],
@@ -677,6 +725,67 @@ async function run() {
     (l) => !!l && l.endsWith("/dashboard"),
   );
   check("signed-out /login still renders", (await req("/login")).status, 200);
+
+  section("Member standing");
+  // `memberId` is declared further down, for the scoring section; this block
+  // runs earlier, so take the id from the record already fetched above.
+  const standingId = me.body.member.id;
+  // `suspended` was unreachable: nothing called setMemberStatus, so the only
+  // way in was rejecting an application — which is a different thing, and left
+  // rejected applicants reading "Suspended" on their own dashboard.
+  check(
+    "suspending requires staff",
+    (
+      await req(
+        `/api/members/${standingId}/status`,
+        json({ status: "suspended" }, { method: "PATCH" }),
+      )
+    ).status,
+    401,
+  );
+  const standing = (status) =>
+    json({ status }, { method: "PATCH", headers: { cookie: staff } });
+  check(
+    "invalid standing rejected",
+    (await req(`/api/members/${standingId}/status`, standing("bogus"))).status,
+    400,
+  );
+  check(
+    "unknown member 404s",
+    (await req("/api/members/mem_nope/status", standing("suspended"))).status,
+    404,
+  );
+  const suspended = await req(
+    `/api/members/${standingId}/status`,
+    standing("suspended"),
+  );
+  check("staff can suspend", suspended.body?.member?.status, "suspended");
+  check(
+    "the member sees it",
+    (await req("/api/member/me", withCookie(mem))).body?.member?.status,
+    "suspended",
+  );
+  check(
+    "a later accession decision does not silently clear it",
+    await (async () => {
+      await req(
+        `/api/applications/${appId}`,
+        json(
+          { status: "approved" },
+          { method: "PATCH", headers: { cookie: staff } },
+        ),
+      );
+      return (await req("/api/member/me", withCookie(mem))).body?.member
+        ?.status;
+    })(),
+    "suspended",
+  );
+  check(
+    "reinstating an admitted member returns them to active",
+    (await req(`/api/members/${standingId}/status`, standing("active"))).body
+      ?.member?.status,
+    "active",
+  );
 
   section("Member isolation");
   const other = {

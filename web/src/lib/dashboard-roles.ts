@@ -1,5 +1,5 @@
 import type { Tone } from "@/components/Tag";
-import type { ClassKey } from "./demo-account";
+import type { ClassKey } from "./application-types";
 
 /** Why a quick action isn't live yet — the site is pre-launch throughout. */
 const NO_SECRETARIAT = "Available once the secretariat is appointed.";

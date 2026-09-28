@@ -142,6 +142,11 @@ export class MemberExistsError extends Error {
   }
 }
 
+/**
+ * Suspend or reinstate a member. The `suspended` status BACKEND_NOTES.md
+ * defines was previously unreachable: nothing called this, so the only way to
+ * reach it was by rejecting an application, which is a different thing.
+ */
 export async function setMemberStatus(
   id: string,
   status: MemberStatus,
@@ -161,22 +166,31 @@ export async function setMemberStatus(
   );
 }
 
-/** Keeps member status in step with the accession decision. */
+/**
+ * Keeps member status in step with the accession decision.
+ *
+ * A rejected applicant stays an `applicant` — they were never admitted, so
+ * calling them "Suspended" on their own dashboard was simply wrong. The
+ * rejection lives on the application record, which the dashboard shows
+ * alongside this.
+ *
+ * `suspended` is a separate axis that staff set deliberately (see
+ * `setMemberStatus`), so a suspension is never cleared by an accession
+ * decision arriving afterwards.
+ */
 export async function syncMemberStatusForApplication(
   applicationId: string,
   applicationStatus: string,
 ): Promise<void> {
-  const target: MemberStatus | null =
-    applicationStatus === "approved"
-      ? "active"
-      : applicationStatus === "rejected"
-        ? "suspended"
-        : "applicant";
-  if (!target) return;
+  const target: MemberStatus =
+    applicationStatus === "approved" ? "active" : "applicant";
 
   await writeStore<StoredMember[], void>(MEMBERS, [], async (members) => {
     const index = members.findIndex((m) => m.applicationId === applicationId);
     if (index === -1) return { next: members, result: undefined };
+    if (members[index].status === "suspended") {
+      return { next: members, result: undefined };
+    }
     const next = [...members];
     next[index] = { ...next[index], status: target };
     return { next, result: undefined };

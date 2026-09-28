@@ -1,3 +1,5 @@
+import { CHAPTERS } from "./chapters";
+
 /**
  * The application record shape, shared by the store, the API and the admin UI.
  *
@@ -21,18 +23,39 @@ export const STATUS_LABEL: Record<ApplicationStatus, string> = {
   rejected: "Rejected",
 };
 
-export const CLASS_KEYS = ["A", "B", "C", "D", "E"] as const;
-export type ClassKey = (typeof CLASS_KEYS)[number];
-
-/** CEMAC member states — the only accepted values on an application. */
-export const COUNTRIES = [
-  "Cameroon",
-  "Gabon",
-  "Republic of the Congo",
-  "Chad",
-  "Central African Republic",
-  "Equatorial Guinea",
+/**
+ * The five accession classes from Charter Part 4, with the metadata the
+ * registration form renders. Previously this lived in a separate
+ * `demo-account.ts` alongside a second copy of the country list, so the form
+ * and the endpoint validating it were maintained independently.
+ */
+export const MEMBER_CLASSES = [
+  { key: "A", letter: "A — Operating", who: "VASPs / exchanges" },
+  { key: "B", letter: "B — Adjacent", who: "Banks, PSPs, telcos" },
+  {
+    key: "C",
+    letter: "C — Professional",
+    who: "Individuals (legal, compliance, security)",
+  },
+  { key: "D", letter: "D — Academic", who: "Researchers, universities" },
+  {
+    key: "E",
+    letter: "E — Institutional",
+    who: "Regulators, ministries, partners",
+  },
 ] as const;
+
+export const CLASS_KEYS = MEMBER_CLASSES.map((c) => c.key);
+export type ClassKey = (typeof MEMBER_CLASSES)[number]["key"];
+
+/**
+ * CEMAC member states — the only accepted values on an application.
+ *
+ * Derived from the chapters, which are the single source of truth for the six
+ * states. The form's list and this validator's list were separate arrays that
+ * had to be kept in step by hand.
+ */
+export const COUNTRIES = CHAPTERS.map((c) => c.name);
 
 export type AuditEvent = {
   at: string;

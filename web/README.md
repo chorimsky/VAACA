@@ -332,6 +332,32 @@ Also set globally: `text-wrap: balance` on headings and `pretty` on body copy
 a brand selection colour, and a reduced-motion block that neutralises every
 animation and smooth scroll.
 
+## Membership standing
+
+A member's `status` and their application's status are different things, and
+were previously conflated: rejecting an application set the member to
+`suspended`, so a rejected applicant read **"Suspended"** on their own
+dashboard despite never having been admitted.
+
+- The **application** records the accession decision — submitted, in review,
+  approved, rejected.
+- The **member** records standing — `applicant` until admitted, then `active`,
+  and `suspended` only when staff suspend them.
+
+`suspended` was unreachable before: `setMemberStatus` was exported and never
+called, so the only route to it was a rejection. It is now reached from the
+applications queue (*Suspend member* / *Reinstate member*), and an accession
+decision arriving afterwards will not silently clear a suspension.
+
+### Staff roles
+
+`secretary_general`, `standards_officer` and `council_member` carry identical
+permissions today, deliberately — BACKEND_NOTES.md's matrix has one
+"Secretariat/Council staff" column reading "full" against every internal
+surface. The role is read for display and drives which secretariat posts
+`/institution` reports as appointed. See the note in `lib/staff-roles.ts` for
+where a narrower Council right would go.
+
 ## One definition per fact
 
 Several things were defined more than once and had begun to disagree. Each now
@@ -342,8 +368,14 @@ has a single home, and the pages read from it:
 | The eight domains, their tests, the three gates, the T0–T2 bands | `lib/member-types.ts` | `/standards`, the console, scoring |
 | The nine Council seats | `lib/seat-types.ts` | `/governance`, the seats tracker |
 | The institutional map and engagement posture | `lib/institutions.ts` | `/ecosystem`, the console |
-| The six CEMAC chapters | `lib/chapters.ts` | `/region`, the chapter pages |
+| The six CEMAC chapters, and the countries an application may name | `lib/chapters.ts` | `/region`, the chapter pages, `application-types.ts` |
+| The five accession classes | `lib/application-types.ts` | the registration form, the API, the console |
 | The document library | `documents.json` | `/resources`, `/documents` |
+
+`lib/demo-account.ts` is gone. It held a second copy of the country list and
+the class metadata, and was still named for a localStorage "demo account"
+removed long before — so the registration form and the endpoint validating its
+submissions were maintained as separate arrays.
 
 The drift this had already produced: the public Standards page called D7 "Tech
 & Ops Resilience" while the framework members are actually scored against
@@ -391,7 +423,7 @@ BASE=http://host npm run test:e2e
 ```
 
 `scripts/e2e.mjs` drives a running server over HTTP — no mocks — so middleware,
-route handlers and the store are exercised together. 225 assertions covering
+route handlers and the store are exercised together. 245 assertions covering
 routing and canonical casing, both auth boundaries in both directions, session
 tamper resistance (tampered signature, forged payload, garbage cookie, and each
 audience's cookie against the other's surfaces), registration validation, the

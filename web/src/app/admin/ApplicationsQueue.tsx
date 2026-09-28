@@ -13,16 +13,29 @@ import type { Application, ApplicationStatus } from "@/lib/application-types";
 import {
   DOMAIN_NAME,
   MAX_SCORE,
+  MEMBER_STATUS_LABEL,
   SCORE_STATUS_LABEL,
   totalScore,
+  type MemberStatus,
   type ReadinessScore,
   type ScoreStatus,
 } from "@/lib/member-types";
 
+/** Membership standing, distinct from the accession decision. */
+const MEMBER_STATUS_TONE: Record<MemberStatus, Tone> = {
+  applicant: "blue",
+  active: "green",
+  suspended: "red",
+};
+
 type Counts = Record<ApplicationStatus | "total", number>;
 
 /** The member account and readiness card behind an application, when it has one. */
-type Scorecard = { memberId: string; scores: ReadinessScore[] } | null;
+type Scorecard = {
+  memberId: string;
+  status: MemberStatus;
+  scores: ReadinessScore[];
+} | null;
 
 const SCORE_TONE: Record<ScoreStatus, Tone> = {
   not_started: "neutral",
@@ -256,10 +269,18 @@ export function ApplicationsQueue({
         return;
       }
       const { scores } = (await res.json()) as { scores: ReadinessScore[] };
-      setScorecards((prev) => ({
-        ...prev,
-        [applicationId]: { memberId, scores },
-      }));
+      setScorecards((prev) => {
+        const card = prev[applicationId];
+        return {
+          ...prev,
+          // Keep the member's standing; only the scores changed here.
+          [applicationId]: {
+            memberId,
+            status: card?.status ?? "applicant",
+            scores,
+          },
+        };
+      });
     } catch {
       setError("Could not reach the server.");
     } finally {
@@ -272,6 +293,50 @@ export function ApplicationsQueue({
    * is no mail transport, so the link is shown once for the secretariat to pass
    * on out of band.
    */
+  /**
+   * Suspend or reinstate a member. Separate from the accession decision: that
+   * records whether they were admitted, this whether an admitted member is in
+   * good standing.
+   */
+  const setMemberStanding = async (
+    applicationId: string,
+    memberId: string,
+    status: MemberStatus,
+  ) => {
+    setPendingId(applicationId);
+    setError(null);
+    try {
+      const res = await fetch(`/api/members/${memberId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (res.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        setError(data?.error ?? "That change could not be saved.");
+        return;
+      }
+      const { member } = (await res.json()) as {
+        member: { status: MemberStatus };
+      };
+      setScorecards((prev) => {
+        const card = prev[applicationId];
+        if (!card) return prev;
+        return { ...prev, [applicationId]: { ...card, status: member.status } };
+      });
+    } catch {
+      setError("Could not reach the server.");
+    } finally {
+      setPendingId(null);
+    }
+  };
+
   const issueReset = async (applicationId: string, memberId: string) => {
     setPendingId(applicationId);
     setError(null);
@@ -570,14 +635,41 @@ export function ApplicationsQueue({
                         Members cannot reset their own password — issue a
                         single-use link and pass it on directly.
                       </p>
-                      <button
-                        type="button"
-                        disabled={pendingId === selected.id}
-                        onClick={() => issueReset(selected.id, card.memberId)}
-                        className="mt-2 cursor-pointer rounded-lg border border-line bg-white px-3.5 py-2 text-[12.5px] font-semibold text-navy disabled:cursor-not-allowed"
-                      >
-                        Issue password reset
-                      </button>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <Tag tone={MEMBER_STATUS_TONE[card.status]}>
+                          {MEMBER_STATUS_LABEL[card.status]}
+                        </Tag>
+                        <button
+                          type="button"
+                          disabled={pendingId === selected.id}
+                          onClick={() => issueReset(selected.id, card.memberId)}
+                          className="cursor-pointer rounded-lg border border-line bg-white px-3.5 py-2 text-[12.5px] font-semibold text-navy disabled:cursor-not-allowed"
+                        >
+                          Issue password reset
+                        </button>
+                        <button
+                          type="button"
+                          disabled={pendingId === selected.id}
+                          onClick={() =>
+                            setMemberStanding(
+                              selected.id,
+                              card.memberId,
+                              card.status === "suspended"
+                                ? // Reinstating returns an admitted member to
+                                  // active, and anyone else to applicant.
+                                  selected.status === "approved"
+                                  ? "active"
+                                  : "applicant"
+                                : "suspended",
+                            )
+                          }
+                          className="cursor-pointer rounded-lg border border-line bg-white px-3.5 py-2 text-[12.5px] font-semibold text-navy disabled:cursor-not-allowed"
+                        >
+                          {card.status === "suspended"
+                            ? "Reinstate member"
+                            : "Suspend member"}
+                        </button>
+                      </div>
                       {link && (
                         <div className="mt-2">
                           <code className="block rounded bg-white px-2.5 py-2 font-mono text-[11px] break-all text-navy">

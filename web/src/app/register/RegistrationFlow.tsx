@@ -15,9 +15,9 @@ import { CheckIcon } from "@/components/icons";
 import {
   COUNTRIES,
   MEMBER_CLASSES,
-  isValidEmail,
   type ClassKey,
-} from "@/lib/demo-account";
+} from "@/lib/application-types";
+import { isValidEmail } from "@/lib/validate";
 
 const STEP_LABELS = ["Class", "Details", "Review"];
 
