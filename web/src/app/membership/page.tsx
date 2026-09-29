@@ -119,7 +119,7 @@ export default function MembershipPage() {
 
         <Link
           href={routes.register}
-          className="inline-block rounded-lg bg-[linear-gradient(135deg,#0E2A44,#163A56)] px-[26px] py-3.5 text-[14.5px] font-semibold text-white no-underline transition-colors hover:bg-teal-deep hover:bg-none hover:text-white"
+          className="inline-block rounded-lg bg-[linear-gradient(135deg,#0B4944,#0D554F)] px-[26px] py-3.5 text-[14.5px] font-semibold text-white no-underline transition-colors hover:bg-teal-deep hover:bg-none hover:text-white"
         >
           Start an Application
           <span aria-hidden>↗</span>

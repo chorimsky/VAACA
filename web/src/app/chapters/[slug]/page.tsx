@@ -151,7 +151,7 @@ export default async function ChapterPage({ params }: Params) {
                 {/* Brand teal reaches 5:1 on navy, so it stays here. */}
                 <div
                   className={`mt-1.5 text-[15px] font-bold ${
-                    fact.accent ? "text-teal" : "text-white"
+                    fact.accent ? "text-teal-bright" : "text-white"
                   }`}
                 >
                   {fact.value}

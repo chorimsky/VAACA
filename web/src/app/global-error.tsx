@@ -32,7 +32,7 @@ export default function GlobalError({
             style={{
               height: 3,
               marginBottom: 28,
-              background: "linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C)",
+              background: "linear-gradient(90deg,#0B4944,#CAA228,#CAA228)",
             }}
           />
           <h1
@@ -40,7 +40,7 @@ export default function GlobalError({
               margin: 0,
               fontSize: 26,
               fontWeight: 600,
-              color: "#0E2A44",
+              color: "#0B4944",
             }}
           >
             VAACA is temporarily unavailable.
@@ -61,7 +61,7 @@ export default function GlobalError({
               cursor: "pointer",
               border: "none",
               borderRadius: 8,
-              background: "#0E2A44",
+              background: "#0B4944",
               color: "#fff",
               padding: "13px 26px",
               fontSize: 14.5,

@@ -1,24 +1,39 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   VAACA design tokens — lifted verbatim from the Claude Design bundle.
-   Names follow the role the colour plays in the prototypes, not its hue, so
-   swapping a brand colour later touches one line here instead of 21 pages.
+   VAACA design tokens.
+
+   The palette is the brand mark's: deep green #0B4944 and gold #CAA228,
+   sampled from the artwork. The prototype shipped navy and teal, so the token
+   *names* are historical — `navy` is the brand green and the `teal` family is
+   the gold. They are named for the role each plays, which has not changed:
+
+     navy       the dark brand surface, and heading text on light
+     navy-deep  the deeper surface beneath it (footers, sidebars)
+     navy-grad  the lighter partner in a brand gradient
+     teal       the accent, for fills and decoration on dark only
+     teal-bright accent *text* on a dark surface
+     teal-deep  an accent fill that carries white text
+     teal-ink   accent text on a light surface, and the focus ring
+
+   Every value below is measured, not chosen by eye; the ratios quoted are
+   against the surface each colour actually lands on.
 --------------------------------------------------------------------------- */
 @theme {
-  /* Brand */
-  --color-navy: #0e2a44;
-  --color-navy-deep: #091c30;
-  --color-navy-grad: #163a56;
-  --color-navy-grad-alt: #123350;
-  /* #1aa6b3 is the brand accent. It only reaches 2.9:1 on white, so it is
-     reserved for fills, borders and decoration on dark surfaces; teal *text*
-     and teal buttons on light surfaces use the deeper pair below. */
-  --color-teal: #1aa6b3;
-  --color-teal-bright: #5fe0e0;
-  --color-teal-deep: #0e7a86; /* 5.1:1 on white — teal buttons */
-  --color-teal-ink: #0c6e79; /* 6.0:1 on white — teal text */
-  --color-gold: #b5730c;
+  /* Brand — deep green */
+  --color-navy: #0b4944; /* 10.2:1 with white, 9.8:1 as text on canvas */
+  --color-navy-deep: #083733; /* 13.1:1 with white */
+  --color-navy-grad: #0d554f; /* 8.6:1 with white */
+  --color-navy-grad-alt: #0c524c; /* 9.0:1 with white */
+
+  /* Brand — gold. #caa228 is the mark's gold: 4.3:1 on the brand green, so it
+     carries fills, borders and decoration, but not small text. Gold text and
+     gold buttons use the variants beneath it. */
+  --color-teal: #caa228;
+  --color-teal-bright: #e4ca79; /* 5.4:1 worst case on the dark surfaces */
+  --color-teal-deep: #866b1b; /* 5.1:1 with white — gold buttons */
+  --color-teal-ink: #7c6319; /* 5.5:1 on canvas, 4.6:1 on the hero wash */
+  --color-gold: #caa228;
   --color-green: #1f7a4d;
   --color-blue: #1d6fa5;
 
@@ -33,18 +48,19 @@
   --color-body: #33393e;
   --color-body-soft: #4b545a;
   --color-body-softer: #5b6672;
-  /* The hero lays a 10% gold and a 10% teal radial wash over the canvas,
-     which darkens the effective background to rgb(243,236,224). #656e77
-     measured 4.96:1 on bare canvas but only 4.43:1 there — this clears
-     4.5:1 against the washed surface too. */
-  --color-muted: #636c75;
+  /* The hero lays a 10% gold and a 10% brand-green radial wash over the
+     canvas. The green wash is the darker of the two — rgb(226,232,230) — so
+     it, not the canvas, sets the floor: this clears 4.5:1 there. */
+  --color-muted: #606972;
 
-  /* On-dark */
-  --color-on-dark: #b9c4ce;
-  --color-on-dark-soft: #8ca0ae;
-  --color-on-dark-faint: #7c8d99; /* was #5c6b75 — 3.1:1 on navy-deep */
-  --color-on-dark-card: #aebbc5;
-  --color-on-dark-mute: #a9b7c2;
+  /* On-dark. A green-neutral ramp: the previous blue-greys were tuned against
+     navy and fell to 2.5–4.4:1 once the surfaces became green. Each step
+     clears 4.5:1 on all four dark surfaces, the dimmest included. */
+  --color-on-dark: #d9dedd; /* 6.4:1 worst case */
+  --color-on-dark-card: #ced5d4; /* 5.8:1 */
+  --color-on-dark-mute: #c8d0cf; /* 5.5:1 */
+  --color-on-dark-soft: #c3cbca; /* 5.2:1 */
+  --color-on-dark-faint: #bdc6c5; /* 5.0:1 */
 
   /* Status tints */
   --color-tint-green: #eff6f1;
@@ -52,7 +68,7 @@
   --color-tint-blue: #eaf3fb;
   --color-tint-red: #fbe2de;
   --color-red: #a8322a; /* was #c0392b — 4.4:1 on its own tint */
-  --color-gold-ink: #8a5709; /* gold text on tint-gold; #b5730c is 3.3:1 there */
+  --color-gold-ink: #7d6519; /* 4.8:1 on tint-gold */
 
   /* Document-review palette — the Founding Document System page runs a
      warmer, greener variant of the brand and shares no surface colours
@@ -163,10 +179,10 @@
   background-image:
     radial-gradient(
       circle at 18% 20%,
-      rgb(181 115 12 / 0.1) 0,
+      rgb(202 162 40 / 0.1) 0,
       transparent 42%
     ),
-    radial-gradient(circle at 82% 78%, rgb(26 166 179 / 0.1) 0, transparent 46%);
+    radial-gradient(circle at 82% 78%, rgb(11 73 68 / 0.1) 0, transparent 46%);
 }
 
 @keyframes vaaca-fade-in {

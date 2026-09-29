@@ -5,7 +5,7 @@ import type { NavKey } from "@/lib/routes";
 /** The tricolour hairline that opens every page. */
 export function TopRule() {
   return (
-    <div className="h-[3px] bg-[linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C)]" />
+    <div className="h-[3px] bg-[linear-gradient(90deg,#0B4944,#CAA228,#CAA228)]" />
   );
 }
 
@@ -47,8 +47,9 @@ export function Container({
 /**
  * The mono, letterspaced section label above each heading.
  *
- * `tone="teal"` is only used on navy sections, where brand teal reaches 5:1.
- * On light surfaces the green tone is the accessible one.
+ * `tone="teal"` is the accent tone, used only on dark sections. It renders in
+ * `teal-bright` rather than the brand gold itself: the gold reaches 4.3:1 on
+ * the brand green, which carries a fill but not 11px text.
  */
 export function Eyebrow({
   children,
@@ -60,7 +61,7 @@ export function Eyebrow({
   return (
     <div
       className={`mb-2.5 font-mono text-[11px] tracking-[0.14em] uppercase ${
-        tone === "teal" ? "text-teal" : "text-green"
+        tone === "teal" ? "text-teal-bright" : "text-green"
       }`}
     >
       {children}

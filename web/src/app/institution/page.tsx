@@ -104,7 +104,7 @@ export default async function InstitutionPage() {
         </h1>
       </Container>
 
-      <div className="bg-[linear-gradient(160deg,#0E2A44_0%,#0E2A44_60%,#123350_100%)] px-8 pt-12 pb-[68px]">
+      <div className="bg-[linear-gradient(160deg,#0B4944_0%,#0B4944_60%,#0C524C_100%)] px-8 pt-12 pb-[68px]">
         <div className="mx-auto grid max-w-[1180px] grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
           {PILLARS.map((pillar) => (
             <div

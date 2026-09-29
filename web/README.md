@@ -262,12 +262,55 @@ Vercel's project URL and then to `localhost`.
 Both directories need to be writable and persistent — neither survives a
 serverless filesystem.
 
+## The mark
+
+`components/Logo.tsx` draws the VAACA mark: a pointy-top hexagon with a node at
+each vertex, a V whose arms meet at a filled node, and a rule beneath it.
+Geometry is measured from the artwork — circumradius 30 in a 64 viewBox, side
+nodes at ±R/2, the V's arms converging at 37° from vertical.
+
+Two deliberate departures from the artwork, both about size:
+
+- **Stroke weights are heavier.** The artwork is 1280px wide with an 11px
+  hexagon outline — a hairline that disappears entirely at the 24–36px the mark
+  renders at in a header.
+- **The rule is dropped below 28px**, where it lands within a pixel of the
+  hexagon's lower edge and the two merge into a smudge.
+
+The V is white in the artwork, which is drawn on the brand green. On a light
+surface that would vanish, so `tone="light"` renders it in the brand green
+instead; the bars pass the tone that matches the surface they are on.
+`app/icon.svg` is the same mark on a green tile, minus the rule.
+
 ## Design system
 
 Tokens live in `src/app/globals.css` under Tailwind's `@theme`. Several were
 adjusted after measuring every rendered text node against WCAG AA — the
 prototype's palette was built for looks, and a number of pairings came in under
 4.5:1:
+
+### The palette is the mark's
+
+Deep green `#0B4944` and gold `#CAA228`, sampled from the artwork. The
+prototype shipped navy and teal, so the token *names* are historical — `navy`
+holds the brand green and the `teal` family holds the gold. They are named for
+the role each plays, which has not changed; `globals.css` documents the
+mapping. Renaming them is a separate mechanical pass over ~270 call sites.
+
+Recolouring broke pairings that had been tuned against navy, all caught by the
+contrast audit and fixed:
+
+- **The on-dark greys were blue.** On green surfaces they fell to 2.5–4.4:1.
+  They are now a green-neutral ramp, five steps, each clearing 4.5:1 on all
+  four dark surfaces.
+- **The gradient partners were too light** (`#106A63` at 6.4:1 with white),
+  which pulled every grey above it. Darkened, so the ramp keeps its hierarchy
+  instead of washing out to near-white.
+- **Gold is not a text colour on green** — `#CAA228` reaches 4.3:1 there, which
+  carries a fill but not 11px type. The accent `Eyebrow` and the chapter fact
+  strip render in `teal-bright` instead.
+- **The hero's second wash became green**, which is darker than the teal it
+  replaced, so `muted` and `teal-ink` were nudged down to clear 4.5:1 on it.
 
 | Token | Was | Now | Why |
 |---|---|---|---|

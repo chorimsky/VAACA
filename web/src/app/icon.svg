@@ -1,15 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
-  <rect width="40" height="40" rx="8" fill="#FAFAF8"/>
-  <circle cx="20" cy="20" r="18.5" stroke="#B5730C" stroke-width="1" opacity="0.4" fill="none"/>
-  <g stroke="#1AA6B3" stroke-width="1.6">
-    <line x1="20" y1="20" x2="8" y2="8"/>
-    <line x1="20" y1="20" x2="32" y2="8"/>
-    <line x1="20" y1="20" x2="8" y2="32"/>
-    <line x1="20" y1="20" x2="32" y2="32"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- The mark on its brand green, as the artwork draws it. The rule beneath
+       the V is omitted: at favicon sizes a 2px line aliases into noise. -->
+  <rect width="64" height="64" rx="13" fill="#0B4944"/>
+  <path d="M 32 9 L 51.9 20.5 L 51.9 43.5 L 32 55 L 12.1 43.5 L 12.1 20.5 Z"
+        fill="none" stroke="#CAA228" stroke-width="2.6" stroke-linejoin="round"/>
+  <g fill="#CAA228">
+    <circle cx="32" cy="9" r="3.4"/>
+    <circle cx="51.9" cy="20.5" r="3.4"/>
+    <circle cx="51.9" cy="43.5" r="3.4"/>
+    <circle cx="32" cy="55" r="3.4"/>
+    <circle cx="12.1" cy="43.5" r="3.4"/>
+    <circle cx="12.1" cy="20.5" r="3.4"/>
   </g>
-  <circle cx="20" cy="20" r="5.5" fill="#0E2A44"/>
-  <circle cx="8" cy="8" r="3" fill="#B5730C"/>
-  <circle cx="32" cy="8" r="3" fill="#1AA6B3"/>
-  <circle cx="8" cy="32" r="3" fill="#1AA6B3"/>
-  <circle cx="32" cy="32" r="3" fill="#B5730C"/>
+  <path d="M 21.7 23.5 L 32 38 L 42.3 23.5" fill="none" stroke="#FFFFFF"
+        stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="32" cy="38" r="4.4" fill="#CAA228"/>
 </svg>

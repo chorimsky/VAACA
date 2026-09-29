@@ -76,7 +76,7 @@ export default function HomePage() {
           <div className="mt-[30px] flex flex-wrap gap-3.5">
             <Link
               href={routes.institution}
-              className="rounded-lg bg-[linear-gradient(135deg,#0E2A44,#163A56)] px-[26px] py-3.5 text-[14.5px] font-semibold text-white no-underline shadow-[0_10px_24px_-10px_rgba(14,42,68,0.5)] transition-colors hover:bg-teal-deep hover:bg-none hover:text-white hover:shadow-[0_10px_24px_-10px_rgba(26,166,179,0.55)]"
+              className="rounded-lg bg-[linear-gradient(135deg,#0B4944,#0D554F)] px-[26px] py-3.5 text-[14.5px] font-semibold text-white no-underline shadow-[0_10px_24px_-10px_rgba(14,42,68,0.5)] transition-colors hover:bg-teal-deep hover:bg-none hover:text-white hover:shadow-[0_10px_24px_-10px_rgba(26,166,179,0.55)]"
             >
               Explore the Institution
             </Link>

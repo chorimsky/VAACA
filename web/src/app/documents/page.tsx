@@ -60,7 +60,7 @@ const overviewStats = (documents: { total: number; published: number }) => [
   {
     label: "Documents in the library",
     value: String(documents.total),
-    bg: "bg-[linear-gradient(150deg,#0E2A44,#091C30)]",
+    bg: "bg-[linear-gradient(150deg,#0B4944,#083733)]",
     note: `${documents.published} publicly listed`,
   },
   {
@@ -72,7 +72,7 @@ const overviewStats = (documents: { total: number; published: number }) => [
   {
     label: "Evidence tags logged (V·I·P)",
     value: String(totalTags().v + totalTags().i + totalTags().p),
-    bg: "bg-[linear-gradient(155deg,#0E7A86,#0B5A63)]",
+    bg: "bg-[linear-gradient(155deg,#866B1B,#6C5715)]",
     note: `${totalTags().v} verified · ${totalTags().i} interpretation · ${totalTags().p} proposal`,
   },
 ];
@@ -210,7 +210,7 @@ export default async function DocumentsPage() {
       <div className="mx-auto flex max-w-[1180px] flex-wrap items-start justify-between gap-6 px-8 pt-7 pb-6">
         <div className="flex items-center gap-4">
           <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-xl bg-navy-deep">
-            <LogoMark size={32} />
+            <LogoMark size={32} tone="dark" />
           </div>
           <div>
             {/* The page's own heading, rather than the organisation's name —

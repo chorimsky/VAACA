@@ -27,60 +27,44 @@ export default function OpengraphImage() {
           left: 0,
           right: 0,
           height: 10,
-          background: "linear-gradient(90deg,#0E2A44,#1AA6B3,#B5730C)",
+          background: "linear-gradient(90deg,#0B4944,#CAA228,#CAA228)",
         }}
       />
 
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-        <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-          <circle
-            cx="20"
-            cy="20"
-            r="18.5"
-            stroke="#B5730C"
-            strokeWidth="1"
-            opacity="0.4"
+        <svg width="72" height="72" viewBox="0 0 64 64" fill="none">
+          <path
+            d="M 32 2 L 57.98 17 L 57.98 47 L 32 62 L 6.02 47 L 6.02 17 Z"
+            stroke="#CAA228"
+            strokeWidth="2.2"
+            strokeLinejoin="round"
           />
+          <circle cx="32" cy="2" r="3.2" fill="#CAA228" />
+          <circle cx="57.98" cy="17" r="3.2" fill="#CAA228" />
+          <circle cx="57.98" cy="47" r="3.2" fill="#CAA228" />
+          <circle cx="32" cy="62" r="3.2" fill="#CAA228" />
+          <circle cx="6.02" cy="47" r="3.2" fill="#CAA228" />
+          <circle cx="6.02" cy="17" r="3.2" fill="#CAA228" />
+          <path
+            d="M 16 19.8 L 32 41.2 L 48 19.8"
+            stroke="#0B4944"
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle cx="32" cy="41.2" r="4.8" fill="#CAA228" />
           <line
-            x1="20"
-            y1="20"
-            x2="8"
-            y2="8"
-            stroke="#1AA6B3"
-            strokeWidth="1.6"
+            x1="18.6"
+            y1="49"
+            x2="45.4"
+            y2="49"
+            stroke="#CAA228"
+            strokeWidth="1.9"
+            strokeLinecap="round"
           />
-          <line
-            x1="20"
-            y1="20"
-            x2="32"
-            y2="8"
-            stroke="#1AA6B3"
-            strokeWidth="1.6"
-          />
-          <line
-            x1="20"
-            y1="20"
-            x2="8"
-            y2="32"
-            stroke="#1AA6B3"
-            strokeWidth="1.6"
-          />
-          <line
-            x1="20"
-            y1="20"
-            x2="32"
-            y2="32"
-            stroke="#1AA6B3"
-            strokeWidth="1.6"
-          />
-          <circle cx="20" cy="20" r="5.5" fill="#0E2A44" />
-          <circle cx="8" cy="8" r="3" fill="#B5730C" />
-          <circle cx="32" cy="8" r="3" fill="#1AA6B3" />
-          <circle cx="8" cy="32" r="3" fill="#1AA6B3" />
-          <circle cx="32" cy="32" r="3" fill="#B5730C" />
         </svg>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 34, fontWeight: 700, color: "#0E2A44" }}>
+          <div style={{ fontSize: 34, fontWeight: 700, color: "#0B4944" }}>
             VAACA
           </div>
           <div style={{ fontSize: 19, color: "#6B7680" }}>
@@ -95,7 +79,7 @@ export default function OpengraphImage() {
           fontSize: 58,
           lineHeight: 1.15,
           fontWeight: 600,
-          color: "#0E2A44",
+          color: "#0B4944",
           maxWidth: 940,
         }}
       >

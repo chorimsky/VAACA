@@ -107,7 +107,7 @@ export function DashboardBar({
           href={titleHref}
           className="flex shrink-0 items-center gap-2.5 no-underline"
         >
-          <LogoMark size={30} />
+          <LogoMark size={30} tone={tone === "navy" ? "dark" : "light"} />
           <b className={`text-[14.5px] ${t.title}`}>{title}</b>
         </Link>
 

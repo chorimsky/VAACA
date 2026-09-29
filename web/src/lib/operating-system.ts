@@ -140,7 +140,7 @@ export const overviewStats = (c: OverviewCounts) => [
     label: "Applications received",
     value: String(c.applications),
     note: `${c.pendingApplications} awaiting a decision`,
-    bg: "bg-[linear-gradient(150deg,#0E2A44,#091C30)]",
+    bg: "bg-[linear-gradient(150deg,#0B4944,#083733)]",
   },
   {
     label: "Founding seats filled",
@@ -152,7 +152,7 @@ export const overviewStats = (c: OverviewCounts) => [
     label: "CEMAC states onboarded",
     value: `${c.statesOnboarded} / 6`,
     note: `${c.members} member account(s)`,
-    bg: "bg-[linear-gradient(155deg,#0E7A86,#0B5A63)]",
+    bg: "bg-[linear-gradient(155deg,#866B1B,#6C5715)]",
   },
 ];
 

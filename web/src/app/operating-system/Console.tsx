@@ -65,7 +65,7 @@ export function OperatingSystemConsole({
       <div className="flex shrink-0 flex-col bg-navy text-[#F4F8EC] lg:sticky lg:top-0 lg:h-screen lg:w-[230px] lg:px-3.5 lg:py-5">
         <div className="flex items-center gap-2.5 px-4 pt-4 pb-3 lg:px-2 lg:pt-1 lg:pb-[22px]">
           <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-navy-deep">
-            <LogoMark size={24} />
+            <LogoMark size={24} tone="dark" />
           </div>
           <div className="leading-[1.25]">
             <b className="block text-[14px]">VAACA</b>

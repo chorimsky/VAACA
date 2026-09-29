@@ -1,34 +1,93 @@
 import Link from "next/link";
 import { routes } from "@/lib/routes";
 
-/** The radiating-node mark, redrawn from the prototype SVG. */
-export function LogoMark({ size = 36 }: { size?: number }) {
+/**
+ * The VAACA mark: a pointy-top hexagon with a node at each vertex, a V whose
+ * arms meet at a filled node, and a rule beneath it.
+ *
+ * Geometry is measured from the supplied artwork — hexagon circumradius 30 in
+ * a 64 viewBox, side nodes at ±R/2, the V's arms converging on the centre node
+ * at 37° from vertical, the rule at 0.57R below centre.
+ *
+ * Stroke weights are the one deliberate departure. The artwork is 1280px wide
+ * with an 11px hexagon outline — a hairline that disappears entirely by the
+ * 28–36px this renders at in a header. The weights below are scaled up so the
+ * mark still reads as itself at that size.
+ */
+
+const GOLD = "#CAA228";
+
+/** Hexagon vertices, clockwise from the top, for centre (32,32) and R = 30. */
+const NODES: [number, number][] = [
+  [32, 2],
+  [57.98, 17],
+  [57.98, 47],
+  [32, 62],
+  [6.02, 47],
+  [6.02, 17],
+];
+
+const HEX_PATH = `M ${NODES.map(([x, y]) => `${x} ${y}`).join(" L ")} Z`;
+
+export function LogoMark({
+  size = 36,
+  tone = "light",
+}: {
+  size?: number;
+  /**
+   * Which surface the mark sits on. The V is white in the artwork, which is
+   * drawn on the brand green — on a light surface it would vanish, so it takes
+   * the brand green instead.
+   */
+  tone?: "light" | "dark";
+}) {
+  const vee = tone === "dark" ? "#FFFFFF" : "#0B4944";
+  // Below ~28px the rule beneath the V lands within a pixel of the hexagon's
+  // lower edge and the two merge into a smudge. The mark reads better without
+  // it at that size, so it is dropped rather than drawn illegibly.
+  const showRule = size >= 28;
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden>
-      <circle
-        cx="20"
-        cy="20"
-        r="18.5"
-        stroke="#B5730C"
-        strokeWidth="1"
-        opacity="0.4"
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden
+      role="presentation"
+    >
+      <path
+        d={HEX_PATH}
+        stroke={GOLD}
+        strokeWidth="2.2"
+        strokeLinejoin="round"
+        fill="none"
       />
-      <line x1="20" y1="20" x2="8" y2="8" stroke="#1AA6B3" strokeWidth="1.6" />
-      <line x1="20" y1="20" x2="32" y2="8" stroke="#1AA6B3" strokeWidth="1.6" />
-      <line x1="20" y1="20" x2="8" y2="32" stroke="#1AA6B3" strokeWidth="1.6" />
-      <line
-        x1="20"
-        y1="20"
-        x2="32"
-        y2="32"
-        stroke="#1AA6B3"
-        strokeWidth="1.6"
+      {NODES.map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="3.2" fill={GOLD} />
+      ))}
+
+      {/* The V, drawn before the centre node so the node caps the junction. */}
+      <path
+        d="M 16 19.8 L 32 41.2 L 48 19.8"
+        stroke={vee}
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
-      <circle cx="20" cy="20" r="5.5" fill="#0E2A44" />
-      <circle cx="8" cy="8" r="3" fill="#B5730C" />
-      <circle cx="32" cy="8" r="3" fill="#1AA6B3" />
-      <circle cx="8" cy="32" r="3" fill="#1AA6B3" />
-      <circle cx="32" cy="32" r="3" fill="#B5730C" />
+      <circle cx="32" cy="41.2" r="4.8" fill={GOLD} />
+
+      {showRule ? (
+        <line
+          x1="18.6"
+          y1="49"
+          x2="45.4"
+          y2="49"
+          stroke={GOLD}
+          strokeWidth="1.9"
+          strokeLinecap="round"
+        />
+      ) : null}
     </svg>
   );
 }

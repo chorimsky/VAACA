@@ -33,13 +33,13 @@ export function HeroGraphic({ className = "" }: { className?: string }) {
 
       <defs>
         <linearGradient id="vaaca-hero-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#0E2A44" />
-          <stop offset="60%" stopColor="#0E2A44" />
-          <stop offset="100%" stopColor="#123350" />
+          <stop offset="0%" stopColor="#0B4944" />
+          <stop offset="60%" stopColor="#0B4944" />
+          <stop offset="100%" stopColor="#0C524C" />
         </linearGradient>
         <radialGradient id="vaaca-hero-glow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0%" stopColor="#1AA6B3" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="#1AA6B3" stopOpacity="0" />
+          <stop offset="0%" stopColor="#CAA228" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#CAA228" stopOpacity="0" />
         </radialGradient>
       </defs>
 
@@ -82,9 +82,9 @@ export function HeroGraphic({ className = "" }: { className?: string }) {
             <path
               key={state.code}
               d={state.path}
-              fill={hub ? "#1AA6B3" : "#FFFFFF"}
+              fill={hub ? "#CAA228" : "#FFFFFF"}
               fillOpacity={hub ? 0.9 : 0.08}
-              stroke={hub ? "#5FE0E0" : "#FFFFFF"}
+              stroke={hub ? "#E4CA79" : "#FFFFFF"}
               strokeOpacity={hub ? 0.9 : 0.22}
               strokeWidth={hub ? 8 : 5}
               strokeLinejoin="round"
@@ -93,7 +93,7 @@ export function HeroGraphic({ className = "" }: { className?: string }) {
         })}
 
         {/* Spokes back to the founding chapter — the mark's motif at region scale. */}
-        <g stroke="#5FE0E0" strokeOpacity="0.55" strokeWidth="5">
+        <g stroke="#E4CA79" strokeOpacity="0.55" strokeWidth="5">
           {SPOKES.map((state) => (
             <line
               key={`spoke-${state.code}`}
@@ -111,12 +111,12 @@ export function HeroGraphic({ className = "" }: { className?: string }) {
             cx={state.centroid[0]}
             cy={state.centroid[1]}
             r={13}
-            fill="#B5730C"
+            fill="#CAA228"
           />
         ))}
 
         <circle cx={HUB[0]} cy={HUB[1]} r={26} fill="#FAFAF8" />
-        <circle cx={HUB[0]} cy={HUB[1]} r={14} fill="#0E2A44" />
+        <circle cx={HUB[0]} cy={HUB[1]} r={14} fill="#0B4944" />
       </g>
     </svg>
   );
