@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { TopRule } from "./Shell";
+import { TopRule } from "./TopRule";
 
 /**
  * Chrome for the standalone portal screens (login, registration): rule, a
@@ -10,12 +10,15 @@ export function AuthShell({
   asideText,
   asideLinkLabel,
   asideHref,
+  footer,
   align = "center",
   children,
 }: {
   asideText: string;
   asideLinkLabel: string;
   asideHref: string;
+  /** Already translated by the caller. */
+  footer: string;
   align?: "center" | "start";
   children: React.ReactNode;
 }) {
@@ -43,7 +46,7 @@ export function AuthShell({
       </main>
 
       <div className="px-8 py-5 text-center text-[12px] text-muted">
-        VAACA · Virtual Assets Association of Central Africa · In Formation
+        {footer}
       </div>
     </div>
   );

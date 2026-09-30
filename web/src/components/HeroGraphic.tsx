@@ -17,19 +17,23 @@ const OFFSET_Y = 55;
  * as the VAACA mark. It is deliberately a diagram, not a stand-in for
  * photography — swap it for real imagery whenever that exists.
  */
-export function HeroGraphic({ className = "" }: { className?: string }) {
+export function HeroGraphic({
+  className = "",
+  title,
+}: {
+  className?: string;
+  /** Accessible description, already translated by the caller. */
+  title: string;
+}) {
   return (
     <svg
       viewBox="0 0 1000 510"
       className={className}
       role="img"
-      aria-label="The six CEMAC member states, connected to Cameroon's founding chapter"
+      aria-label={title}
       preserveAspectRatio="xMidYMid slice"
     >
-      <title>
-        The six CEMAC member states, connected to Cameroon&apos;s founding
-        chapter
-      </title>
+      <title>{title}</title>
 
       <defs>
         <linearGradient id="vaaca-hero-bg" x1="0" y1="0" x2="1" y2="1">

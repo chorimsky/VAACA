@@ -5,22 +5,33 @@ import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { routes, type NavKey } from "@/lib/routes";
 import { MenuIcon } from "@/components/icons";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { localePath, type Locale } from "@/lib/i18n/locale";
 
-const PRIMARY: { key: NavKey; label: string; href: string }[] = [
-  { key: "institution", label: "Institution", href: routes.institution },
-  { key: "standards", label: "Standards", href: routes.standards },
-  { key: "ecosystem", label: "Ecosystem", href: routes.ecosystem },
-  { key: "membership", label: "Membership", href: routes.membership },
-  { key: "governance", label: "Governance", href: routes.governance },
-  { key: "region", label: "Region", href: routes.region },
+const PRIMARY: { key: NavKey; href: string }[] = [
+  { key: "institution", href: routes.institution },
+  { key: "standards", href: routes.standards },
+  { key: "ecosystem", href: routes.ecosystem },
+  { key: "membership", href: routes.membership },
+  { key: "governance", href: routes.governance },
+  { key: "region", href: routes.region },
 ];
 
-const SECONDARY = [
-  { label: "Resources", href: routes.resources },
-  { label: "Login", href: routes.login },
-];
-
-export function Nav({ active }: { active?: NavKey }) {
+export function Nav({
+  active,
+  locale,
+  t,
+}: {
+  active?: NavKey;
+  locale: Locale;
+  t: Dictionary;
+}) {
+  const href = (to: string) => localePath(locale, to);
+  const SECONDARY = [
+    { label: t.nav.resources, href: href(routes.resources) },
+    { label: t.nav.login, href: href(routes.login) },
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -52,7 +63,7 @@ export function Nav({ active }: { active?: NavKey }) {
             return (
               <Link
                 key={item.key}
-                href={item.href}
+                href={href(item.href)}
                 aria-current={on ? "page" : undefined}
                 className={`border-b-2 pb-1 no-underline hover:text-teal-ink ${
                   on
@@ -60,7 +71,7 @@ export function Nav({ active }: { active?: NavKey }) {
                     : "border-transparent font-medium text-body"
                 }`}
               >
-                {item.label}
+                {t.nav.primary[item.key]}
               </Link>
             );
           })}
@@ -74,16 +85,17 @@ export function Nav({ active }: { active?: NavKey }) {
             </Link>
           ))}
           <Link
-            href={routes.register}
+            href={href(routes.register)}
             className="rounded-md bg-navy px-4 py-[9px] font-semibold text-white no-underline hover:bg-teal-deep hover:text-white"
           >
-            Join the Association
+            {t.nav.join}
           </Link>
+          <LanguageSwitcher locale={locale} label={t.language.label} />
         </nav>
 
         <button
           type="button"
-          aria-label="Toggle menu"
+          aria-label={t.nav.toggleMenu}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
           className="flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-lg border border-line bg-white p-0 text-navy nav:hidden"
@@ -94,9 +106,19 @@ export function Nav({ active }: { active?: NavKey }) {
 
       {open && (
         <div className="flex flex-col gap-0.5 border-t border-line px-5 pt-2 pb-4 nav:hidden">
-          {[...PRIMARY, ...SECONDARY].map((item) => (
+          {PRIMARY.map((item) => (
             <Link
-              key={item.label}
+              key={item.key}
+              href={href(item.href)}
+              onClick={() => setOpen(false)}
+              className="px-1 py-2.5 text-[14px] font-medium text-body no-underline"
+            >
+              {t.nav.primary[item.key]}
+            </Link>
+          ))}
+          {SECONDARY.map((item) => (
+            <Link
+              key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
               className="px-1 py-2.5 text-[14px] font-medium text-body no-underline"
@@ -105,12 +127,15 @@ export function Nav({ active }: { active?: NavKey }) {
             </Link>
           ))}
           <Link
-            href={routes.register}
+            href={href(routes.register)}
             onClick={() => setOpen(false)}
             className="mt-2 rounded-md bg-navy px-3.5 py-2.5 text-center font-semibold text-white no-underline"
           >
-            Join the Association
+            {t.nav.join}
           </Link>
+          <div className="mt-3 flex justify-center">
+            <LanguageSwitcher locale={locale} label={t.language.label} />
+          </div>
         </div>
       )}
     </div>

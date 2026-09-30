@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
-import { TopRule } from "@/components/Shell";
+import { TopRule } from "@/components/TopRule";
 import { routes } from "@/lib/routes";
 
 export const metadata: Metadata = { title: "Page not found" };

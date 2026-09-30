@@ -5,6 +5,7 @@ import { getMember, getScores } from "@/lib/server/members";
 import { getApplication } from "@/lib/server/store";
 import { STATUS_LABEL } from "@/lib/application-types";
 import { Dashboard } from "./Dashboard";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Member Dashboard",
@@ -31,8 +32,12 @@ export default async function DashboardPage() {
     member.applicationId ? getApplication(member.applicationId) : null,
   ]);
 
+  const { locale, t } = await getTranslations();
+
   return (
     <Dashboard
+      locale={locale}
+      languageLabel={t.language.label}
       member={member}
       scores={scores}
       application={

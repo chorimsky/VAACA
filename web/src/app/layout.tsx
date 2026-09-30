@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { getLocale } from "@/lib/i18n/server";
+import { dictionary } from "@/lib/i18n/dictionaries";
+import { LOCALE_TAG } from "@/lib/i18n/locale";
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
@@ -33,7 +36,14 @@ export const metadata: Metadata = {
     "COSUMAF",
     "COBAC",
   ],
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    // No `languages` here on purpose. Layout metadata is static, so a link tag
+    // declared at this level would claim the *homepage's* alternates on every
+    // page — a wrong signal is worse than none. The per-URL alternates in
+    // `sitemap.ts` are correct for each page, and hreflang in a sitemap is
+    // equivalent to hreflang in the head.
+  },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
@@ -55,11 +65,17 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Middleware puts the locale on the request; the document has to declare it
+  // so assistive technology reads French with a French voice, and so browsers
+  // offer the right translation prompt.
+  const locale = await getLocale();
+  const t = dictionary(locale);
+
   return (
-    <html lang="en">
+    <html lang={LOCALE_TAG[locale]}>
       <head>
         {/* General Sans ships from Fontshare, which next/font/google can't
             reach — so it stays a plain stylesheet link, as in the prototypes. */}
@@ -79,7 +95,7 @@ export default function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-navy focus:px-4 focus:py-2.5 focus:text-[14px] focus:font-semibold focus:text-white"
         >
-          Skip to content
+          {t.nav.skipToContent}
         </a>
         {children}
       </body>

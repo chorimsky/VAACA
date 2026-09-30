@@ -10,7 +10,8 @@
     "staff:add": "node scripts/staff.mjs add",
     "staff:list": "node scripts/staff.mjs list",
     "test:e2e": "node scripts/e2e.mjs",
-    "test:readonly": "node scripts/readonly-check.mjs"
+    "test:readonly": "node scripts/readonly-check.mjs",
+    "i18n:coverage": "node scripts/i18n-coverage.mjs"
   },
   "dependencies": {
     "next": "16.3.6",

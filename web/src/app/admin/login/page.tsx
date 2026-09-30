@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getStaffSession } from "@/lib/server/auth";
 import { staffCount } from "@/lib/server/store";
 import { StaffLoginForm } from "./StaffLoginForm";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Secretariat Sign-in",
@@ -30,5 +31,15 @@ export default async function StaffLoginPage({
   // than letting someone guess at credentials that do not exist.
   const provisioned = (await staffCount()) > 0;
 
-  return <StaffLoginForm provisioned={provisioned} destination={destination} />;
+  const { locale, t } = await getTranslations();
+
+  return (
+    <StaffLoginForm
+      provisioned={provisioned}
+      destination={destination}
+      locale={locale}
+      t={t.auth}
+      backLabel={t.nav.backToVaaca}
+    />
+  );
 }

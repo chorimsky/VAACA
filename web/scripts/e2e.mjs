@@ -204,6 +204,137 @@ async function run() {
     true,
   );
 
+  section("Languages");
+  const PUBLIC_PAGES = [
+    "/",
+    "/institution",
+    "/standards",
+    "/ecosystem",
+    "/membership",
+    "/governance",
+    "/region",
+    "/resources",
+  ];
+  const lang = (html) => (html ?? "").match(/<html lang="([a-z-]+)"/)?.[1];
+
+  for (const page of PUBLIC_PAGES) {
+    const en = await req(page);
+    check(`${page} is English at the root`, lang(en.body), "en");
+    const fr = await req(page === "/" ? "/fr" : `/fr${page}`);
+    check(`  /fr${page === "/" ? "" : page} serves French`, fr.status, 200);
+    check(`  …and declares lang="fr"`, lang(fr.body), "fr");
+  }
+
+  // Every existing URL still resolves: the French prefix is additive.
+  check("English URLs are unchanged", (await req("/standards")).status, 200);
+  check(
+    "an unknown prefix is not a locale",
+    (await req("/de/standards")).status,
+    404,
+  );
+  check(
+    "an unknown page 404s in French too",
+    (await req("/fr/no-such-page")).status,
+    404,
+  );
+  check(
+    "an unknown chapter 404s in French too",
+    (await req("/fr/chapters/nope")).status,
+    404,
+  );
+
+  section("Language selection");
+  const frBrowser = await req("/", {
+    headers: { "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.5" },
+  });
+  check("a French browser is sent to /fr", frBrowser.status, 307);
+  check(
+    "  …at the root only",
+    frBrowser.location,
+    (l) => !!l && l.endsWith("/fr"),
+  );
+  check(
+    "an English browser stays put",
+    (await req("/", { headers: { "Accept-Language": "en-GB,en;q=0.9" } }))
+      .status,
+    200,
+  );
+  check(
+    "a deep English link is never redirected",
+    (
+      await req("/standards", {
+        headers: { "Accept-Language": "fr-FR,fr;q=0.9" },
+      })
+    ).status,
+    200,
+  );
+  const frVisit = await req("/fr/standards");
+  check(
+    "visiting French remembers the choice",
+    (frVisit.setCookie ?? "").includes("vaaca_locale=fr"),
+    true,
+  );
+  check(
+    "and the cookie sends the root back to French",
+    (await req("/", { headers: { cookie: "vaaca_locale=fr" } })).location,
+    (l) => !!l && l.endsWith("/fr"),
+  );
+
+  section("Language switching");
+  const frHome = (await req("/fr")).body ?? "";
+  check(
+    "the switcher offers both languages",
+    /Fran\u00e7ais/.test(frHome) && /English/.test(frHome),
+    true,
+  );
+  check(
+    "French nav is translated",
+    /Gouvernance/.test(frHome) && /Adh\u00e9sion/.test(frHome),
+    true,
+  );
+  check(
+    "English nav is not",
+    /Gouvernance/.test((await req("/")).body ?? ""),
+    false,
+  );
+  // hreflang is declared per URL in the sitemap, where it can name the right
+  // counterpart for each page. A static tag in the layout would claim the
+  // homepage's alternates on every page, which is a worse signal than none.
+  const map = await req("/sitemap.xml");
+  check(
+    "the sitemap lists French URLs",
+    (map.body ?? "").includes("/fr/standards"),
+    true,
+  );
+  check(
+    "each sitemap entry names its counterpart",
+    /hreflang="fr"/i.test(map.body ?? "") &&
+      /hreflang="en"/i.test(map.body ?? ""),
+    true,
+  );
+  check(
+    "no page claims the homepage's alternates",
+    /hreflang/i.test((await req("/standards")).body ?? ""),
+    false,
+  );
+
+  section("Locale survives the gates");
+  check(
+    "/fr/admin bounces to the French login",
+    (await req("/fr/admin")).location,
+    (l) => !!l && l.endsWith("/fr/admin/login"),
+  );
+  check(
+    "/fr/dashboard bounces to the French login",
+    (await req("/fr/dashboard")).location,
+    (l) => !!l && l.endsWith("/fr/login"),
+  );
+  check(
+    "  …remembering the French destination",
+    (await req("/fr/operating-system")).location,
+    (l) => !!l && l.includes("next=%2Ffr%2Foperating-system"),
+  );
+
   section("Site metadata");
   check("robots.txt", (await req("/robots.txt")).status, 200);
   check("sitemap.xml", (await req("/sitemap.xml")).status, 200);

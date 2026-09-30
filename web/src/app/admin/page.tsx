@@ -4,6 +4,7 @@ import { getStaffSession } from "@/lib/server/auth";
 import { countByStatus, listApplications } from "@/lib/server/store";
 import { findMemberByEmail, getScores } from "@/lib/server/members";
 import { ApplicationsQueue } from "./ApplicationsQueue";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Secretariat Admin",
@@ -46,8 +47,12 @@ export default async function AdminPage() {
     ),
   );
 
+  const { locale, t } = await getTranslations();
+
   return (
     <ApplicationsQueue
+      locale={locale}
+      languageLabel={t.language.label}
       staffEmail={session.email}
       staffRole={session.role}
       initialApplications={applications}

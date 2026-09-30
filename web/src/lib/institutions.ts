@@ -15,7 +15,19 @@ import type { Evidence } from "./evidence";
 export type InstitutionPosture =
   "Engage first" | "Engage early" | "Monitor" | "Inform";
 
+export type InstitutionKey =
+  | "COSUMAF"
+  | "CNEF"
+  | "MINFI"
+  | "ANIF"
+  | "COBAC"
+  | "BEAC"
+  | "GABAC"
+  | "MINPOSTEL"
+  | "DGI";
+
 export type Institution = {
+  key: InstitutionKey;
   name: string;
   desc: string;
   posture: string;
@@ -25,6 +37,7 @@ export type Institution = {
 
 export const INSTITUTIONS: Institution[] = [
   {
+    key: "COSUMAF",
     name: "COSUMAF",
     desc: "CEMAC regional capital-markets regulator.",
     posture:
@@ -33,6 +46,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "V",
   },
   {
+    key: "CNEF",
     name: "CNEF",
     desc: "National Economic and Financial Committee — regulates the relationship between financial consumers and credit, payment, microfinance and insurance institutions.",
     posture:
@@ -41,6 +55,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "I",
   },
   {
+    key: "MINFI",
     name: "MINFI",
     desc: "Cameroon's Ministry of Finance.",
     posture:
@@ -49,6 +64,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "P",
   },
   {
+    key: "ANIF",
     name: "ANIF",
     desc: "Cameroon's financial-intelligence unit (AML/CFT reporting).",
     posture:
@@ -57,6 +73,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "I",
   },
   {
+    key: "COBAC",
     name: "COBAC",
     desc: "CEMAC regional banking-supervision commission.",
     posture:
@@ -65,6 +82,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "P",
   },
   {
+    key: "BEAC",
     name: "BEAC",
     desc: "Central Bank of Central African States — monetary authority.",
     posture:
@@ -73,6 +91,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "P",
   },
   {
+    key: "GABAC",
     name: "GABAC",
     desc: "CEMAC regional AML/CFT body.",
     posture: "Standards-setting counterpart for the AML/CFT domain (D2).",
@@ -80,6 +99,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "I",
   },
   {
+    key: "MINPOSTEL",
     name: "MINPOSTEL / ANTIC / ART",
     desc: "Cameroon's telecom, cybersecurity and postal regulators.",
     posture: "Relevant to custody/tech-resilience domain (D3, D7) only.",
@@ -87,6 +107,7 @@ export const INSTITUTIONS: Institution[] = [
     tag: "P",
   },
   {
+    key: "DGI",
     name: "DGI",
     desc: "Cameroon's Directorate General of Taxation.",
     posture:

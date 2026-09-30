@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { DashboardBar } from "@/components/DashboardBar";
-import { Card } from "@/components/Shell";
+import type { Locale } from "@/lib/i18n/locale";
+import { Card } from "@/components/primitives";
 import { Tag, type Tone } from "@/components/Tag";
 import { routes } from "@/lib/routes";
 import type { ApplicationStatus } from "@/lib/application-types";
@@ -62,10 +63,14 @@ const fmtDate = (iso: string) =>
  * another one's view.
  */
 export function Dashboard({
+  locale,
+  languageLabel,
   member,
   scores,
   application,
 }: {
+  locale: Locale;
+  languageLabel: string;
   member: Member;
   scores: ReadinessScore[];
   application: ApplicationView | null;
@@ -82,6 +87,8 @@ export function Dashboard({
     <div className="min-h-screen bg-canvas text-body">
       <DashboardBar
         audience="member"
+        locale={locale}
+        languageLabel={languageLabel}
         title="VAACA Member Dashboard"
         identity={member.email}
         // A member could not previously reach the framework they are scored

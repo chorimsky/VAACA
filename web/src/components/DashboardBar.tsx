@@ -6,6 +6,8 @@ import { useState } from "react";
 
 import { LogoMark } from "@/components/Logo";
 import { routes } from "@/lib/routes";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import type { Locale } from "@/lib/i18n/locale";
 import type { BarLink } from "@/lib/dashboard-links";
 
 /**
@@ -89,8 +91,13 @@ export function DashboardBar({
   badges,
   identity,
   links = [],
+  locale,
+  languageLabel,
 }: {
   audience: "member" | "staff";
+  locale: Locale;
+  /** Accessible name for the switcher, already translated. */
+  languageLabel: string;
   tone?: keyof typeof TONE;
   title: string;
   titleHref?: string;
@@ -133,6 +140,12 @@ export function DashboardBar({
           ) : null}
 
           {badges}
+
+          <LanguageSwitcher
+            locale={locale}
+            tone={tone === "navy" ? "dark" : "light"}
+            label={languageLabel}
+          />
 
           {/* Truncated rather than hidden on small screens: `display:none` would
               take "who am I" out of the accessibility tree too, and that

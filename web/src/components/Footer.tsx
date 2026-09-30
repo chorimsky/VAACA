@@ -1,40 +1,43 @@
 import Link from "next/link";
 import { routes } from "@/lib/routes";
+import { getTranslations } from "@/lib/i18n/server";
 
-const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
-  [
+export async function Footer() {
+  const { t, path } = await getTranslations();
+  const f = t.footer;
+
+  const COLUMNS = [
     {
-      heading: "Institution",
+      heading: f.headings.institution,
       links: [
-        { label: "The Institution", href: routes.institution },
-        { label: "Founders", href: routes.founders },
-        { label: "Governance", href: routes.governance },
-        { label: "Secretariat", href: routes.secretariat },
+        { label: f.links.theInstitution, href: routes.institution },
+        { label: f.links.founders, href: routes.founders },
+        { label: f.links.governance, href: routes.governance },
+        { label: f.links.secretariat, href: routes.secretariat },
       ],
     },
     {
-      heading: "Programs",
+      heading: f.headings.programs,
       links: [
-        { label: "Standards", href: routes.standards },
-        { label: "Ecosystem", href: routes.ecosystem },
-        { label: "Membership", href: routes.membership },
-        { label: "Region", href: routes.region },
+        { label: f.links.standards, href: routes.standards },
+        { label: f.links.ecosystem, href: routes.ecosystem },
+        { label: f.links.membership, href: routes.membership },
+        { label: f.links.region, href: routes.region },
       ],
     },
     {
-      heading: "Access",
+      heading: f.headings.access,
       links: [
-        { label: "Join / Register", href: routes.register },
-        { label: "Member Login", href: routes.login },
-        { label: "Resources", href: routes.resources },
+        { label: f.links.register, href: routes.register },
+        { label: f.links.memberLogin, href: routes.login },
+        { label: f.links.resources, href: routes.resources },
         // Both internal surfaces sit behind the same sign-in, so the public
         // footer offers the door rather than two locked rooms.
-        { label: "Secretariat sign-in", href: "/admin/login" },
+        { label: f.links.staffLogin, href: "/admin/login" },
       ],
     },
   ];
 
-export function Footer() {
   return (
     <footer className="bg-navy-deep px-8 pt-[52px] pb-6 text-on-dark">
       <div className="mx-auto max-w-[1180px]">
@@ -44,9 +47,7 @@ export function Footer() {
               VAACA
             </div>
             <div className="mt-2 max-w-[240px] text-[12px] leading-[1.6] text-on-dark-soft">
-              Virtual Assets Association of Central Africa — a regional
-              institution, in formation, headquartered from its Cameroon
-              founding chapter.
+              {f.blurb}
             </div>
           </div>
 
@@ -61,7 +62,7 @@ export function Footer() {
               {col.links.map((link) => (
                 <Link
                   key={link.label}
-                  href={link.href}
+                  href={path(link.href)}
                   className="-my-0.5 py-1 text-on-dark no-underline hover:text-teal-bright"
                 >
                   {link.label}
@@ -72,14 +73,8 @@ export function Footer() {
         </div>
 
         <div className="flex flex-wrap justify-between gap-5 pt-[18px] text-[12px] text-on-dark-soft">
-          <div>
-            VAACA · Virtual Assets Association of Central Africa · In Formation
-          </div>
-          <div className="max-w-[520px] md:text-right">
-            Founding coalition: Info Pro Solutions · Ejara · Blockchain
-            Association of Cameroon · IAFN — rattached to CFIA during the
-            founding phase
-          </div>
+          <div>{f.tagline}</div>
+          <div className="max-w-[520px] md:text-right">{f.coalition}</div>
         </div>
 
         <div className="pt-4">
@@ -87,7 +82,7 @@ export function Footer() {
             href="#top"
             className="inline-block py-1 text-[12px] text-on-dark-faint no-underline hover:text-teal-bright"
           >
-            <span aria-hidden>↑</span> Back to top
+            <span aria-hidden>↑</span> {t.nav.backToTop}
           </a>
         </div>
       </div>

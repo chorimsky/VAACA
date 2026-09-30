@@ -4,70 +4,13 @@ import { Tag } from "@/components/Tag";
 import { NetworkIcon, ShieldIcon, StandardsIcon } from "@/components/icons";
 import { filledStaffRoles } from "@/lib/server/store";
 import { ROLE_LABEL, type StaffRole } from "@/lib/staff-roles";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "The Institution",
   description:
     "Why VAACA exists, its four founding organizations, the secretariat it still needs, and the launch seminar in Yaoundé.",
 };
-
-const PILLARS = [
-  {
-    n: "01",
-    title: "Trust",
-    body: "Governance, transparency and conflict-of-interest rules built into the Charter from the first draft.",
-    Icon: ShieldIcon,
-  },
-  {
-    n: "02",
-    title: "Standards",
-    body: "The PSAN Regulatory Readiness Framework — gates, domains and evidence thresholds regulators can rely on.",
-    Icon: StandardsIcon,
-  },
-  {
-    n: "03",
-    title: "Connectivity",
-    body: "One chapter model, built to replicate across all six CEMAC states under a single institutional architecture.",
-    Icon: NetworkIcon,
-  },
-];
-
-const FOUNDERS = [
-  {
-    name: "Info Pro Solutions",
-    role: "RegTech — compliance and reporting infrastructure",
-  },
-  {
-    name: "Ejara",
-    role: "Licensed operator — regulated digital asset access",
-  },
-  {
-    name: "Blockchain Association of Cameroon",
-    role: "National industry association",
-  },
-  {
-    name: "IAFN — African Institute of Digital Finance",
-    role: "Technical secretariat and evidence base",
-  },
-];
-
-/**
- * The two posts Charter Part 6 requires. Whether each is appointed is read
- * from the provisioned staff accounts rather than asserted here.
- */
-const SECRETARIAT: { role: StaffRole; vacant: string; filled: string }[] = [
-  {
-    role: "secretary_general",
-    vacant: "Not yet appointed — required before the Charter can be ratified.",
-    filled: "Appointed. The Charter can proceed to ratification.",
-  },
-  {
-    role: "standards_officer",
-    vacant:
-      "Not yet appointed — owns Readiness Framework scoring once domains are live.",
-    filled: "Appointed. Owns Readiness Framework scoring.",
-  },
-];
 
 /**
  * The launch seminar. Dated so the page can tell the reader whether it is still
@@ -83,24 +26,47 @@ const SEMINAR = {
 const seminarState = (today: Date) => {
   const end = new Date(`${SEMINAR.end}T23:59:59Z`);
   const start = new Date(`${SEMINAR.start}T00:00:00Z`);
-  if (today > end) return { label: "Held", tone: "neutral" as const };
-  if (today >= start) return { label: "In session", tone: "green" as const };
-  return { label: "Confirmed", tone: "green" as const };
+  if (today > end) return { key: "held" as const, tone: "neutral" as const };
+  if (today >= start)
+    return { key: "inSession" as const, tone: "green" as const };
+  return { key: "confirmed" as const, tone: "green" as const };
 };
 
 export const dynamic = "force-dynamic";
 
 export default async function InstitutionPage() {
+  const { t } = await getTranslations();
+  const i = t.institution;
   const appointed = await filledStaffRoles();
   const seminar = seminarState(new Date());
+
+  const PILLARS = [
+    { n: "01", ...i.pillars.trust, Icon: ShieldIcon },
+    { n: "02", ...i.pillars.standards, Icon: StandardsIcon },
+    { n: "03", ...i.pillars.connectivity, Icon: NetworkIcon },
+  ];
+
+  const FOUNDERS = [
+    { name: "Info Pro Solutions", role: i.founders.infoPro },
+    { name: "Ejara", role: i.founders.ejara },
+    { name: "Blockchain Association of Cameroon", role: i.founders.bac },
+    {
+      name: "IAFN — African Institute of Digital Finance",
+      role: i.founders.iafn,
+    },
+  ];
+
+  const SECRETARIAT: { role: StaffRole; vacant: string; filled: string }[] = [
+    { role: "secretary_general", ...i.posts.secretaryGeneral },
+    { role: "standards_officer", ...i.posts.standardsOfficer },
+  ];
 
   return (
     <Shell active="institution">
       <Container className="pt-14 pb-6">
-        <Eyebrow>The Institution</Eyebrow>
+        <Eyebrow>{t.nav.primary.institution}</Eyebrow>
         <h1 className="m-0 max-w-[820px] font-serif text-[38px] leading-[1.28] font-semibold tracking-[-0.01em] text-navy">
-          VAACA exists to organize, professionalize, standardize and connect
-          Central Africa&apos;s virtual-asset ecosystem — not to run it.
+          {i.title}
         </h1>
       </Container>
 
@@ -132,16 +98,12 @@ export default async function InstitutionPage() {
 
       <Container className="pt-16">
         <div id="founders" className="scroll-mt-24">
-          <Eyebrow>Founders</Eyebrow>
+          <Eyebrow>{i.foundersEyebrow}</Eyebrow>
           <h2 className="m-0 mb-3.5 max-w-[760px] font-serif text-[26px] leading-[1.4] font-semibold text-navy">
-            Constituted by four organizations. Anchored, not improvised.
+            {i.foundersTitle}
           </h2>
           <p className="mb-[26px] max-w-[760px] text-[13.5px] leading-[1.6] text-body-soft">
-            During its founding phase, VAACA is rattached as an auxiliary organ
-            to the Cameroon Fintech Association (CFIA) — an established national
-            anchor rather than institutional legitimacy built from nothing.
-            VAACA commits to an autonomous regional constitution once national
-            chapters exist in at least three CEMAC member states.
+            {i.foundersNote}
           </p>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
             {FOUNDERS.map((founder) => (
@@ -163,10 +125,9 @@ export default async function InstitutionPage() {
         className="mt-16 scroll-mt-24 bg-canvas-alt px-8 py-16"
       >
         <div className="mx-auto max-w-[1180px]">
-          <Eyebrow>Secretariat</Eyebrow>
+          <Eyebrow>{i.secretariatEyebrow}</Eyebrow>
           <h2 className="m-0 mb-[26px] max-w-[720px] text-[24px] leading-[1.4] font-semibold text-navy">
-            The operating capacity every founding document assumes is already
-            running.
+            {i.secretariatTitle}
           </h2>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
             {SECRETARIAT.map((post) => {
@@ -178,7 +139,7 @@ export default async function InstitutionPage() {
                       {ROLE_LABEL[post.role]}
                     </div>
                     <Tag tone={isFilled ? "green" : "gold"}>
-                      {isFilled ? "Appointed" : "Vacant"}
+                      {isFilled ? i.appointed : i.vacant}
                     </Tag>
                   </div>
                   <div className="mt-1.5 text-[12.5px] leading-[1.5] text-muted">
@@ -192,30 +153,28 @@ export default async function InstitutionPage() {
       </div>
 
       <Container className="py-16">
-        <Eyebrow>Events</Eyebrow>
+        <Eyebrow>{i.eventsEyebrow}</Eyebrow>
         <h2 className="m-0 mb-[26px] max-w-[720px] text-[24px] leading-[1.4] font-semibold text-navy">
-          The launch seminar is the first VAACA convening.
+          {i.eventsTitle}
         </h2>
         <Card className="flex flex-wrap items-center justify-between gap-5 rounded-[14px] p-6">
           <div>
             <div className="text-[16px] font-bold text-navy">
-              Institutional Launch Seminar — under ministerial patronage
+              {i.seminarName}
             </div>
             <div className="mt-1.5 text-[13px] text-muted">
               {SEMINAR.venue} ·{" "}
-              <time dateTime={SEMINAR.start}>September 29–30, 2026</time>
+              <time dateTime={SEMINAR.start}>{i.seminarDates}</time>
             </div>
             <div className="mt-1.5 text-[12.5px] leading-[1.5] text-muted">
-              Day one convenes CEMAC regulators on convergence and standards;
-              VAACA&apos;s mandate, founding members and CFIA affiliation are
-              presented on day two.
+              {i.seminarBody}
             </div>
           </div>
           <Tag
             tone={seminar.tone}
             className="px-3.5 py-1.5 tracking-[0.04em] uppercase"
           >
-            {seminar.label}
+            {i.seminarState[seminar.key]}
           </Tag>
         </Card>
       </Container>

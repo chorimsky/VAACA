@@ -6,6 +6,7 @@ import { Tag } from "@/components/Tag";
 import { routes } from "@/lib/routes";
 import { DocumentIcon, DownloadIcon } from "@/components/icons";
 import { listPublicDocuments } from "@/lib/server/documents";
+import { getTranslations } from "@/lib/i18n/server";
 import type { PublicDocument } from "@/lib/document-types";
 
 export const metadata: Metadata = {
@@ -14,17 +15,32 @@ export const metadata: Metadata = {
     "VAACA founding documents, standards drafts and briefings. Items marked as working drafts are circulated for comment, not final positions.",
 };
 
-function DocBody({ doc }: { doc: PublicDocument }) {
+function DocBody({
+  doc,
+  t,
+}: {
+  doc: PublicDocument;
+  t: {
+    documents: Record<string, { title: string; description: string }>;
+    unavailable: Record<string, string>;
+    generatedOnRequest: string;
+  };
+}) {
+  // A document added after this dictionary was written falls back to whatever
+  // the store holds, rather than rendering an empty label.
+  const copy = t.documents[doc.id];
+  const title = copy?.title ?? doc.title;
+  const description = copy?.description ?? doc.description;
   return (
     <>
       <span className="flex min-w-0 items-center gap-3.5">
         <DocumentIcon size="md" className="text-teal-ink" />
         <span className="min-w-0">
           <span className="block text-[14.5px] font-bold text-navy">
-            {doc.title}
+            {title}
           </span>
           <span className="mt-[3px] block text-[12.5px] text-muted">
-            {doc.description}
+            {description}
           </span>
           {/* The reason a document cannot be downloaded is content, not a
               tooltip: `title` never reaches a keyboard or touch user. */}
@@ -58,6 +74,8 @@ function DocBody({ doc }: { doc: PublicDocument }) {
 export const dynamic = "force-dynamic";
 
 export default async function ResourcesPage() {
+  const { t, path } = await getTranslations();
+  const r = t.resources;
   const documents = await listPublicDocuments();
 
   return (
@@ -67,10 +85,10 @@ export default async function ResourcesPage() {
       <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-center justify-between gap-4 px-8 py-5">
         <Logo />
         <Link
-          href={routes.home}
+          href={path(routes.home)}
           className="text-[13.5px] font-semibold text-navy no-underline"
         >
-          <span aria-hidden>←</span> Back to VAACA
+          <span aria-hidden>←</span> {t.nav.backToVaaca}
         </Link>
       </div>
 
@@ -78,13 +96,12 @@ export default async function ResourcesPage() {
         id="main-content"
         className="vaaca-fade-in mx-auto w-full max-w-[1180px] flex-1 px-8 pt-6 pb-16"
       >
-        <Eyebrow>Resources</Eyebrow>
+        <Eyebrow>{t.nav.resources}</Eyebrow>
         <h1 className="m-0 mb-3 font-serif text-[32px] font-semibold text-navy">
-          Documents &amp; Library
+          {r.title}
         </h1>
         <p className="mb-9 max-w-[620px] text-[14.5px] leading-[1.6] text-body-soft">
-          Founding documents, standards drafts and briefings. Draft-status items
-          are circulated for comment, not final positions.
+          {r.lede}
         </p>
 
         <ul className="m-0 flex list-none flex-col gap-3.5 p-0">
@@ -95,13 +112,13 @@ export default async function ResourcesPage() {
                   href={doc.href}
                   className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-white px-[22px] py-[18px] no-underline transition-shadow duration-150 hover:border-teal hover:shadow-[0_8px_20px_-14px_rgba(14,42,68,.35)]"
                 >
-                  <DocBody doc={doc} />
+                  <DocBody doc={doc} t={r} />
                 </a>
               ) : (
                 // No file yet: render the same row without link affordance, and
                 // say why rather than leaving a dead click.
                 <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-white px-[22px] py-[18px]">
-                  <DocBody doc={doc} />
+                  <DocBody doc={doc} t={r} />
                 </div>
               )}
             </li>
@@ -109,13 +126,12 @@ export default async function ResourcesPage() {
         </ul>
 
         <p className="mt-8 max-w-[620px] text-[12.5px] leading-[1.6] text-muted">
-          Documents marked “Not yet published” are drafted but not circulated.
-          Contact the secretariat for access.
+          {r.footnote}
         </p>
       </main>
 
       <div className="px-8 py-5 text-center text-[12px] text-muted">
-        VAACA · Virtual Assets Association of Central Africa · In Formation
+        {t.auth.footer}
       </div>
     </div>
   );

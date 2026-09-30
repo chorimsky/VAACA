@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "@/lib/i18n/server";
+import { fill } from "@/lib/i18n/dictionaries";
 import { Logo } from "@/components/Logo";
 import { Card, Container, Eyebrow, TopRule } from "@/components/Shell";
 import { CemacMap } from "@/components/CemacMap";
 import { routes } from "@/lib/routes";
-import {
-  CARRIES_OVER,
-  CHAPTERS,
-  SHARED_REGULATORS,
-  getChapter,
-} from "@/lib/chapters";
+import { CHAPTERS, SHARED_REGULATORS, getChapter } from "@/lib/chapters";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -38,7 +35,44 @@ export default async function ChapterPage({ params }: Params) {
   const chapter = getChapter((await params).slug);
   if (!chapter) notFound();
 
+  const { t, path } = await getTranslations();
+  const c = t.chapters;
+  const slug = chapter.slug as keyof typeof c.names;
+  const page = c[slug as keyof typeof c] as {
+    badge: string;
+    lede: string;
+    localScope: string;
+    contextHeading: string;
+    points: Record<string, string>;
+    stepsHeading?: string;
+    steps?: Record<string, { title: string; body: string }>;
+    charterStep?: string;
+    ctaHeading?: string;
+    ctaBody?: string;
+    ctaLabel?: string;
+    gridStatus?: string;
+  };
+  const name = c.names[slug].full;
+
   const founding = chapter.kind === "founding";
+
+  // Pending chapters share the same three accession steps, with only the
+  // Charter step differing; the founding chapter has its own sequence.
+  const steps = page.steps
+    ? Object.values(page.steps)
+    : [
+        c.accessionSteps.convenor,
+        { title: c.accessionSteps.charter.title, body: page.charterStep ?? "" },
+        c.accessionSteps.intake,
+      ];
+  const stepsHeading =
+    page.stepsHeading ?? fill(c.stepsHeadingPending, { name });
+  const cta = {
+    heading: page.ctaHeading ?? fill(c.ctaHeading, { name }),
+    body: page.ctaBody ?? c.ctaBody,
+    label: page.ctaLabel ?? c.ctaLabel,
+    href: chapter.cta.href,
+  };
 
   const badgeClass =
     chapter.badgeTone === "green"
@@ -46,10 +80,10 @@ export default async function ChapterPage({ params }: Params) {
       : "bg-tint-gold text-gold-ink";
 
   const facts = [
-    { label: "National FIU", value: chapter.fiu, accent: false },
-    { label: "Working language", value: chapter.language, accent: false },
-    { label: "Shared regulators", value: SHARED_REGULATORS, accent: false },
-    { label: "Accession status", value: chapter.accessionStatus, accent: true },
+    { label: c.labels.fiu, value: chapter.fiu, accent: false },
+    { label: c.labels.language, value: c.languages[slug], accent: false },
+    { label: c.labels.regulators, value: SHARED_REGULATORS, accent: false },
+    { label: c.labels.accession, value: page.badge, accent: true },
   ];
 
   return (
@@ -61,16 +95,16 @@ export default async function ChapterPage({ params }: Params) {
         <Logo />
         <div className="flex flex-wrap items-center gap-6 text-[13.5px] font-medium">
           <Link
-            href={routes.region}
+            href={path(routes.region)}
             className="-my-1 py-1 text-body no-underline hover:text-teal-ink"
           >
-            All Chapters
+            {c.labels.allChapters}
           </Link>
           <Link
-            href={routes.membership}
+            href={path(routes.membership)}
             className="rounded-md bg-navy px-4 py-[9px] font-semibold text-white no-underline hover:bg-teal-deep hover:text-white"
           >
-            Membership
+            {t.nav.primary.membership}
           </Link>
         </div>
       </div>
@@ -79,14 +113,14 @@ export default async function ChapterPage({ params }: Params) {
       <div className="border-y border-line bg-canvas-alt">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-2.5 px-8 py-3.5">
           <span className="mr-1 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">
-            CEMAC Chapters
+            {c.eyebrowChapter}
           </span>
-          {CHAPTERS.map((c) => {
-            const on = c.slug === chapter.slug;
+          {CHAPTERS.map((other) => {
+            const on = other.slug === chapter.slug;
             return (
               <Link
-                key={c.slug}
-                href={routes.chapter(c.slug)}
+                key={other.slug}
+                href={path(routes.chapter(other.slug))}
                 aria-current={on ? "page" : undefined}
                 className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold no-underline ${
                   on
@@ -94,7 +128,7 @@ export default async function ChapterPage({ params }: Params) {
                     : "border-line bg-white text-body hover:border-teal hover:text-teal-ink"
                 }`}
               >
-                {c.shortName}
+                {c.names[other.slug as keyof typeof c.names].short}
               </Link>
             );
           })}
@@ -109,16 +143,16 @@ export default async function ChapterPage({ params }: Params) {
               <div
                 className={`mb-[22px] inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11.5px] font-semibold tracking-[0.04em] uppercase ${badgeClass}`}
               >
-                {chapter.badge}
+                {page.badge}
               </div>
               <div className="mb-2.5 text-[15px] font-semibold tracking-[0.02em] text-teal-ink">
-                {chapter.eyebrow}
+                {founding ? c.eyebrowFounding : c.eyebrowChapter}
               </div>
               <h1 className="m-0 max-w-[700px] font-serif text-[40px] leading-[1.16] font-semibold tracking-[-0.01em] text-navy">
-                VAACA — {chapter.name}
+                VAACA — {name}
               </h1>
               <p className="mt-5 max-w-[640px] text-[15.5px] leading-[1.65] text-body-soft">
-                {chapter.lede}
+                {page.lede}
               </p>
             </div>
 
@@ -128,7 +162,7 @@ export default async function ChapterPage({ params }: Params) {
                 highlight={chapter.code}
                 theme="light"
                 className="mx-auto h-[240px] w-full"
-                title={`${chapter.name} within the six CEMAC member states`}
+                title={fill(c.labels.mapTitle, { name })}
               />
               <div className="mt-3 text-center text-[11.5px] text-muted">
                 {chapter.name} within CEMAC
@@ -163,21 +197,17 @@ export default async function ChapterPage({ params }: Params) {
 
         {/* FEDERATION MODEL */}
         <Container className="py-14">
-          <Eyebrow>Federation Model</Eyebrow>
+          <Eyebrow>{c.labels.federationModel}</Eyebrow>
           <h2 className="m-0 mb-[30px] max-w-[700px] font-serif text-[24px] leading-[1.4] font-semibold text-navy">
-            {founding
-              ? "What this chapter defines, and what each other chapter keeps local."
-              : "What replicates from the Cameroon chapter, and what stays local."}
+            {founding ? c.labels.definesFounding : c.labels.definesPending}
           </h2>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5">
             <Card className="rounded-[14px] p-6">
               <div className="mb-3 text-[15px] font-bold text-navy">
-                {founding
-                  ? "Replicates to every chapter"
-                  : "Carries over unchanged"}
+                {founding ? c.labels.replicates : c.labels.carriesOver}
               </div>
               <ul className="m-0 list-none p-0 text-[13.5px] leading-[1.9] text-body-soft">
-                {CARRIES_OVER.map((item) => (
+                {Object.values(c.carriesOver).map((item) => (
                   <li key={item}>— {item}</li>
                 ))}
               </ul>
@@ -187,7 +217,7 @@ export default async function ChapterPage({ params }: Params) {
                 Local to {chapter.name}
               </div>
               <div className="text-[13.5px] leading-[1.9] text-body-soft">
-                {chapter.localScope}
+                {page.localScope}
               </div>
             </div>
           </div>
@@ -196,12 +226,14 @@ export default async function ChapterPage({ params }: Params) {
         {/* CONTEXT */}
         <div className="bg-canvas-alt px-8 py-14">
           <div className="mx-auto max-w-[1180px]">
-            <Eyebrow>{founding ? "Chapter Status" : "Market Context"}</Eyebrow>
+            <Eyebrow>
+              {founding ? c.labels.chapterStatus : c.labels.marketContext}
+            </Eyebrow>
             <h2 className="m-0 mb-[26px] max-w-[700px] font-serif text-[24px] leading-[1.4] font-semibold text-navy">
-              {chapter.contextHeading}
+              {page.contextHeading}
             </h2>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
-              {chapter.contextPoints.map((point) => (
+              {Object.values(page.points).map((point) => (
                 <Card
                   key={point}
                   className="px-5 py-[18px] text-[13.5px] leading-[1.6] text-body-soft"
@@ -216,16 +248,16 @@ export default async function ChapterPage({ params }: Params) {
         {/* NEXT STEPS */}
         <Container className="py-14">
           <Eyebrow>
-            {founding ? "Sequence to Ratification" : "Path to Accession"}
+            {founding ? c.labels.sequence : c.labels.pathToAccession}
           </Eyebrow>
           <h2 className="m-0 mb-[26px] max-w-[700px] font-serif text-[24px] leading-[1.4] font-semibold text-navy">
-            {chapter.stepsHeading}
+            {stepsHeading}
           </h2>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3.5">
-            {chapter.steps.map((step) => (
-              <Card key={step.n} className="p-[18px]">
+            {steps.map((step, index) => (
+              <Card key={step.title} className="p-[18px]">
                 <div className="font-mono text-[10.5px] text-muted">
-                  {step.n}
+                  {String(index + 1).padStart(2, "0")}
                 </div>
                 <div className="mt-1 text-[14px] font-bold text-navy">
                   {step.title}
@@ -242,16 +274,16 @@ export default async function ChapterPage({ params }: Params) {
         <div className="bg-navy px-8 py-14 text-center">
           <div className="mx-auto max-w-[640px]">
             <div className="mb-3.5 text-[22px] font-semibold text-white">
-              {chapter.cta.heading}
+              {cta.heading}
             </div>
             <div className="mb-[26px] text-[14px] leading-[1.6] text-on-dark">
-              {chapter.cta.body}
+              {cta.body}
             </div>
             <Link
-              href={chapter.cta.href}
+              href={path(cta.href)}
               className="inline-block rounded-lg bg-teal-deep px-[26px] py-[13px] text-[14px] font-semibold text-white no-underline transition-colors hover:bg-green hover:text-white"
             >
-              {chapter.cta.label}
+              {cta.label}
             </Link>
           </div>
         </div>
@@ -264,41 +296,38 @@ export default async function ChapterPage({ params }: Params) {
             <div className="text-[14px] font-bold text-white">VAACA</div>
             <div className="flex flex-wrap gap-[22px] text-[13px]">
               <Link
-                href={routes.institution}
+                href={path(routes.institution)}
                 className="text-on-dark no-underline hover:text-teal-ink"
               >
-                Institution
+                {t.nav.primary.institution}
               </Link>
               <Link
-                href={routes.membership}
+                href={path(routes.membership)}
                 className="text-on-dark no-underline hover:text-teal-ink"
               >
-                Membership
+                {t.nav.primary.membership}
               </Link>
               <Link
-                href={routes.region}
+                href={path(routes.region)}
                 className="text-on-dark no-underline hover:text-teal-ink"
               >
-                All Chapters
+                {c.labels.allChapters}
               </Link>
               <Link
-                href={routes.resources}
+                href={path(routes.resources)}
                 className="text-on-dark no-underline hover:text-teal-ink"
               >
-                Resources
+                {t.nav.resources}
               </Link>
             </div>
           </div>
           <div className="flex flex-wrap justify-between gap-5 pt-[18px] text-[12.5px]">
-            <div>
-              VAACA · Virtual Assets Association of Central Africa · In
-              Formation
-            </div>
+            <div>{t.auth.footer}</div>
             <Link
-              href={routes.home}
+              href={path(routes.home)}
               className="text-on-dark no-underline hover:text-teal-ink"
             >
-              <span aria-hidden>←</span> Back to VAACA
+              <span aria-hidden>←</span> {t.nav.backToVaaca}
             </Link>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { countMembers, membersByCountry } from "@/lib/server/members";
 import { listGaps } from "@/lib/server/gaps";
 import { countSeatsFilled, listSeatsForStaff } from "@/lib/server/seats";
 import { OperatingSystemConsole } from "./Console";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Operating System",
@@ -41,8 +42,12 @@ export default async function OperatingSystemPage() {
     countSeatsFilled(),
   ]);
 
+  const { locale, t } = await getTranslations();
+
   return (
     <OperatingSystemConsole
+      locale={locale}
+      languageLabel={t.language.label}
       staffEmail={session.email}
       staffRole={session.role}
       gaps={gaps}

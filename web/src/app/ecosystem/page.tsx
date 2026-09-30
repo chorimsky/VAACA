@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container, Eyebrow, Shell } from "@/components/Shell";
 import { INSTITUTIONS, PRIORITY_INSTITUTIONS } from "@/lib/institutions";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Ecosystem",
@@ -8,24 +9,26 @@ export const metadata: Metadata = {
     "Who VAACA connects across CEMAC — banks, VASPs, fintechs, regulators and academia — and its engagement posture with COSUMAF, COBAC, BEAC and GABAC.",
 };
 
-const GROUPS = [
-  "Banks",
-  "VASPs & Exchanges",
-  "Fintechs & PSPs",
-  "Regulators",
-  "Investors",
-  "Academia",
-  "Legal & Compliance",
-  "Consumers",
-];
+export default async function EcosystemPage() {
+  const { t } = await getTranslations();
+  const e = t.ecosystem;
+  const GROUPS = [
+    e.groups.banks,
+    e.groups.vasps,
+    e.groups.fintechs,
+    e.groups.regulators,
+    e.groups.investors,
+    e.groups.academia,
+    e.groups.legal,
+    e.groups.consumers,
+  ];
 
-export default function EcosystemPage() {
   return (
     <Shell active="ecosystem">
       <Container className="pt-14 pb-16">
-        <Eyebrow>Ecosystem</Eyebrow>
+        <Eyebrow>{t.nav.primary.ecosystem}</Eyebrow>
         <h1 className="m-0 mb-[26px] max-w-[720px] font-serif text-[34px] leading-[1.3] font-semibold tracking-[-0.01em] text-navy">
-          One ecosystem, connected around shared standards.
+          {e.title}
         </h1>
 
         <div className="mb-[34px] flex flex-wrap gap-2.5">
@@ -40,7 +43,7 @@ export default function EcosystemPage() {
         </div>
 
         <div className="mb-4 text-[13px] font-semibold tracking-[0.06em] text-muted uppercase">
-          Priority institutions
+          {e.priorityInstitutions}
         </div>
         {/* Derived from the engagement posture below, so the two can no longer
             disagree about who is a priority. */}
@@ -62,9 +65,9 @@ export default function EcosystemPage() {
 
       <div className="bg-canvas-alt px-8 py-16">
         <div className="mx-auto max-w-[1180px]">
-          <Eyebrow>Policy &amp; Regulatory Engagement</Eyebrow>
+          <Eyebrow>{e.engagementEyebrow}</Eyebrow>
           <h2 className="m-0 mb-[26px] max-w-[720px] text-[24px] leading-[1.4] font-semibold text-navy">
-            Engagement posture, not lobbying.
+            {e.engagementTitle}
           </h2>
           <dl className="m-0 overflow-hidden rounded-[14px] border border-line bg-white">
             {INSTITUTIONS.map((item, i) => (
@@ -79,15 +82,15 @@ export default function EcosystemPage() {
                     {item.name}
                   </span>
                   <span className="mt-1 block text-[11px] font-semibold text-teal-ink">
-                    {item.postureTag}
+                    {e.postures[item.postureTag]}
                   </span>
                 </dt>
                 <dd className="m-0">
                   <span className="block text-[13px] leading-[1.55] text-body-softer">
-                    {item.posture}
+                    {t.institutions[item.key].posture}
                   </span>
                   <span className="mt-1 block text-[12px] leading-[1.5] text-muted">
-                    {item.desc}
+                    {t.institutions[item.key].desc}
                   </span>
                 </dd>
               </div>

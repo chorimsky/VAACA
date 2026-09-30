@@ -12,14 +12,11 @@ import {
 } from "@/components/Field";
 import { routes } from "@/lib/routes";
 import { CheckIcon } from "@/components/icons";
-import {
-  COUNTRIES,
-  MEMBER_CLASSES,
-  type ClassKey,
-} from "@/lib/application-types";
+import { COUNTRIES, type ClassKey } from "@/lib/application-types";
 import { isValidEmail } from "@/lib/validate";
-
-const STEP_LABELS = ["Class", "Details", "Review"];
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { fill } from "@/lib/i18n/dictionaries";
+import { localePath, type Locale } from "@/lib/i18n/locale";
 
 /**
  * Accession request.
@@ -29,7 +26,22 @@ const STEP_LABELS = ["Class", "Details", "Review"];
  * their own status. The password is sent once over the request body and stored
  * only as a scrypt hash on the server.
  */
-export function RegistrationFlow() {
+export function RegistrationFlow({
+  locale,
+  t,
+  classes,
+}: {
+  locale: Locale;
+  t: Dictionary["auth"];
+  /** Class letters and descriptions, already translated. */
+  classes: { key: ClassKey; letter: string; who: string }[];
+}) {
+  const path = (to: string) => localePath(locale, to);
+  const STEP_LABELS = [
+    t.register.steps.class,
+    t.register.steps.details,
+    t.register.steps.review,
+  ];
   const [step, setStep] = useState(1);
   const [selectedClass, setSelectedClass] = useState<ClassKey | null>(null);
   const [name, setName] = useState("");
@@ -42,7 +54,7 @@ export function RegistrationFlow() {
     name.trim().length > 1 && isValidEmail(email) && password.length >= 8;
 
   const selectedLabel =
-    MEMBER_CLASSES.find((c) => c.key === selectedClass)?.letter ?? "";
+    classes.find((c) => c.key === selectedClass)?.letter ?? "";
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -71,14 +83,12 @@ export function RegistrationFlow() {
         const data = (await res.json().catch(() => null)) as {
           error?: string;
         } | null;
-        setSubmitError(
-          data?.error ?? "We couldn't submit that application. Try again.",
-        );
+        setSubmitError(data?.error ?? t.register.failed);
         return;
       }
       setStep(4);
     } catch {
-      setSubmitError("Could not reach the server. Try again.");
+      setSubmitError(t.login.unreachable);
     } finally {
       setSubmitting(false);
     }
@@ -86,10 +96,11 @@ export function RegistrationFlow() {
 
   return (
     <AuthShell
-      asideText="Already a member?"
-      asideLinkLabel="Log in"
-      asideHref={routes.login}
+      asideText={t.register.prompt}
+      asideLinkLabel={t.register.link}
+      asideHref={path(routes.login)}
       align="start"
+      footer={t.footer}
     >
       <div className="w-full max-w-[640px]">
         {/* STEP INDICATOR */}
@@ -127,16 +138,15 @@ export function RegistrationFlow() {
         {step === 1 && (
           <div className="vaaca-fade-in">
             <h1 className="mb-2 font-serif text-[26px] font-semibold text-navy">
-              Choose your membership class
+              {t.register.chooseClass}
             </h1>
             <p className="mb-[26px] text-[14px] leading-[1.6] text-body-soft">
-              Membership is open and non-exclusive — every applicant meeting a
-              class&apos;s criteria is admitted.
+              {t.register.lede}
             </p>
 
             <fieldset className="m-0 flex flex-col gap-2.5 border-0 p-0">
-              <legend className="sr-only">Membership class</legend>
-              {MEMBER_CLASSES.map((cls) => {
+              <legend className="sr-only">{t.register.classLegend}</legend>
+              {classes.map((cls) => {
                 const on = selectedClass === cls.key;
                 return (
                   <label
@@ -180,7 +190,7 @@ export function RegistrationFlow() {
                 disabled={!selectedClass}
                 onClick={() => selectedClass && setStep(2)}
               >
-                Continue
+                {t.register.continueLabel}
               </PrimaryButton>
             </div>
           </div>
@@ -190,23 +200,24 @@ export function RegistrationFlow() {
         {step === 2 && (
           <div className="vaaca-fade-in">
             <h1 className="mb-2 font-serif text-[26px] font-semibold text-navy">
-              Tell us about you
+              {t.register.tellUs}
             </h1>
             <p className="mb-[26px] text-[14px] leading-[1.6] text-body-soft">
-              Applying as <b className="text-navy">{selectedLabel}</b>.
+              {t.register.applyingAs}{" "}
+              <b className="text-navy">{selectedLabel}</b>.
             </p>
 
             <div className="flex flex-col gap-4">
-              <Field label="Full name / Organization name">
+              <Field label={t.register.name}>
                 <TextInput
                   type="text"
                   autoComplete="organization"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Kamdem Fintech Ltd."
+                  placeholder={t.register.namePlaceholder}
                 />
               </Field>
-              <Field label="Email">
+              <Field label={t.register.email}>
                 <TextInput
                   type="email"
                   autoComplete="email"
@@ -215,7 +226,7 @@ export function RegistrationFlow() {
                   placeholder="you@example.com"
                 />
               </Field>
-              <Field label="Country">
+              <Field label={t.register.country}>
                 <Select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
@@ -227,27 +238,27 @@ export function RegistrationFlow() {
                   ))}
                 </Select>
               </Field>
-              <Field label="Password">
+              <Field label={t.register.password}>
                 <TextInput
                   type="password"
                   autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 8 characters"
+                  placeholder={t.register.passwordPlaceholder}
                 />
               </Field>
             </div>
 
             <div className="mt-[30px] flex justify-between">
               <SecondaryButton type="button" onClick={() => setStep(1)}>
-                Back
+                {t.register.back}
               </SecondaryButton>
               <PrimaryButton
                 type="button"
                 disabled={!detailsValid}
                 onClick={() => detailsValid && setStep(3)}
               >
-                Review
+                {t.register.reviewAction}
               </PrimaryButton>
             </div>
           </div>
@@ -257,19 +268,18 @@ export function RegistrationFlow() {
         {step === 3 && (
           <div className="vaaca-fade-in">
             <h1 className="mb-2 font-serif text-[26px] font-semibold text-navy">
-              Review your application
+              {t.register.reviewTitle}
             </h1>
             <p className="mb-[26px] text-[14px] leading-[1.6] text-body-soft">
-              Membership status is never a substitute for regulatory
-              authorization.
+              {t.register.reviewLede}
             </p>
 
             <dl className="m-0 flex flex-col gap-3.5 rounded-[14px] border border-line bg-white px-6 py-[22px]">
               {[
-                { label: "Class", value: selectedLabel },
-                { label: "Name", value: name },
-                { label: "Email", value: email },
-                { label: "Country", value: country },
+                { label: t.register.steps.class, value: selectedLabel },
+                { label: t.register.rowName, value: name },
+                { label: t.register.email, value: email },
+                { label: t.register.country, value: country },
               ].map((row, i, all) => (
                 <div
                   key={row.label}
@@ -293,8 +303,7 @@ export function RegistrationFlow() {
                 className="mt-[3px]"
               />
               <span className="text-[12.5px] leading-[1.6] text-body-soft">
-                I confirm this information is accurate and understand VAACA
-                membership is not a substitute for regulatory authorization.
+                {t.register.confirmLabel}
               </span>
             </label>
 
@@ -309,7 +318,7 @@ export function RegistrationFlow() {
 
             <div className="mt-[22px] flex justify-between">
               <SecondaryButton type="button" onClick={() => setStep(2)}>
-                Back
+                {t.register.back}
               </SecondaryButton>
               <PrimaryButton
                 type="button"
@@ -317,7 +326,7 @@ export function RegistrationFlow() {
                 disabled={!agreed || submitting}
                 onClick={submit}
               >
-                {submitting ? "Submitting…" : "Submit Application"}
+                {submitting ? t.register.submitting : t.register.submit}
               </PrimaryButton>
             </div>
           </div>
@@ -330,18 +339,19 @@ export function RegistrationFlow() {
               <CheckIcon size="lg" className="text-green" />
             </div>
             <div className="mb-2.5 text-[22px] font-bold text-navy">
-              Application received
+              {t.register.received}
             </div>
             <p className="mx-auto mb-[26px] max-w-[440px] text-[14px] leading-[1.65] text-body-soft">
-              The secretariat will review your Class {selectedLabel} application
-              and follow up at {email}. Your member account is ready — sign in
-              to track the decision.
+              {fill(t.register.receivedBody, {
+                class: selectedLabel,
+                email,
+              })}
             </p>
             <Link
-              href={routes.login}
+              href={path(routes.login)}
               className="inline-block rounded-lg bg-navy px-6 py-3 text-[14px] font-semibold text-white no-underline"
             >
-              Log in to your dashboard
+              {t.register.goToDashboard}
             </Link>
           </div>
         )}

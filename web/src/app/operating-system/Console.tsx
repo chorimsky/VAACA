@@ -6,6 +6,8 @@ import { LogoMark } from "@/components/Logo";
 import { routes } from "@/lib/routes";
 import { LockIcon } from "@/components/icons";
 import { SignOutButton } from "@/components/DashboardBar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import type { Locale } from "@/lib/i18n/locale";
 import { ROLE_LABEL, type StaffRole } from "@/lib/staff-roles";
 import { NAV_ORDER, TAB_META, type TabId } from "@/lib/operating-system";
 import type { PanelProps } from "./sections";
@@ -47,10 +49,14 @@ const PANELS: Record<TabId, (props: PanelProps) => React.JSX.Element> = {
  * again in middleware, per the `staff_role` check BACKEND_NOTES.md requires.
  */
 export function OperatingSystemConsole({
+  locale,
+  languageLabel,
   staffEmail,
   staffRole,
   ...panel
 }: {
+  locale: Locale;
+  languageLabel: string;
   staffEmail: string;
   staffRole: StaffRole;
 } & PanelProps) {
@@ -161,6 +167,7 @@ export function OperatingSystemConsole({
             <div className="rounded-full bg-tint-gold px-3.5 py-1.5 font-mono text-[11px] tracking-[0.1em] text-gold-ink uppercase">
               Working Draft · v0.2
             </div>
+            <LanguageSwitcher locale={locale} label={languageLabel} />
             <span className="text-[12.5px] text-muted">{staffEmail}</span>
             <SignOutButton
               audience="staff"

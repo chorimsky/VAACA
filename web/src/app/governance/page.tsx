@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Card, Container, Eyebrow, Shell } from "@/components/Shell";
 import { Tag } from "@/components/Tag";
 import { listPublicSeats } from "@/lib/server/seats";
+import { getTranslations } from "@/lib/i18n/server";
+import { fill } from "@/lib/i18n/dictionaries";
 import {
   blocBalance,
   filledCount,
@@ -18,6 +20,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function GovernancePage() {
+  const { t } = await getTranslations();
+  const g = t.governance;
   const seats = await listPublicSeats();
   const filled = filledCount(seats);
   const balance = blocBalance(seats);
@@ -27,26 +31,33 @@ export default async function GovernancePage() {
   return (
     <Shell active="governance">
       <Container className="pt-14 pb-16">
-        <Eyebrow>Governance</Eyebrow>
+        <Eyebrow>{t.nav.primary.governance}</Eyebrow>
         <h1 className="m-0 mb-3 max-w-[720px] font-serif text-[32px] leading-[1.3] font-semibold text-navy">
-          Nine founding seats. No single interest holds a majority.
+          {g.title}
         </h1>
 
         {/* The page asserts a constraint, so it should report against it
             rather than leave the reader to take it on trust. */}
         <p className="mb-2 max-w-[680px] text-[14.5px] leading-[1.6] text-body-soft">
           {filled === 0
-            ? "The Council is being recruited: none of the nine seats are filled yet. Seats are published here as they are taken."
-            : `${filled} of ${seats.length} seats filled.`}{" "}
+            ? g.recruiting
+            : fill(g.filled, { filled, total: seats.length })}{" "}
           {majority
-            ? `${majority.label} holds ${majority.filled} of ${seats.length} seats — a majority, which the Council's composition rule does not allow to stand.`
-            : `No interest can hold a majority: the largest bloc is defined ${largest.total} seats wide, of ${seats.length}.`}
+            ? fill(g.majorityHeld, {
+                bloc: g.blocs[majority.bloc],
+                count: majority.filled,
+                total: seats.length,
+              })
+            : fill(g.noMajority, {
+                largest: largest.total,
+                total: seats.length,
+              })}
         </p>
 
         <dl className="mb-8 flex flex-wrap gap-x-6 gap-y-1 text-[12.5px] text-muted">
           {balance.map((b) => (
             <div key={b.bloc} className="flex items-baseline gap-1.5">
-              <dt>{b.label}</dt>
+              <dt>{g.blocs[b.bloc]}</dt>
               <dd className="m-0 font-semibold text-navy">
                 {b.filled}/{b.total}
               </dd>
@@ -60,15 +71,15 @@ export default async function GovernancePage() {
               <Card className="flex h-full flex-col px-[18px] py-4">
                 <div className="flex items-start justify-between gap-3">
                   <span className="font-mono text-[10.5px] text-muted">
-                    Seat {seat.n}
+                    {g.seatLabel} {seat.n}
                   </span>
-                  <Tag tone={seat.tone}>{seat.statusLabel}</Tag>
+                  <Tag tone={seat.tone}>{g.seatStatus[seat.status]}</Tag>
                 </div>
                 <div className="mt-1 text-[14px] font-bold text-navy">
-                  {seat.name}
+                  {g.seats[`s${seat.n}` as keyof typeof g.seats].name}
                 </div>
                 <p className="mt-1.5 mb-0 text-[12.5px] leading-[1.55] text-body-soft">
-                  {seat.why}
+                  {g.seats[`s${seat.n}` as keyof typeof g.seats].why}
                 </p>
                 {seat.organisation ? (
                   <div className="mt-2.5 text-[12.5px] font-semibold text-teal-ink">
@@ -76,7 +87,7 @@ export default async function GovernancePage() {
                   </div>
                 ) : null}
                 <div className="mt-auto pt-2.5 text-[11.5px] text-muted">
-                  {seat.blocLabel}
+                  {g.blocs[seat.bloc]}
                 </div>
               </Card>
             </li>
@@ -84,9 +95,7 @@ export default async function GovernancePage() {
         </ul>
 
         <p className="mt-8 max-w-[680px] text-[12.5px] leading-[1.6] text-muted">
-          Seat holders are named in the Founding Coalition &amp; Alliance
-          Architecture once appointed. Candidates under consideration are not
-          published.
+          {g.publishNote}
         </p>
       </Container>
     </Shell>

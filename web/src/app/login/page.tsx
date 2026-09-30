@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getMemberSession } from "@/lib/server/member-auth";
 import { LoginForm } from "./LoginForm";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Member Login",
@@ -26,5 +27,6 @@ export default async function LoginPage({
 
   if (await getMemberSession()) redirect(destination);
 
-  return <LoginForm destination={destination} />;
+  const { locale, t } = await getTranslations();
+  return <LoginForm destination={destination} locale={locale} t={t.auth} />;
 }

@@ -262,6 +262,61 @@ Vercel's project URL and then to `localhost`.
 Both directories need to be writable and persistent — neither survives a
 serverless filesystem.
 
+## Languages
+
+English and French. Five of the six CEMAC member states are francophone —
+Gabon, Congo, the Central African Republic and Chad, with Cameroon bilingual —
+so French is a primary language here, not a courtesy translation.
+
+**English is served at the root, French under a prefix**: `/standards` and
+`/fr/standards`. Every URL that existed before still resolves, and a French
+page has its own shareable, indexable address.
+
+The prefix is handled by a rewrite in middleware rather than an
+`app/[locale]/` directory. The rewrite keeps `/fr/...` in the address bar while
+the existing route tree serves it, and the locale travels to the server on a
+request header. That avoided moving seventeen page directories, which is churn
+the translation work itself did not need.
+
+English is deliberately *not* rewritten. Attaching a request header makes every
+request an internal rewrite, and a rewrite bypasses the static-params check
+that lets an unknown chapter slug 404 — it renders instead, and a `notFound()`
+thrown mid-render streams a 200 shell. `getLocale()` defaults to English when
+the header is absent, so nothing is lost by staying out of the way.
+
+Reading the locale in the root layout does make every route dynamic, which is
+why `middleware.ts` now checks the closed set of chapter slugs itself: that is
+the only way to answer `/fr/chapters/nope` with a real 404.
+
+### The registry
+
+`lib/i18n/dictionaries.ts` holds both locales. English is the source of truth
+and `Dictionary` is a recursive mapped type over it, so **a missing, extra or
+misspelled French key is a compile error**. There is no runtime fallback that
+would quietly ship English text on a French page.
+
+```bash
+npm run i18n:coverage    # what is still English on the French pages
+```
+
+The coverage script fetches each page in both locales and reports prose that is
+byte-identical in both — which is almost certainly untranslated. Public pages
+are at 100%; the only match left is the organisation's own name, which is a
+proper noun.
+
+### Selection
+
+A visitor arriving at the root is sent to their language: a remembered choice
+first, then `Accept-Language`. Only the root redirects — someone who followed
+an English deep link stays where they were sent. Visiting a `/fr` page records
+the choice for next time. The switcher navigates to the same page in the other
+locale rather than toggling in place, so the URL a visitor copies afterwards
+reproduces what they see.
+
+hreflang is declared per URL in `sitemap.ts`, not as a link tag in the layout:
+layout metadata is static, so a tag there would claim the homepage's alternates
+on every page, and a wrong signal is worse than none.
+
 ## The mark
 
 `components/Logo.tsx` draws the VAACA mark: a pointy-top hexagon with a node at
@@ -466,7 +521,7 @@ BASE=http://host npm run test:e2e
 ```
 
 `scripts/e2e.mjs` drives a running server over HTTP — no mocks — so middleware,
-route handlers and the store are exercised together. 245 assertions covering
+route handlers and the store are exercised together. 288 assertions covering
 routing and canonical casing, both auth boundaries in both directions, session
 tamper resistance (tampered signature, forged payload, garbage cookie, and each
 audience's cookie against the other's surfaces), registration validation, the

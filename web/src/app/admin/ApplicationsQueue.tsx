@@ -4,11 +4,12 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DashboardBar } from "@/components/DashboardBar";
 import { staffLinks } from "@/lib/dashboard-links";
-import { Card } from "@/components/Shell";
+import { Card } from "@/components/primitives";
 import { Tag, type Tone } from "@/components/Tag";
 import { routes } from "@/lib/routes";
 import { LockIcon } from "@/components/icons";
 import { ROLE_LABEL, type StaffRole } from "@/lib/staff-roles";
+import type { Locale } from "@/lib/i18n/locale";
 import type { Application, ApplicationStatus } from "@/lib/application-types";
 import {
   DOMAIN_NAME,
@@ -105,12 +106,16 @@ const countOf = (rows: Application[]): Counts => ({
  * are a view onto that, not the authority for it.
  */
 export function ApplicationsQueue({
+  locale,
+  languageLabel,
   staffEmail,
   staffRole,
   initialApplications,
   initialCounts,
   scorecards: initialScorecards,
 }: {
+  locale: Locale;
+  languageLabel: string;
   staffEmail: string;
   staffRole: StaffRole;
   initialApplications: Application[];
@@ -373,6 +378,8 @@ export function ApplicationsQueue({
     <div className="min-h-screen bg-canvas text-body">
       <DashboardBar
         audience="staff"
+        locale={locale}
+        languageLabel={languageLabel}
         title="Secretariat Admin"
         titleHref={routes.admin}
         identity={staffEmail}

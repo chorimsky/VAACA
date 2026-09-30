@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { Logo } from "@/components/Logo";
-import { TopRule } from "@/components/Shell";
+import { TopRule } from "@/components/TopRule";
 import { routes } from "@/lib/routes";
 
 /**

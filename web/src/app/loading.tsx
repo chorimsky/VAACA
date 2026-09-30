@@ -1,4 +1,4 @@
-import { TopRule } from "@/components/Shell";
+import { TopRule } from "@/components/TopRule";
 
 /** Route-transition placeholder: the brand rule plus a quiet progress bar. */
 export default function Loading() {

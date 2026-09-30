@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getStaffSession } from "@/lib/server/auth";
 import { LogoMark } from "@/components/Logo";
 import { DashboardBar } from "@/components/DashboardBar";
+import { getTranslations } from "@/lib/i18n/server";
 import { staffLinks } from "@/lib/dashboard-links";
 import { routes } from "@/lib/routes";
 import { LockIcon } from "@/components/icons";
@@ -181,6 +182,7 @@ export default async function DocumentsPage() {
   const session = await getStaffSession();
   if (!session) redirect("/admin/login?next=/documents");
 
+  const { locale, t } = await getTranslations();
   const [documents, documentCounts] = await Promise.all([
     listDocumentsForStaff(),
     countDocuments(),
@@ -195,6 +197,8 @@ export default async function DocumentsPage() {
       <DashboardBar
         audience="staff"
         tone="light"
+        locale={locale}
+        languageLabel={t.language.label}
         title="Founding Document System"
         titleHref={routes.documents}
         identity={session.email}
