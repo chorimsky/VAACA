@@ -262,6 +262,31 @@ Vercel's project URL and then to `localhost`.
 Both directories need to be writable and persistent — neither survives a
 serverless filesystem.
 
+## The primary navigation
+
+`components/Nav.tsx`. What the accessibility pass changed, and why:
+
+- **Every destination has the same hit area.** Links were their text box — 26px
+  for the primary set and 20px for Resources and Login, under the 24px WCAG 2.2
+  asks of a target and inconsistent with each other. All are now 32px, with a
+  negative margin so the bar height is unchanged.
+- **The current-page marker meets 3:1.** It was a 2px underline in brand gold,
+  which is 2.31:1 against the near-white bar — below what SC 1.4.11 requires of
+  something that conveys state. It is now the deeper gold at 5.5:1. The marker
+  is drawn inside the label rather than as a border on the link, so the new
+  padding does not push it away from the word.
+- **The nav's `aria-label` is translated.** It was hardcoded `"Primary"` on
+  French pages — the one string a screen-reader user hears that sighted users
+  never see.
+- **The menu is a real disclosure.** The toggle now names the panel it controls
+  (`aria-controls`), the panel is a labelled `<nav>` rather than a bare div,
+  Escape closes it and returns focus to the toggle, the toggle's name changes
+  between open and closed, and crossing the breakpoint closes it so
+  `aria-expanded` cannot describe something no longer on screen.
+- **The panel marks the current page too.** The bar showed it with an underline
+  and the panel showed nothing; it now carries `aria-current` and says "current
+  page" in words, which reads better in a list than a rule does.
+
 ## Languages
 
 English and French. Five of the six CEMAC member states are francophone —
@@ -521,7 +546,7 @@ BASE=http://host npm run test:e2e
 ```
 
 `scripts/e2e.mjs` drives a running server over HTTP — no mocks — so middleware,
-route handlers and the store are exercised together. 288 assertions covering
+route handlers and the store are exercised together. 297 assertions covering
 routing and canonical casing, both auth boundaries in both directions, session
 tamper resistance (tampered signature, forged payload, garbage cookie, and each
 audience's cookie against the other's surfaces), registration validation, the

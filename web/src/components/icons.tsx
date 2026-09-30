@@ -72,6 +72,12 @@ export const MenuIcon = (p: IconProps) => (
   </Icon>
 );
 
+export const CloseIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M6 6l12 12M18 6L6 18" />
+  </Icon>
+);
+
 export const ArrowRightIcon = (p: IconProps) => (
   <Icon {...p}>
     <path d="M4 12h15M13 6l6 6-6 6" />

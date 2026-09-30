@@ -348,6 +348,50 @@ async function run() {
     (l) => !!l && l.includes("next=%2Ffr%2Foperating-system"),
   );
 
+  section("Primary navigation");
+  const standardsEn = (await req("/standards")).body ?? "";
+  const standardsFr = (await req("/fr/standards")).body ?? "";
+
+  check(
+    "the nav landmark is labelled",
+    /<nav[^>]+aria-label="Primary"/.test(standardsEn),
+    true,
+  );
+  // The label is spoken to screen-reader users, so it has to be translated
+  // like everything else on the page.
+  check(
+    "  …in the page's own language",
+    /<nav[^>]+aria-label="Principal"/.test(standardsFr),
+    true,
+  );
+  check(
+    "the current page is marked",
+    /aria-current="page"/.test(standardsEn),
+    true,
+  );
+
+  section("Menu disclosure");
+  check(
+    "the toggle names the panel it controls",
+    /aria-controls="primary-menu"/.test(standardsEn),
+    true,
+  );
+  check(
+    "the toggle reports its state",
+    /aria-expanded="(true|false)"/.test(standardsEn),
+    true,
+  );
+  check(
+    "the toggle has an accessible name",
+    /aria-label="Toggle menu"/.test(standardsEn),
+    true,
+  );
+  check(
+    "  …translated too",
+    /aria-label="Afficher le menu"/.test(standardsFr),
+    true,
+  );
+
   section("Site metadata");
   check("robots.txt", (await req("/robots.txt")).status, 200);
   check("sitemap.xml", (await req("/sitemap.xml")).status, 200);
