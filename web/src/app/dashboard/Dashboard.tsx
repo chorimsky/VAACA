@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { DashboardBar } from "@/components/DashboardBar";
-import type { Locale } from "@/lib/i18n/locale";
+import { localePath, type Locale } from "@/lib/i18n/locale";
 import { Card } from "@/components/primitives";
 import { Tag, type Tone } from "@/components/Tag";
 import { routes } from "@/lib/routes";
@@ -83,6 +83,8 @@ export function Dashboard({
   );
   const note = CLASS_NOTE[member.classKey];
 
+  const path = (to: string) => localePath(locale, to);
+
   return (
     <div className="min-h-screen bg-canvas text-body">
       <DashboardBar
@@ -91,13 +93,14 @@ export function Dashboard({
         languageLabel={languageLabel}
         title="VAACA Member Dashboard"
         identity={member.email}
+        signOutHref={path(routes.login)}
         // A member could not previously reach the framework they are scored
         // against, or the documents they are entitled to, without leaving
         // through the logo.
         links={[
-          { label: "Standards", href: routes.standards },
-          { label: "Documents", href: routes.resources },
-          { label: "Public site", href: routes.home, external: true },
+          { label: "Standards", href: path(routes.standards) },
+          { label: "Documents", href: path(routes.resources) },
+          { label: "Public site", href: path(routes.home), external: true },
         ]}
         badges={
           <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-[11.5px] font-semibold text-teal-bright">

@@ -45,6 +45,26 @@ export function hashPassword(password: string): string {
   return `scrypt$${salt.toString("hex")}$${hash.toString("hex")}`;
 }
 
+/**
+ * A hash of a value nobody can supply, used to spend the same scrypt work on a
+ * request for an address that has no account.
+ *
+ * Without it, "no such account" answered in ~4ms and "wrong password" in ~40ms
+ * — a tenfold difference, measurable over the network, and enough to test
+ * whether a given bank or exchange has applied. Both endpoints already return
+ * one message for both cases; this makes them take one duration too.
+ *
+ * Computed on first use rather than at import, so the cost lands on a request
+ * that was going to hash a password anyway.
+ */
+let absentAccountHash: string | null = null;
+
+export function verifyAgainstAbsentAccount(password: string): false {
+  absentAccountHash ??= hashPassword(randomBytes(32).toString("hex"));
+  verifyPassword(password, absentAccountHash);
+  return false;
+}
+
 export function verifyPassword(password: string, stored: string): boolean {
   const [scheme, saltHex, hashHex] = stored.split("$");
   if (scheme !== "scrypt" || !saltHex || !hashHex) return false;

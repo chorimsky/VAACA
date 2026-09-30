@@ -37,7 +37,9 @@ export async function documentMetadata(
       // Each page points at its own counterpart, so the two languages are
       // indexed as translations of one another rather than as duplicates.
       languages: {
-        ...Object.fromEntries(LOCALES.map((l) => [LOCALE_TAG[l], absolute(l, path)])),
+        ...Object.fromEntries(
+          LOCALES.map((l) => [LOCALE_TAG[l], absolute(l, path)]),
+        ),
         "x-default": absolute(DEFAULT_LOCALE, path),
       },
     },

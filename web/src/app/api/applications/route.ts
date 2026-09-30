@@ -18,6 +18,7 @@ import {
   type ApplicationStatus,
   type ClassKey,
 } from "@/lib/application-types";
+import { MIN_PASSWORD_LENGTH, isValidEmail } from "@/lib/validate";
 
 export const dynamic = "force-dynamic";
 
@@ -67,22 +68,30 @@ export async function POST(request: NextRequest) {
     unknown
   >;
 
-  const errors: string[] = [];
-  if (typeof name !== "string" || name.trim().length < 2)
-    errors.push("name must be at least 2 characters");
-  if (typeof email !== "string" || !/^\S+@\S+\.\S+$/.test(email))
-    errors.push("email must be a valid address");
+  // Reported as field names as well as prose: the message is English because
+  // this is an API, and the field list is what the form translates so an
+  // applicant on the French site does not read an English validation error.
+  const invalid: string[] = [];
+  if (typeof name !== "string" || name.trim().length < 2) invalid.push("name");
+  if (typeof email !== "string" || !isValidEmail(email)) invalid.push("email");
   if (
     typeof country !== "string" ||
     !(COUNTRIES as readonly string[]).includes(country)
   )
-    errors.push("country must be a CEMAC member state");
-  if (!isClassKey(classKey)) errors.push("classKey must be one of A–E");
-  if (typeof password !== "string" || password.length < 8)
-    errors.push("password must be at least 8 characters");
+    invalid.push("country");
+  if (!isClassKey(classKey)) invalid.push("classKey");
+  if (typeof password !== "string" || password.length < MIN_PASSWORD_LENGTH)
+    invalid.push("password");
 
-  if (errors.length) {
-    return NextResponse.json({ error: errors.join("; ") }, { status: 400 });
+  if (invalid.length) {
+    return NextResponse.json(
+      {
+        error: `Invalid or missing: ${invalid.join(", ")}`,
+        code: "invalid_input",
+        fields: invalid,
+      },
+      { status: 400 },
+    );
   }
 
   const normalisedEmail = (email as string).trim().toLowerCase();
@@ -92,7 +101,10 @@ export async function POST(request: NextRequest) {
   // Check first: creating the application and then failing on the member would
   // leave an orphan row in the queue with nobody attached to it.
   if (await findMemberByEmail(normalisedEmail)) {
-    return NextResponse.json({ error: duplicate }, { status: 409 });
+    return NextResponse.json(
+      { error: duplicate, code: "email_taken" },
+      { status: 409 },
+    );
   }
 
   const application = await createApplication({
@@ -116,7 +128,10 @@ export async function POST(request: NextRequest) {
     // Roll back so a failed sign-up never leaves an unowned application.
     await deleteApplication(application.id);
     if (error instanceof MemberExistsError) {
-      return NextResponse.json({ error: duplicate }, { status: 409 });
+      return NextResponse.json(
+        { error: duplicate, code: "email_taken" },
+        { status: 409 },
+      );
     }
     throw error;
   }

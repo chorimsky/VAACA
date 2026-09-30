@@ -5,13 +5,18 @@ import { getMember, getScores } from "@/lib/server/members";
 import { getApplication } from "@/lib/server/store";
 import { STATUS_LABEL } from "@/lib/application-types";
 import { Dashboard } from "./Dashboard";
+import { Suspended } from "./Suspended";
 import { getTranslations } from "@/lib/i18n/server";
+import { routes } from "@/lib/routes";
 
-export const metadata: Metadata = {
-  title: "Member Dashboard",
-  description: "Your VAACA membership status and activity.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations();
+  return {
+    title: t.meta.dashboard.title,
+    description: t.meta.dashboard.description,
+    robots: { index: false, follow: false },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -21,18 +26,37 @@ export const dynamic = "force-dynamic";
  * "own data only" rule from BACKEND_NOTES.md, enforced where it counts.
  */
 export default async function DashboardPage() {
+  const { locale, t, path } = await getTranslations();
   const session = await getMemberSession();
-  if (!session) redirect("/login?next=/dashboard");
+  if (!session) {
+    // Both halves carry the locale: the login page the visitor lands on, and
+    // the page they are sent back to after signing in.
+    redirect(
+      `${path(routes.login)}?next=${encodeURIComponent(path(routes.dashboard))}`,
+    );
+  }
 
   const member = await getMember(session.memberId);
-  if (!member) redirect("/login");
+  if (!member) redirect(path(routes.login));
+
+  // A member suspended while signed in loses the dashboard too, not just the
+  // next sign-in. Rendered rather than redirected: `redirect()` from a page
+  // that has begun streaming answers 200 with an empty shell, which is a blank
+  // screen without JavaScript. None of the member's record is read here.
+  if (member.status === "suspended") {
+    return (
+      <Suspended
+        t={t.auth.suspendedPage}
+        backLabel={t.nav.backToVaaca}
+        homeHref={path(routes.home)}
+      />
+    );
+  }
 
   const [scores, application] = await Promise.all([
     getScores(member.id),
     member.applicationId ? getApplication(member.applicationId) : null,
   ]);
-
-  const { locale, t } = await getTranslations();
 
   return (
     <Dashboard

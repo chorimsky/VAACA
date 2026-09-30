@@ -2,7 +2,12 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { hashPassword } from "./auth";
-import { readOrSeed, readStore, writeStore } from "./json-store";
+import {
+  isStoreUnavailable,
+  readOrSeed,
+  readStore,
+  writeStore,
+} from "./json-store";
 import { syncMemberStatusForApplication } from "./members";
 import type { StaffRole } from "@/lib/staff-roles";
 import { STATUS_LABEL } from "@/lib/application-types";
@@ -331,10 +336,19 @@ async function loadStaff(): Promise<StaffAccount[]> {
       passwordHash: hashPassword(password),
     },
   ];
-  await writeStore<StaffAccount[], void>(STAFF, [], async () => ({
-    next: seeded,
-    result: undefined,
-  }));
+
+  try {
+    await writeStore<StaffAccount[], void>(STAFF, [], async () => ({
+      next: seeded,
+      result: undefined,
+    }));
+  } catch (error) {
+    // A store that cannot be written to is not a reason for a public page to
+    // fail: `/institution` reads this to say which secretariat posts are
+    // filled. The account is derived from the environment on every read, so
+    // sign-in keeps working — only the persisted copy is missing.
+    if (!isStoreUnavailable(error)) throw error;
+  }
   return seeded;
 }
 

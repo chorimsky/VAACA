@@ -21,19 +21,42 @@ export function LoginForm({
   locale,
   languageLabel,
   t,
+  suspended = false,
 }: {
   destination: string;
   locale: Locale;
   languageLabel: string;
   t: Dictionary["auth"];
+  /** Arrived here because the dashboard refused a suspended account. */
+  suspended?: boolean;
 }) {
   const path = (to: string) => localePath(locale, to);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showReset, setShowReset] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    suspended ? t.login.suspended : null,
+  );
   const [busy, setBusy] = useState(false);
+
+  /**
+   * The endpoint answers in English — it is an API, and it has no locale. The
+   * stable `code` is what gets translated here, so a French visitor never
+   * reads "Those credentials were not recognised." on a French page. An
+   * unrecognised code falls back to the generic message rather than to the
+   * server's prose.
+   */
+  const messageFor = (code: unknown) => {
+    switch (code) {
+      case "suspended":
+        return t.login.suspended;
+      case "rate_limited":
+        return t.login.rateLimited;
+      default:
+        return t.login.failed;
+    }
+  };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -47,9 +70,9 @@ export function LoginForm({
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => null)) as {
-          error?: string;
+          code?: string;
         } | null;
-        setError(data?.error ?? t.login.failed);
+        setError(messageFor(data?.code));
         return;
       }
       router.replace(destination);

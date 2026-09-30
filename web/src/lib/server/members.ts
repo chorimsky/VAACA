@@ -1,7 +1,11 @@
 import "server-only";
 
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { hashPassword, verifyPassword } from "./auth";
+import {
+  hashPassword,
+  verifyAgainstAbsentAccount,
+  verifyPassword,
+} from "./auth";
 import { readStore, writeStore } from "./json-store";
 import { listGaps } from "./gaps";
 import { GAP_EFFECT } from "@/lib/gap-types";
@@ -97,7 +101,12 @@ export async function authenticateMember(
 ): Promise<Member | null> {
   const members = await loadMembers();
   const found = members.find((m) => m.email === email.trim().toLowerCase());
-  if (!found) return null;
+  // An unknown address costs the same as a known one, so the response time
+  // does not say which addresses are registered.
+  if (!found) {
+    verifyAgainstAbsentAccount(password);
+    return null;
+  }
   return verifyPassword(password, found.passwordHash)
     ? publicView(found)
     : null;

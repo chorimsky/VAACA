@@ -24,6 +24,18 @@ export async function GET() {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  // A session issued before the suspension stops working here too, or
+  // suspending someone would only take effect the next time they signed in.
+  if (member.status === "suspended") {
+    return NextResponse.json(
+      {
+        error: "This account is suspended. Contact the secretariat.",
+        code: "suspended",
+      },
+      { status: 403 },
+    );
+  }
+
   const [scores, application] = await Promise.all([
     getScores(member.id),
     member.applicationId ? getApplication(member.applicationId) : null,

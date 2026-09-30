@@ -546,6 +546,10 @@ export const en = {
       forgotHelp:
         "Members cannot reset their own password yet. Ask the secretariat to issue a single-use reset link.",
       failed: "Those credentials were not recognised.",
+      suspended:
+        "This account is suspended. Contact the secretariat to reinstate it.",
+      rateLimited:
+        "Too many sign-in attempts. Wait a few minutes and try again.",
       portal: "Member Portal",
       signingIn: "Signing in…",
       unreachable: "Could not reach the server. Try again.",
@@ -605,6 +609,18 @@ export const en = {
       rowName: "Name",
       goToDashboard: "Log in to your dashboard",
       failed: "We couldn't submit that application. Try again.",
+      confirmPassword: "Confirm password",
+      confirmPlaceholder: "Type it again",
+      passwordsDiffer: "Those two passwords do not match.",
+      emailTaken:
+        "An account already exists for that email. Sign in to track your application.",
+      invalid: {
+        name: "Enter a name of at least 2 characters.",
+        email: "Enter a valid email address.",
+        country: "Choose a CEMAC member state.",
+        classKey: "Choose a membership class.",
+        password: "Choose a password of at least 8 characters.",
+      },
     },
     staff: {
       prompt: "Not secretariat staff?",
@@ -618,6 +634,12 @@ export const en = {
       signingIn: "Signing in…",
       submit: "Sign in",
       failed: "Sign-in failed.",
+    },
+    suspendedPage: {
+      eyebrow: "Account suspended",
+      title: "This account is suspended.",
+      body: "A suspended account cannot open the member portal. The secretariat can reinstate it — the decision and its reasons sit with them, not with this page.",
+      signOut: "Sign out",
     },
     footer:
       "VAACA · Virtual Assets Association of Central Africa · In Formation",
@@ -701,6 +723,10 @@ export const en = {
     staffLogin: {
       title: "Secretariat Sign-in",
       description: "Restricted to secretariat and Council staff.",
+    },
+    dashboard: {
+      title: "Member Dashboard",
+      description: "Your VAACA membership status and activity.",
     },
     // A chapter page's title is built from the chapter name, and the two
     // languages order the words differently — so it is a template, not a suffix.
@@ -1404,6 +1430,10 @@ export const fr: Dictionary = {
       forgotHelp:
         "Les membres ne peuvent pas encore réinitialiser eux-mêmes leur mot de passe. Demandez au secrétariat un lien à usage unique.",
       failed: "Ces identifiants n'ont pas été reconnus.",
+      suspended:
+        "Ce compte est suspendu. Contactez le secrétariat pour le rétablir.",
+      rateLimited:
+        "Trop de tentatives de connexion. Patientez quelques minutes.",
       portal: "Espace membre",
       signingIn: "Connexion…",
       unreachable: "Impossible de joindre le serveur. Réessayez.",
@@ -1468,6 +1498,18 @@ export const fr: Dictionary = {
       rowName: "Nom",
       goToDashboard: "Accéder à votre espace",
       failed: "Nous n'avons pas pu envoyer cette candidature. Réessayez.",
+      confirmPassword: "Confirmez le mot de passe",
+      confirmPlaceholder: "Saisissez-le à nouveau",
+      passwordsDiffer: "Ces deux mots de passe ne correspondent pas.",
+      emailTaken:
+        "Un compte existe déjà pour cette adresse. Connectez-vous pour suivre votre candidature.",
+      invalid: {
+        name: "Saisissez un nom d'au moins 2 caractères.",
+        email: "Saisissez une adresse e-mail valide.",
+        country: "Choisissez un État membre de la CEMAC.",
+        classKey: "Choisissez une classe d'adhésion.",
+        password: "Choisissez un mot de passe d'au moins 8 caractères.",
+      },
     },
     staff: {
       prompt: "Vous n'êtes pas du secrétariat ?",
@@ -1482,6 +1524,12 @@ export const fr: Dictionary = {
       signingIn: "Connexion…",
       submit: "Se connecter",
       failed: "Échec de la connexion.",
+    },
+    suspendedPage: {
+      eyebrow: "Compte suspendu",
+      title: "Ce compte est suspendu.",
+      body: "Un compte suspendu ne donne pas accès à l'espace membre. Le secrétariat peut le rétablir — la décision et ses motifs lui appartiennent, non à cette page.",
+      signOut: "Se déconnecter",
     },
     footer:
       "VAACA · Virtual Assets Association of Central Africa · En formation",
@@ -1565,6 +1613,10 @@ export const fr: Dictionary = {
     staffLogin: {
       title: "Connexion secrétariat",
       description: "Réservé au secrétariat et aux membres du Conseil.",
+    },
+    dashboard: {
+      title: "Espace membre",
+      description: "Votre statut d'adhésion VAACA et votre activité.",
     },
     chapterTitle: "Chapitre {name}",
   },

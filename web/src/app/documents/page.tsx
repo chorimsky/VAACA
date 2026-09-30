@@ -202,7 +202,7 @@ export default async function DocumentsPage() {
         title="Founding Document System"
         titleHref={routes.documents}
         identity={session.email}
-        links={staffLinks("documents")}
+        links={staffLinks("documents", locale)}
         badges={
           <span className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-[11px] font-semibold text-teal-bright">
             <LockIcon size="xs" />

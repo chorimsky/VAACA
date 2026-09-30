@@ -4,9 +4,17 @@ import {
   getStaffSession,
   newSession,
   setSessionCookie,
+  verifyAgainstAbsentAccount,
   verifyPassword,
 } from "@/lib/server/auth";
 import { findStaffByEmail } from "@/lib/server/store";
+import {
+  SIGN_IN_LIMIT,
+  checkLimit,
+  clearFailures,
+  clientKey,
+  recordFailure,
+} from "@/lib/server/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -33,18 +41,41 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const key = clientKey(request, "staff");
+  const limit = checkLimit(key, SIGN_IN_LIMIT);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      {
+        error: "Too many sign-in attempts. Try again shortly.",
+        code: "rate_limited",
+      },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      },
+    );
+  }
+
   const account = await findStaffByEmail(email);
 
-  // Same response and broadly the same work either way, so the endpoint does
-  // not reveal which addresses exist.
-  const ok = account ? verifyPassword(password, account.passwordHash) : false;
+  // Same response *and* the same work either way, so neither the message nor
+  // the response time reveals which addresses exist. The absent-account branch
+  // used to skip the hash entirely and answer ten times faster.
+  const ok = account
+    ? verifyPassword(password, account.passwordHash)
+    : verifyAgainstAbsentAccount(password);
   if (!account || !ok) {
+    recordFailure(key, SIGN_IN_LIMIT);
     return NextResponse.json(
-      { error: "Those credentials were not recognised." },
+      {
+        error: "Those credentials were not recognised.",
+        code: "invalid_credentials",
+      },
       { status: 401 },
     );
   }
 
+  clearFailures(key);
   const session = newSession(account.email, account.role);
   await setSessionCookie(session);
   return NextResponse.json({ session });

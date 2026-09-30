@@ -49,9 +49,13 @@ export function StaffLoginForm({
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => null)) as {
-          error?: string;
+          code?: string;
         } | null;
-        setError(data?.error ?? t.staff.failed);
+        // The endpoint answers in English; its stable `code` is what this
+        // translates, so the French sign-in page stays French when it fails.
+        setError(
+          data?.code === "rate_limited" ? t.login.rateLimited : t.staff.failed,
+        );
         return;
       }
       router.replace(destination);

@@ -32,9 +32,22 @@ import type { BarLink } from "@/lib/dashboard-links";
 export function SignOutButton({
   audience,
   className = "",
+  label = "Sign out",
+  busyLabel = "Signing out…",
+  redirectTo,
+  children,
 }: {
   audience: "member" | "staff";
   className?: string;
+  label?: string;
+  busyLabel?: string;
+  /**
+   * Where to land afterwards. Defaults to the audience's sign-in page — but
+   * without a locale, which sent a French member to the English login screen,
+   * so every caller that knows the locale passes it.
+   */
+  redirectTo?: string;
+  children?: React.ReactNode;
 }) {
   const router = useRouter();
   const [leaving, setLeaving] = useState(false);
@@ -47,7 +60,10 @@ export function SignOutButton({
     try {
       await fetch(endpoint, { method: "DELETE" });
     } finally {
-      router.replace(audience === "member" ? routes.login : "/admin/login");
+      router.replace(
+        redirectTo ??
+          (audience === "member" ? routes.login : `${routes.admin}/login`),
+      );
       router.refresh();
     }
   };
@@ -59,7 +75,7 @@ export function SignOutButton({
       disabled={leaving}
       className={`-my-1 cursor-pointer border-none bg-transparent px-1 py-1 text-[12.5px] font-semibold disabled:cursor-wait ${className}`}
     >
-      {leaving ? "Signing out…" : "Sign out"}
+      {leaving ? busyLabel : (children ?? label)}
     </button>
   );
 }
@@ -93,9 +109,15 @@ export function DashboardBar({
   links = [],
   locale,
   languageLabel,
+  signOutLabel,
+  signOutHref,
 }: {
   audience: "member" | "staff";
   locale: Locale;
+  /** Already translated; the bar has no dictionary of its own. */
+  signOutLabel?: string;
+  /** Where sign-out lands, in the reader's language. */
+  signOutHref?: string;
   /** Accessible name for the switcher, already translated. */
   languageLabel: string;
   tone?: keyof typeof TONE;
@@ -164,7 +186,12 @@ export function DashboardBar({
             className={`hidden h-4 w-px sm:block ${t.divider}`}
           />
 
-          <SignOutButton audience={audience} className={t.signOut} />
+          <SignOutButton
+            audience={audience}
+            className={t.signOut}
+            label={signOutLabel}
+            redirectTo={signOutHref}
+          />
         </div>
       </div>
     </header>

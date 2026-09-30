@@ -383,7 +383,7 @@ export function ApplicationsQueue({
         title="Secretariat Admin"
         titleHref={routes.admin}
         identity={staffEmail}
-        links={staffLinks("admin")}
+        links={staffLinks("admin", locale)}
         badges={
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 font-mono text-[11px] tracking-[0.1em] whitespace-nowrap text-teal-bright uppercase">
             <LockIcon size="xs" />

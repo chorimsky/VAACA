@@ -1,4 +1,5 @@
 import { routes } from "./routes";
+import { localePath, type Locale } from "./i18n/locale";
 
 /**
  * Cross-links between the signed-in surfaces.
@@ -21,10 +22,21 @@ const STAFF_SURFACES: (BarLink & { key: string })[] = [
   { key: "public", label: "Public site", href: routes.home, external: true },
 ];
 
-/** The other staff surfaces, minus whichever one is showing. */
+/**
+ * The other staff surfaces, minus whichever one is showing.
+ *
+ * Every href carries the locale. Without it a French visitor's bar linked to
+ * the English copy of each surface, so one click silently switched the whole
+ * session back to English.
+ */
 export const staffLinks = (
   current: "admin" | "console" | "documents",
+  locale: Locale,
 ): BarLink[] =>
   STAFF_SURFACES.filter((s) => s.key !== current).map(
-    ({ label, href, external }) => ({ label, href, external }),
+    ({ label, href, external }) => ({
+      label,
+      href: localePath(locale, href),
+      external,
+    }),
   );

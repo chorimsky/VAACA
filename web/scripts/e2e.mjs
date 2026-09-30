@@ -1022,10 +1022,39 @@ async function run() {
     standing("suspended"),
   );
   check("staff can suspend", suspended.body?.member?.status, "suspended");
+  // Suspension used to be a label and nothing more: the account signed in,
+  // reached the dashboard and read its own record exactly as before.
   check(
-    "the member sees it",
-    (await req("/api/member/me", withCookie(mem))).body?.member?.status,
+    "a suspended member's session stops working",
+    (await req("/api/member/me", withCookie(mem))).status,
+    403,
+  );
+  const blockedSignIn = await req(
+    "/api/member/session",
+    json({ email: member.email, password: member.password }),
+  );
+  check("  …and they cannot sign in again", blockedSignIn.status, 403);
+  check(
+    "  …with a reason, not a rejected password",
+    blockedSignIn.body?.code,
     "suspended",
+  );
+  check(
+    "  …and no cookie is issued",
+    /vaaca_member_session=[^;]/.test(blockedSignIn.setCookie ?? ""),
+    false,
+  );
+  const suspendedPage = await req("/dashboard", withCookie(mem));
+  check("the dashboard says why", suspendedPage.status, 200);
+  check(
+    "  …as a real page, not an empty shell",
+    (suspendedPage.body ?? "").includes("<main"),
+    true,
+  );
+  check(
+    "  …carrying none of the member's record",
+    (suspendedPage.body ?? "").includes(member.email),
+    false,
   );
   check(
     "a later accession decision does not silently clear it",
@@ -1037,8 +1066,10 @@ async function run() {
           { method: "PATCH", headers: { cookie: staff } },
         ),
       );
-      return (await req("/api/member/me", withCookie(mem))).body?.member
-        ?.status;
+      // Read it from the staff side: the member's own endpoint now refuses a
+      // suspended account, which is the point of the assertions above.
+      return (await req(`/api/members/${standingId}/scores`, withCookie(staff)))
+        .body?.member?.status;
     })(),
     "suspended",
   );
@@ -1047,6 +1078,127 @@ async function run() {
     (await req(`/api/members/${standingId}/status`, standing("active"))).body
       ?.member?.status,
     "active",
+  );
+  check(
+    "  …and their session works again",
+    (await req("/api/member/me", withCookie(mem))).status,
+    200,
+  );
+
+  section("Sign-in is rate limited");
+  // Both sign-in endpoints verify a scrypt hash, so an unlimited guess rate is
+  // both a credential attack and a way to spend someone else's CPU.
+  // A fresh address per run: the limiter keeps its window in memory, so a
+  // fixed one would still be locked out from the previous run against the
+  // same server.
+  const fromAddress = (address, payload) =>
+    json(payload, { headers: { "x-forwarded-for": `${address}-${uniq}` } });
+  const guesses = [];
+  for (let i = 0; i < 12; i++) {
+    guesses.push(
+      (
+        await req(
+          "/api/member/session",
+          fromAddress("e2e-burst", {
+            email: "nobody@testbed.cm",
+            password: "wrong",
+          }),
+        )
+      ).status,
+    );
+  }
+  check("early attempts are answered", guesses[0], 401);
+  check("a sustained run is cut off", guesses.at(-1), 429);
+  check(
+    "another address keeps its own budget",
+    (
+      await req(
+        "/api/member/session",
+        fromAddress("e2e-bystander", {
+          email: member.email,
+          password: member.password,
+        }),
+      )
+    ).status,
+    200,
+  );
+
+  section("Errors can be said in French");
+  // The endpoints answer in English — they are APIs with no locale — so each
+  // failure carries a stable `code` for the page to translate. Without it the
+  // French sign-in screen showed an English error.
+  check(
+    "wrong credentials carry a code",
+    (
+      await req(
+        "/api/member/session",
+        fromAddress("e2e-codes", {
+          email: member.email,
+          password: "not-the-password",
+        }),
+      )
+    ).body?.code,
+    "invalid_credentials",
+  );
+  const taken = await req(
+    "/api/applications",
+    json({
+      name: "Duplicate Ltd",
+      email: member.email,
+      country: "Cameroon",
+      classKey: "A",
+      password: "longenough",
+    }),
+  );
+  check("a taken address carries a code", taken.body?.code, "email_taken");
+  const invalid = await req("/api/applications", json({}));
+  check("validation names the fields", invalid.body?.code, "invalid_input");
+  check(
+    "  …each one of them",
+    (invalid.body?.fields ?? []).join(","),
+    "name,email,country,classKey,password",
+  );
+
+  section("Sign-in keeps the language");
+  const frLoginPage = (await req("/fr/login")).body ?? "";
+  check(
+    "a French sign-in lands on the French dashboard",
+    frLoginPage.includes(String.raw`\"/fr/dashboard\"`),
+    true,
+  );
+  const frStaffLogin = (await req("/fr/admin/login")).body ?? "";
+  check(
+    "a French staff sign-in lands on the French queue",
+    frStaffLogin.includes(String.raw`\"/fr/admin\"`),
+    true,
+  );
+
+  section("Registration form");
+  const registerPage = (await req("/register")).body ?? "";
+  check("the steps are a real form", /<form/.test(registerPage), true);
+  // The password fields live on step 2, which the first render does not show,
+  // so assert the copy shipped rather than the markup.
+  check(
+    "a password is confirmed before it is set",
+    registerPage.includes("Confirm password"),
+    true,
+  );
+  const frRegister = (await req("/fr/register")).body ?? "";
+  check(
+    "  …in French too",
+    frRegister.includes("Confirmez le mot de passe"),
+    true,
+  );
+  // The value posted stays the canonical English name the endpoint validates.
+  check(
+    "the country list reads in French",
+    frRegister.includes("République du Congo"),
+    true,
+  );
+  check(
+    "  …while still posting the name the endpoint knows",
+    frRegister.includes("Republic of the Congo"),
+    true,
   );
 
   section("Member isolation");

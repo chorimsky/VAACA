@@ -36,6 +36,11 @@ const server = spawn("npx", ["next", "start", "-p", PORT], {
     ...process.env,
     SESSION_SECRET: "readonly-check-secret-at-least-32-chars",
     VAACA_DATA_DIR: `${DIR}/data`,
+    // Set deliberately: with a seed password configured, the first read of the
+    // staff file tries to *write* the seeded account. That write fails here,
+    // and /institution reads it to say which secretariat posts are filled — so
+    // without this the branch that broke the page is never exercised.
+    STAFF_SEED_PASSWORD: "readonly-check-seed-password",
   },
   stdio: ["ignore", "pipe", "pipe"],
 });
