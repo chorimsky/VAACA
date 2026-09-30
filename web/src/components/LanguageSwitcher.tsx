@@ -37,10 +37,21 @@ export function LanguageSwitcher({
   // rebuilding, so switching never stacks a second prefix.
   const { path } = splitLocale(pathname);
 
+  // Both halves set a background. Leaving `bg-transparent` in the shared class
+  // list and only overriding it here does not work: Tailwind resolves two
+  // utilities for the same property by stylesheet order, not by the order they
+  // appear in the attribute, so the transparent one won and the active
+  // language rendered as white text on a light bar — invisible.
   const styles =
     tone === "dark"
-      ? { on: "bg-white/15 text-white", off: "text-on-dark hover:text-white" }
-      : { on: "bg-navy text-white", off: "text-body hover:text-navy" };
+      ? {
+          on: "bg-white/20 text-white",
+          off: "bg-transparent text-on-dark hover:text-white",
+        }
+      : {
+          on: "bg-navy text-white",
+          off: "bg-transparent text-body hover:text-navy",
+        };
 
   return (
     <div
@@ -63,7 +74,7 @@ export function LanguageSwitcher({
                 router.refresh();
               })
             }
-            className={`-my-1 cursor-pointer rounded-full border-none bg-transparent px-2.5 py-1 text-[12px] font-semibold disabled:cursor-wait ${
+            className={`-my-1 cursor-pointer rounded-full border-none px-2.5 py-1 text-[12px] font-semibold disabled:cursor-wait ${
               active ? styles.on : styles.off
             }`}
           >

@@ -287,6 +287,19 @@ async function run() {
     /Fran\u00e7ais/.test(frHome) && /English/.test(frHome),
     true,
   );
+  // The active language sets its own background. It once inherited
+  // `bg-transparent` from the shared class list and rendered as white text on
+  // a light bar, which is invisible.
+  check(
+    "the active language is marked and filled",
+    /aria-current="true"[^>]*class="[^"]*bg-navy[^"]*"[^>]*>Fran/.test(frHome),
+    true,
+  );
+  check(
+    "  …and does not fall back to transparent",
+    /aria-current="true"[^>]*class="[^"]*bg-transparent/.test(frHome),
+    false,
+  );
   check(
     "French nav is translated",
     /Gouvernance/.test(frHome) && /Adh\u00e9sion/.test(frHome),
