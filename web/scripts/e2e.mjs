@@ -658,6 +658,24 @@ async function run() {
   );
   const staff = jarOf(staffLogin.setCookie);
 
+  // Everything below this point is signed in. Without a session the failures
+  // cascade and end in a TypeError from an empty cookie jar, which says
+  // nothing about the actual cause — which is almost always that the store
+  // this server reads has no such account, or a different password.
+  if (!staff) {
+    console.log(`
+  Could not sign in as ${STAFF.email}.
+
+  Provision that account against the same store the server is reading:
+    npm run staff:add -- ${STAFF.email} <password>
+  or point the suite at the password it already has:
+    E2E_STAFF_PASSWORD=<password> npm run test:e2e
+`);
+    // Returning rather than exiting lets the summary print and the process
+    // still end non-zero, because "valid credentials" has already failed.
+    return;
+  }
+
   check(
     "/admin with session",
     (await req("/admin", withCookie(staff))).status,
