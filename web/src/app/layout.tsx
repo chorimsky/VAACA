@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
-import { getLocale, getPath } from "@/lib/i18n/server";
+import { getLocale } from "@/lib/i18n/server";
 import { ErrorCopyProvider } from "@/components/ErrorCopy";
 import { dictionary } from "@/lib/i18n/dictionaries";
 import { LOCALE_TAG, localePath } from "@/lib/i18n/locale";

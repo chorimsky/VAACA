@@ -1,0 +1,69 @@
+name: CI
+
+# Every push to main deploys to Vercel through the Git integration, so these
+# checks exist to make a broken commit visible. They do not block that deploy
+# on their own — see .github/workflows/README.md for the two ways to gate it.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer commit on the same branch makes the older run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Types, lint, build and tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          # Matches the Node the app is developed against.
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      # Warnings are failures here. An unused import is how a half-finished
+      # refactor reaches production looking like it compiled cleanly.
+      - name: Lint
+        run: npm run lint -- --max-warnings=0
+
+      - name: Build
+        run: npm run build
+
+      # Vercel's filesystem is read-only outside /tmp, and a server component
+      # that throws mid-render still answers 200 with an empty shell — so this
+      # asserts on rendered content, against a store it cannot write to.
+      - name: Read-only filesystem
+        run: npm run test:readonly
+
+      - name: End to end
+        env:
+          # A disposable store: the suite writes real records.
+          VAACA_DATA_DIR: ${{ runner.temp }}/vaaca-e2e
+        run: |
+          # The suite signs in, so the server needs a signing secret and one
+          # provisioned account. Both are made here and live only for this run;
+          # neither is a credential that exists anywhere else.
+          export SESSION_SECRET="$(openssl rand -base64 32)"
+          node scripts/staff.mjs add \
+            secretariat@vaaca.org correct-horse-battery-staple
+          npx next start -p 3007 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3007/ >/dev/null && break
+            sleep 1
+          done
+          npm run test:e2e
