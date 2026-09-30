@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { fill } from "@/lib/i18n/dictionaries";
 import { Logo } from "@/components/Logo";
 import { Card, Container, Eyebrow, TopRule } from "@/components/Shell";
 import { CemacMap } from "@/components/CemacMap";
 import { routes } from "@/lib/routes";
-import { CHAPTERS, SHARED_REGULATORS, getChapter } from "@/lib/chapters";
+import { CHAPTERS, SHARED_REGULATORS, TBC, getChapter } from "@/lib/chapters";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -25,17 +27,21 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const chapter = getChapter((await params).slug);
   if (!chapter) return {};
-  return {
-    title: `${chapter.name} Chapter`,
-    description: chapter.lede,
-  };
+  const { t } = await getTranslations();
+  const c = t.chapters;
+  const slug = chapter.slug as keyof typeof c.names;
+  const page = c[slug as keyof typeof c] as { lede: string };
+  return documentMetadata(
+    fill(t.meta.chapterTitle, { name: c.names[slug].full }),
+    page.lede,
+  );
 }
 
 export default async function ChapterPage({ params }: Params) {
   const chapter = getChapter((await params).slug);
   if (!chapter) notFound();
 
-  const { t, path } = await getTranslations();
+  const { t, path, locale } = await getTranslations();
   const c = t.chapters;
   const slug = chapter.slug as keyof typeof c.names;
   const page = c[slug as keyof typeof c] as {
@@ -80,7 +86,12 @@ export default async function ChapterPage({ params }: Params) {
       : "bg-tint-gold text-gold-ink";
 
   const facts = [
-    { label: c.labels.fiu, value: chapter.fiu, accent: false },
+    {
+      label: c.labels.fiu,
+      // Every other value here is a proper noun; this one is a sentence.
+      value: chapter.fiu === TBC ? c.labels.toBeConfirmed : chapter.fiu,
+      accent: false,
+    },
     { label: c.labels.language, value: c.languages[slug], accent: false },
     { label: c.labels.regulators, value: SHARED_REGULATORS, accent: false },
     { label: c.labels.accession, value: page.badge, accent: true },
@@ -106,6 +117,7 @@ export default async function ChapterPage({ params }: Params) {
           >
             {t.nav.primary.membership}
           </Link>
+          <LanguageSwitcher locale={locale} label={t.language.label} />
         </div>
       </div>
 
@@ -165,7 +177,7 @@ export default async function ChapterPage({ params }: Params) {
                 title={fill(c.labels.mapTitle, { name })}
               />
               <div className="mt-3 text-center text-[11.5px] text-muted">
-                {chapter.name} within CEMAC
+                {fill(c.labels.mapCaption, { name })}
               </div>
             </div>
           </div>
@@ -214,7 +226,7 @@ export default async function ChapterPage({ params }: Params) {
             </Card>
             <div className="rounded-[14px] bg-canvas-alt p-6">
               <div className="mb-3 text-[15px] font-bold text-navy">
-                Local to {chapter.name}
+                {fill(c.labels.localTo, { name })}
               </div>
               <div className="text-[13.5px] leading-[1.9] text-body-soft">
                 {page.localScope}

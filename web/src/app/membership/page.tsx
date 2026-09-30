@@ -3,14 +3,19 @@ import Link from "next/link";
 import { Card, Container, Eyebrow, Shell } from "@/components/Shell";
 import { routes } from "@/lib/routes";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 import { fill } from "@/lib/i18n/dictionaries";
 import { CLASS_KEYS } from "@/lib/application-types";
 
-export const metadata: Metadata = {
-  title: "Membership",
-  description:
-    "Five accession classes, open and non-exclusive, with no discretionary refusal. How to apply and what membership does and does not mean.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.membership;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 export default async function MembershipPage() {
   const { t, path } = await getTranslations();

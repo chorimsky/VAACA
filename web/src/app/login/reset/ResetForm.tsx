@@ -17,10 +17,12 @@ import { CheckIcon } from "@/components/icons";
 export function ResetForm({
   token,
   locale,
+  languageLabel,
   t,
 }: {
   token: string;
   locale: Locale;
+  languageLabel: string;
   t: Dictionary["auth"];
 }) {
   const path = (to: string) => localePath(locale, to);
@@ -66,6 +68,8 @@ export function ResetForm({
       asideLinkLabel={t.reset.backToLogin}
       asideHref={path(routes.login)}
       footer={t.footer}
+      locale={locale}
+      languageLabel={languageLabel}
     >
       <div className="w-full max-w-[400px]">
         {done ? (

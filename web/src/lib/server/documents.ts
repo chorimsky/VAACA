@@ -19,6 +19,8 @@ import {
 import {
   DOCUMENT_STATUS_LABEL,
   DOCUMENT_STATUS_TONE,
+  UNAVAILABLE_REASONS,
+  unavailableReasonKey,
 } from "@/lib/document-types";
 
 /**
@@ -95,7 +97,7 @@ const SEED: Omit<DocumentRecord, "updatedAt" | "updatedBy">[] = [
     file: null,
     fileSize: null,
     generated: null,
-    unavailableReason: "Drafting in progress.",
+    unavailableReason: UNAVAILABLE_REASONS.drafting,
   },
   {
     id: "founding-declaration-brief",
@@ -105,8 +107,7 @@ const SEED: Omit<DocumentRecord, "updatedAt" | "updatedBy">[] = [
     file: null,
     fileSize: null,
     generated: null,
-    unavailableReason:
-      "Internal — not circulated outside the founding coalition.",
+    unavailableReason: UNAVAILABLE_REASONS.internal,
   },
 ];
 
@@ -134,8 +135,7 @@ async function withSize(doc: DocumentRecord): Promise<DocumentRecord> {
     return {
       ...doc,
       fileSize: null,
-      unavailableReason:
-        doc.unavailableReason ?? "File missing from the document store.",
+      unavailableReason: doc.unavailableReason ?? UNAVAILABLE_REASONS.missing,
     };
   }
 }
@@ -164,11 +164,15 @@ function toPublic(doc: DocumentRecord): PublicDocument {
     status: doc.status,
     statusLabel: DOCUMENT_STATUS_LABEL[doc.status],
     tone: DOCUMENT_STATUS_TONE[doc.status],
+    generated: doc.generated !== null,
     href: downloadable ? documentHref(doc) : null,
     sizeLabel: doc.generated
       ? "CSV · generated on request"
       : formatSize(doc.fileSize, documentExtension(doc)),
     unavailableReason: downloadable ? null : doc.unavailableReason,
+    unavailableKey: downloadable
+      ? null
+      : unavailableReasonKey(doc.unavailableReason),
     updatedAt: doc.updatedAt,
   };
 }

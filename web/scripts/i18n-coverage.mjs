@@ -5,9 +5,10 @@
  *   npm run i18n:coverage
  *
  * Fetches each page in both locales and compares the rendered text. A segment
- * of prose that is byte-identical in both is almost certainly untranslated —
- * proper nouns and acronyms are short, so a length floor keeps VAACA, COBAC
- * and the like out of the report.
+ * of prose that is byte-identical in both is almost certainly untranslated.
+ * A length floor keeps single acronyms out, but it was set at 45 characters
+ * and hid real misses like "Local to Gabon"; at 14 it catches short labels,
+ * at the cost of listing a few proper nouns that are correct as they stand.
  *
  * This is a progress report, not a test: translating incrementally means some
  * French pages legitimately still carry English until their turn comes, and
@@ -15,7 +16,7 @@
  */
 
 const BASE = process.env.BASE ?? "http://localhost:3007";
-const MIN = Number(process.env.MIN_SEGMENT ?? 45);
+const MIN = Number(process.env.MIN_SEGMENT ?? 14);
 
 const PAGES = [
   "/",

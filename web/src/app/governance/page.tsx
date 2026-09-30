@@ -3,6 +3,7 @@ import { Card, Container, Eyebrow, Shell } from "@/components/Shell";
 import { Tag } from "@/components/Tag";
 import { listPublicSeats } from "@/lib/server/seats";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 import { fill } from "@/lib/i18n/dictionaries";
 import {
   blocBalance,
@@ -11,11 +12,15 @@ import {
   majorityHolder,
 } from "@/lib/seat-types";
 
-export const metadata: Metadata = {
-  title: "Governance",
-  description:
-    "Nine founding seats on the Coordination Council, structured so no single interest holds a majority.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.governance;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 export const dynamic = "force-dynamic";
 

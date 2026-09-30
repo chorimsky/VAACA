@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Logo } from "@/components/Logo";
 import { Field, PrimaryButton, TextInput } from "@/components/Field";
 import { TopRule } from "@/components/TopRule";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { routes } from "@/lib/routes";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { localePath, type Locale } from "@/lib/i18n/locale";
@@ -20,12 +21,14 @@ export function StaffLoginForm({
   locale,
   t,
   backLabel,
+  languageLabel,
 }: {
   provisioned: boolean;
   destination: string;
   locale: Locale;
   t: Dictionary["auth"];
   backLabel: string;
+  languageLabel: string;
 }) {
   const path = (to: string) => localePath(locale, to);
   const router = useRouter();
@@ -48,13 +51,13 @@ export function StaffLoginForm({
         const data = (await res.json().catch(() => null)) as {
           error?: string;
         } | null;
-        setError(data?.error ?? "Sign-in failed.");
+        setError(data?.error ?? t.staff.failed);
         return;
       }
       router.replace(destination);
       router.refresh();
     } catch {
-      setError("Could not reach the server. Try again.");
+      setError(t.login.unreachable);
     } finally {
       setBusy(false);
     }
@@ -72,6 +75,7 @@ export function StaffLoginForm({
         >
           <span aria-hidden>←</span> {backLabel}
         </Link>
+        <LanguageSwitcher locale={locale} label={languageLabel} />
       </div>
 
       <main
@@ -141,17 +145,16 @@ export function StaffLoginForm({
                 disabled={busy || !provisioned}
                 className="mt-1 w-full px-0 py-[13px]"
               >
-                {busy ? "Signing in…" : "Sign in"}
+                {busy ? t.staff.signingIn : t.staff.submit}
               </PrimaryButton>
             </div>
           </form>
 
           <p className="mt-[18px] text-center text-[12.5px] leading-[1.6] text-muted">
-            Member accounts are separate —{" "}
-            <Link href={routes.login} className="font-semibold">
-              member login
+            {t.staff.prompt}{" "}
+            <Link href={path(routes.login)} className="font-semibold">
+              {t.staff.link}
             </Link>
-            .
           </p>
         </div>
       </main>

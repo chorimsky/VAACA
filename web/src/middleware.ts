@@ -10,6 +10,7 @@ import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE,
   LOCALE_HEADER,
+  PATH_HEADER,
   isLocale,
   localeFromAcceptLanguage,
   localePath,
@@ -147,6 +148,22 @@ export async function middleware(request: NextRequest) {
   return serve(request, locale, path, prefixed);
 }
 
+/**
+ * Copies the request headers with the resolved locale and the unprefixed route
+ * attached. Both are things only middleware knows: by the time a page renders,
+ * `/fr/standards` looks exactly like `/standards`.
+ */
+function withRequestContext(
+  request: NextRequest,
+  locale: Locale,
+  path: string,
+) {
+  const headers = new Headers(request.headers);
+  headers.set(LOCALE_HEADER, locale);
+  headers.set(PATH_HEADER, path);
+  return headers;
+}
+
 /** A `next` value may already carry a prefix; never stack two. */
 const stripLocale = (target: string) => splitLocale(target).path;
 
@@ -161,28 +178,30 @@ function serve(
   path: string,
   prefixed: boolean,
 ) {
-  // English is served untouched. Attaching a request header makes every
-  // request an internal rewrite, and a rewrite bypasses the static-params
-  // check that lets `dynamicParams = false` answer an unknown chapter slug
-  // with a real 404 — it renders instead, and a `notFound()` thrown mid-render
-  // streams a 200 shell. `getLocale()` already defaults to English when the
-  // header is absent, so nothing is lost by staying out of the way.
-  if (!prefixed) return NextResponse.next();
+  // Only `/fr` is rewritten: English URLs already name the route that serves
+  // them, and a rewrite bypasses the static-params check that lets an unknown
+  // chapter slug 404 rather than render. Both carry the request context —
+  // passing headers through `next()` is not a rewrite, so English keeps its
+  // direct route match.
+  const headers = withRequestContext(request, locale, path);
+  const response = prefixed
+    ? NextResponse.rewrite(
+        new URL(`${path}${request.nextUrl.search}`, request.url),
+        { request: { headers } },
+      )
+    : NextResponse.next({ request: { headers } });
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set(LOCALE_HEADER, locale);
-
-  const response = NextResponse.rewrite(
-    new URL(`${path}${request.nextUrl.search}`, request.url),
-    { request: { headers: requestHeaders } },
-  );
-
-  // Remember an explicit choice, so the root sends them back next time.
-  response.cookies.set(LOCALE_COOKIE, locale, {
-    path: "/",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  // The cookie records the language actually being read, in both directions.
+  // Setting it only for `/fr` meant a visitor who switched to English was sent
+  // back to French the next time they opened the site: the cookie still held
+  // the older choice and nothing could clear it.
+  if (request.cookies.get(LOCALE_COOKIE)?.value !== locale) {
+    response.cookies.set(LOCALE_COOKIE, locale, {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
   return response;
 }
 

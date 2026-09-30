@@ -26,6 +26,27 @@ export const DOCUMENT_STATUS_LABEL: Record<DocumentStatus, string> = {
   internal: "Internal",
 };
 
+/**
+ * Why a listed document cannot be downloaded. A closed set rather than free
+ * text, so the public library can render the reason in the visitor's language
+ * instead of the sentence that happens to be stored.
+ */
+export const UNAVAILABLE_REASONS = {
+  drafting: "Drafting in progress.",
+  internal: "Internal — not circulated outside the founding coalition.",
+  missing: "File missing from the document store.",
+} as const;
+
+export type UnavailableReason = keyof typeof UNAVAILABLE_REASONS;
+
+/** The key for a stored reason, or null when it is text we do not recognise. */
+export function unavailableReasonKey(
+  reason: string | null,
+): UnavailableReason | null {
+  const keys = Object.keys(UNAVAILABLE_REASONS) as UnavailableReason[];
+  return keys.find((k) => UNAVAILABLE_REASONS[k] === reason) ?? null;
+}
+
 export const DOCUMENT_STATUS_TONE: Record<DocumentStatus, Tone> = {
   ratified: "green",
   living: "blue",
@@ -92,10 +113,14 @@ export type PublicDocument = {
   status: DocumentStatus;
   statusLabel: string;
   tone: Tone;
+  /** True when the file is produced on demand rather than stored. */
+  generated: boolean;
   /** Download path, or null when unpublished. */
   href: string | null;
   sizeLabel: string | null;
   unavailableReason: string | null;
+  /** The recognised reason, for callers that translate it. */
+  unavailableKey: UnavailableReason | null;
   updatedAt: string | null;
 };
 

@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
-import { getLocale } from "@/lib/i18n/server";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { getLocale, getPath } from "@/lib/i18n/server";
+import { ErrorCopyProvider } from "@/components/ErrorCopy";
 import { dictionary } from "@/lib/i18n/dictionaries";
-import { LOCALE_TAG } from "@/lib/i18n/locale";
+import { LOCALE_TAG, localePath } from "@/lib/i18n/locale";
+import { documentMetadata } from "@/lib/i18n/metadata";
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
@@ -18,47 +20,37 @@ const sourceSerif = Source_Serif_4({
   weight: ["500", "600", "700"],
 });
 
-const TITLE = "VAACA — Virtual Assets Association of Central Africa";
+/**
+ * Built per request rather than declared once: the title and description have
+ * to follow the page's language, and the canonical URL has to name the page
+ * rather than the home page. A page that sets its own copy calls the same
+ * helper, so the two never disagree.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const { title, description } = dictionary(locale).meta.home;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: { default: TITLE, template: "%s · VAACA" },
-  description: SITE_DESCRIPTION,
-  applicationName: SITE_NAME,
-  keywords: [
-    "VAACA",
-    "CEMAC",
-    "virtual assets",
-    "PSAN",
-    "Central Africa",
-    "Cameroon",
-    "regulatory readiness",
-    "COSUMAF",
-    "COBAC",
-  ],
-  alternates: {
-    canonical: "/",
-    // No `languages` here on purpose. Layout metadata is static, so a link tag
-    // declared at this level would claim the *homepage's* alternates on every
-    // page — a wrong signal is worse than none. The per-URL alternates in
-    // `sitemap.ts` are correct for each page, and hreflang in a sitemap is
-    // equivalent to hreflang in the head.
-  },
-  openGraph: {
-    type: "website",
-    siteName: SITE_NAME,
-    title: TITLE,
-    description: SITE_DESCRIPTION,
-    url: SITE_URL,
-    locale: "en",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: TITLE,
-    description: SITE_DESCRIPTION,
-  },
-  robots: { index: true, follow: true },
-};
+  return {
+    metadataBase: new URL(SITE_URL),
+    applicationName: SITE_NAME,
+    keywords: [
+      "VAACA",
+      "CEMAC",
+      "virtual assets",
+      "PSAN",
+      "Central Africa",
+      "Cameroon",
+      "regulatory readiness",
+      "COSUMAF",
+      "COBAC",
+    ],
+    robots: { index: true, follow: true },
+    ...(await documentMetadata(title, description)),
+    // `documentMetadata` returns a plain string title; the root needs the
+    // default-and-template form so page titles get the " · VAACA" suffix.
+    title: { default: title, template: "%s · VAACA" },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0B4944",
@@ -97,7 +89,16 @@ export default async function RootLayout({
         >
           {t.nav.skipToContent}
         </a>
-        {children}
+        <ErrorCopyProvider
+          value={{
+            failure: t.errors.failure,
+            backToVaaca: t.nav.backToVaaca,
+            footer: t.auth.footer,
+            homeHref: localePath(locale, "/"),
+          }}
+        >
+          {children}
+        </ErrorCopyProvider>
       </body>
     </html>
   );

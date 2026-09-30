@@ -19,10 +19,12 @@ import { localePath, type Locale } from "@/lib/i18n/locale";
 export function LoginForm({
   destination,
   locale,
+  languageLabel,
   t,
 }: {
   destination: string;
   locale: Locale;
+  languageLabel: string;
   t: Dictionary["auth"];
 }) {
   const path = (to: string) => localePath(locale, to);
@@ -65,6 +67,8 @@ export function LoginForm({
       asideLinkLabel={t.login.alreadyLink}
       asideHref={path(routes.register)}
       footer={t.footer}
+      locale={locale}
+      languageLabel={languageLabel}
     >
       <div className="w-full max-w-[400px]">
         <h1 className="mb-2 text-center font-serif text-[26px] font-semibold text-navy">

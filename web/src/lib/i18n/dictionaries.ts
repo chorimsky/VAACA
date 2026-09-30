@@ -192,6 +192,13 @@ export const en = {
       internal: "Internal — not circulated outside the founding coalition.",
       missing: "File missing from the document store.",
     },
+    notYetPublished: "Not yet published",
+    status: {
+      ratified: "Ratified",
+      living: "Living document",
+      draft: "Working draft",
+      internal: "Internal",
+    },
   },
   membership: {
     title: "Open and non-exclusive. Five classes, no discretionary refusal.",
@@ -355,6 +362,7 @@ export const en = {
   chapters: {
     labels: {
       fiu: "National FIU",
+      toBeConfirmed: "To be confirmed",
       language: "Working language",
       regulators: "Shared regulators",
       accession: "Accession status",
@@ -364,6 +372,8 @@ export const en = {
       definesPending:
         "What replicates from the Cameroon chapter, and what stays local.",
       mapTitle: "{name} within the six CEMAC member states",
+      mapCaption: "{name} within CEMAC",
+      localTo: "Local to {name}",
       replicates: "Replicates to every chapter",
       carriesOver: "Carries over unchanged",
       chapterStatus: "Chapter Status",
@@ -607,9 +617,94 @@ export const en = {
       noAccountsAfter: "before signing in.",
       signingIn: "Signing in…",
       submit: "Sign in",
+      failed: "Sign-in failed.",
     },
     footer:
       "VAACA · Virtual Assets Association of Central Africa · In Formation",
+  },
+  roles: {
+    secretary_general: "Secretary General",
+    standards_officer: "Standards & Assessment Officer",
+    council_member: "Council Member",
+  },
+  errors: {
+    notFound: {
+      eyebrow: "Error 404",
+      title: "That page isn't part of the association.",
+      body: "The link may be out of date, or the page may not have been published yet — VAACA is in formation and this site is still growing.",
+      title404: "Page not found",
+      regionLink: "Region & chapters",
+      home: "Return to the home page",
+    },
+    failure: {
+      eyebrow: "Something went wrong",
+      title: "This page failed to load.",
+      body: "The problem has been logged. You can try again, or head back to the home page.",
+      reference: "Reference:",
+      retry: "Try again",
+    },
+  },
+  meta: {
+    home: {
+      title: "VAACA — Virtual Assets Association of Central Africa",
+      description:
+        "VAACA connects industry, regulators, researchers and innovators around shared standards and trusted market infrastructure across the six CEMAC states.",
+    },
+    institution: {
+      title: "The Institution",
+      description:
+        "Why VAACA exists, its four founding organizations, the secretariat it still needs, and the launch seminar in Yaoundé.",
+    },
+    standards: {
+      title: "Standards",
+      description:
+        "VAACA Framework 01 — the PSAN Regulatory Readiness Framework: three perimeter gates, eight readiness domains, a 24-point scale.",
+    },
+    ecosystem: {
+      title: "Ecosystem",
+      description:
+        "Who VAACA connects across CEMAC — banks, VASPs, fintechs, regulators and academia — and its engagement posture with COSUMAF, COBAC, BEAC and GABAC.",
+    },
+    membership: {
+      title: "Membership",
+      description:
+        "Five accession classes, open and non-exclusive, with no discretionary refusal. How to apply and what membership does and does not mean.",
+    },
+    governance: {
+      title: "Governance",
+      description:
+        "Nine founding seats on the Coordination Council, structured so no single interest holds a majority.",
+    },
+    region: {
+      title: "Region",
+      description:
+        "Cameroon's founding chapter and the five CEMAC states next in line — one region, multiple markets, a shared institutional architecture.",
+    },
+    resources: {
+      title: "Resources",
+      description:
+        "VAACA founding documents, standards drafts and briefings. Items marked as working drafts are circulated for comment, not final positions.",
+    },
+    login: {
+      title: "Member Login",
+      description: "Sign in to the VAACA member portal.",
+    },
+    register: {
+      title: "Join VAACA",
+      description:
+        "Submit an accession request across five membership classes.",
+    },
+    reset: {
+      title: "Reset password",
+      description: "Set a new VAACA member password.",
+    },
+    staffLogin: {
+      title: "Secretariat Sign-in",
+      description: "Restricted to secretariat and Council staff.",
+    },
+    // A chapter page's title is built from the chapter name, and the two
+    // languages order the words differently — so it is a template, not a suffix.
+    chapterTitle: "{name} Chapter",
   },
   framework: {
     domains: {
@@ -950,6 +1045,13 @@ export const fr: Dictionary = {
       internal: "Interne — non diffusé hors de la coalition fondatrice.",
       missing: "Fichier absent du dépôt documentaire.",
     },
+    notYetPublished: "Non encore publié",
+    status: {
+      ratified: "Ratifié",
+      living: "Document vivant",
+      draft: "Projet de travail",
+      internal: "Interne",
+    },
   },
   membership: {
     title:
@@ -1117,6 +1219,7 @@ export const fr: Dictionary = {
   chapters: {
     labels: {
       fiu: "CRF nationale",
+      toBeConfirmed: "À confirmer",
       language: "Langue de travail",
       regulators: "Régulateurs communs",
       accession: "Statut d'adhésion",
@@ -1126,6 +1229,8 @@ export const fr: Dictionary = {
       definesPending:
         "Ce qui se réplique depuis le chapitre camerounais, et ce qui reste local.",
       mapTitle: "{name} parmi les six États membres de la CEMAC",
+      mapCaption: "{name} dans la CEMAC",
+      localTo: "Propre au {name}",
       replicates: "Se réplique dans chaque chapitre",
       carriesOver: "Repris à l'identique",
       chapterStatus: "Statut du chapitre",
@@ -1376,9 +1481,92 @@ export const fr: Dictionary = {
       noAccountsAfter: "avant de vous connecter.",
       signingIn: "Connexion…",
       submit: "Se connecter",
+      failed: "Échec de la connexion.",
     },
     footer:
       "VAACA · Virtual Assets Association of Central Africa · En formation",
+  },
+  roles: {
+    secretary_general: "Secrétaire général",
+    standards_officer: "Responsable normes et évaluation",
+    council_member: "Membre du Conseil",
+  },
+  errors: {
+    notFound: {
+      eyebrow: "Erreur 404",
+      title: "Cette page ne fait pas partie de l'association.",
+      body: "Le lien est peut-être obsolète, ou la page n'a pas encore été publiée — VAACA est en formation et ce site continue de s'étoffer.",
+      title404: "Page introuvable",
+      regionLink: "Région et chapitres",
+      home: "Retour à l'accueil",
+    },
+    failure: {
+      eyebrow: "Une erreur est survenue",
+      title: "Le chargement de cette page a échoué.",
+      body: "L'incident a été enregistré. Vous pouvez réessayer ou revenir à l'accueil.",
+      reference: "Référence :",
+      retry: "Réessayer",
+    },
+  },
+  meta: {
+    home: {
+      title: "VAACA — Virtual Assets Association of Central Africa",
+      description:
+        "VAACA rassemble les acteurs du secteur, les régulateurs, les chercheurs et les innovateurs autour de normes communes et d'infrastructures de marché fiables, dans les six États de la CEMAC.",
+    },
+    institution: {
+      title: "L'institution",
+      description:
+        "Pourquoi VAACA existe, ses quatre organisations fondatrices, le secrétariat qu'il lui reste à nommer et le séminaire de lancement à Yaoundé.",
+    },
+    standards: {
+      title: "Normes",
+      description:
+        "Cadre VAACA 01 — le Cadre de maturité réglementaire PSAN : trois portes de périmètre, huit domaines de maturité, un barème de 24 points.",
+    },
+    ecosystem: {
+      title: "Écosystème",
+      description:
+        "Qui VAACA relie dans la CEMAC — banques, PSAN, fintechs, régulateurs et monde académique — et sa posture d'engagement avec la COSUMAF, la COBAC, la BEAC et le GABAC.",
+    },
+    membership: {
+      title: "Adhésion",
+      description:
+        "Cinq classes d'adhésion, ouvertes et non exclusives, sans refus discrétionnaire. Comment candidater et ce que l'adhésion signifie — ou non.",
+    },
+    governance: {
+      title: "Gouvernance",
+      description:
+        "Neuf sièges fondateurs au Conseil de coordination, organisés pour qu'aucun intérêt ne détienne la majorité.",
+    },
+    region: {
+      title: "Région",
+      description:
+        "Le chapitre fondateur camerounais et les cinq États de la CEMAC qui suivent — une région, plusieurs marchés, une architecture institutionnelle commune.",
+    },
+    resources: {
+      title: "Ressources",
+      description:
+        "Documents fondateurs, projets de normes et notes de VAACA. Les éléments au statut de projet sont diffusés pour commentaires et ne constituent pas des positions définitives.",
+    },
+    login: {
+      title: "Espace membre",
+      description: "Connectez-vous à l'espace membre de VAACA.",
+    },
+    register: {
+      title: "Adhérer à VAACA",
+      description:
+        "Déposez une demande d'adhésion parmi cinq classes de membres.",
+    },
+    reset: {
+      title: "Réinitialiser le mot de passe",
+      description: "Définissez un nouveau mot de passe membre VAACA.",
+    },
+    staffLogin: {
+      title: "Connexion secrétariat",
+      description: "Réservé au secrétariat et aux membres du Conseil.",
+    },
+    chapterTitle: "Chapitre {name}",
   },
   framework: {
     domains: {

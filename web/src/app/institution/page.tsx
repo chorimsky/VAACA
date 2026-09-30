@@ -3,14 +3,19 @@ import { Card, Container, Eyebrow, Shell } from "@/components/Shell";
 import { Tag } from "@/components/Tag";
 import { NetworkIcon, ShieldIcon, StandardsIcon } from "@/components/icons";
 import { filledStaffRoles } from "@/lib/server/store";
-import { ROLE_LABEL, type StaffRole } from "@/lib/staff-roles";
+import { type StaffRole } from "@/lib/staff-roles";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: "The Institution",
-  description:
-    "Why VAACA exists, its four founding organizations, the secretariat it still needs, and the launch seminar in Yaoundé.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.institution;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 /**
  * The launch seminar. Dated so the page can tell the reader whether it is still
@@ -136,7 +141,7 @@ export default async function InstitutionPage() {
                 <Card key={post.role} className="px-5 py-[18px]">
                   <div className="flex items-start justify-between gap-3">
                     <div className="text-[14.5px] font-bold text-navy">
-                      {ROLE_LABEL[post.role]}
+                      {t.roles[post.role]}
                     </div>
                     <Tag tone={isFilled ? "green" : "gold"}>
                       {isFilled ? i.appointed : i.vacant}

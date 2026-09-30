@@ -28,10 +28,12 @@ import { localePath, type Locale } from "@/lib/i18n/locale";
  */
 export function RegistrationFlow({
   locale,
+  languageLabel,
   t,
   classes,
 }: {
   locale: Locale;
+  languageLabel: string;
   t: Dictionary["auth"];
   /** Class letters and descriptions, already translated. */
   classes: { key: ClassKey; letter: string; who: string }[];
@@ -101,6 +103,8 @@ export function RegistrationFlow({
       asideHref={path(routes.login)}
       align="start"
       footer={t.footer}
+      locale={locale}
+      languageLabel={languageLabel}
     >
       <div className="w-full max-w-[640px]">
         {/* STEP INDICATOR */}

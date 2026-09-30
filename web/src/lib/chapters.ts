@@ -14,6 +14,12 @@ import type { CemacCode } from "./cemac-geo";
  * near-identical page templates.
  */
 
+/**
+ * A value that is a statement rather than a name — the chapter pages translate
+ * it, where every other entry here is a proper noun that stays as it is.
+ */
+export const TBC = "To be confirmed";
+
 export type ChapterKind = "founding" | "pending";
 
 export type Chapter = {
@@ -240,7 +246,8 @@ export const CHAPTERS: Chapter[] = [
     badgeTone: "gold",
     eyebrow: "CEMAC Chapter",
     lede: "The only CEMAC state with Spanish as a working language — the Charter and Readiness Framework require translation before accession can proceed.",
-    fiu: "To be confirmed",
+    // Equatorial Guinea has not designated one; the page translates this.
+    fiu: TBC,
     language: "Spanish / French",
     accessionStatus: "Pending accession · translation required",
     gridStatus: "Pending",

@@ -292,12 +292,12 @@ async function run() {
   // a light bar, which is invisible.
   check(
     "the active language is marked and filled",
-    /aria-current="true"[^>]*class="[^"]*bg-navy[^"]*"[^>]*>Fran/.test(frHome),
+    /aria-current="page"[^>]*class="[^"]*bg-navy[^"]*"[^>]*>Fran/.test(frHome),
     true,
   );
   check(
     "  …and does not fall back to transparent",
-    /aria-current="true"[^>]*class="[^"]*bg-transparent/.test(frHome),
+    /aria-current="page"[^>]*class="[^"]*bg-transparent/.test(frHome),
     false,
   );
   check(
@@ -310,13 +310,21 @@ async function run() {
     /Gouvernance/.test((await req("/")).body ?? ""),
     false,
   );
-  // hreflang is declared per URL in the sitemap, where it can name the right
-  // counterpart for each page. A static tag in the layout would claim the
-  // homepage's alternates on every page, which is a worse signal than none.
+  // hreflang is declared twice on purpose: in the sitemap, and in each page's
+  // own head. Both have to name the counterpart of *that* page — the earlier
+  // static tag in the layout claimed the homepage's alternates everywhere,
+  // which is a worse signal than none.
   const map = await req("/sitemap.xml");
   check(
     "the sitemap lists French URLs",
     (map.body ?? "").includes("/fr/standards"),
+    true,
+  );
+  const robots = (await req("/robots.txt")).body ?? "";
+  check(
+    "robots.txt closes the French internal paths too",
+    robots.includes("Disallow: /fr/admin") &&
+      robots.includes("Disallow: /fr/dashboard"),
     true,
   );
   check(
@@ -325,10 +333,58 @@ async function run() {
       /hreflang="en"/i.test(map.body ?? ""),
     true,
   );
+  const standardsHead = (await req("/standards")).body ?? "";
   check(
-    "no page claims the homepage's alternates",
-    /hreflang/i.test((await req("/standards")).body ?? ""),
+    "a page declares its own alternates",
+    /<link rel="alternate" hreflang="fr" href="[^"]*\/fr\/standards"/i.test(
+      standardsHead,
+    ),
+    true,
+  );
+  check(
+    "  …and not the homepage's",
+    /<link rel="alternate" hreflang="fr" href="[^"]*\/fr"\s*\/?>/i.test(
+      standardsHead,
+    ),
     false,
+  );
+  check(
+    "  …with x-default on the English URL",
+    /<link rel="alternate" hreflang="x-default" href="[^"]*\/standards"/i.test(
+      standardsHead,
+    ),
+    true,
+  );
+  check(
+    "each page is its own canonical",
+    /rel="canonical"[^>]*href="[^"]*\/fr\/standards"/i.test(
+      (await req("/fr/standards")).body ?? "",
+    ),
+    true,
+  );
+  // The tab title and the search-result snippet are the first thing anyone
+  // reads, and they were English on every French page until metadata became
+  // per-request.
+  const frStandards = (await req("/fr/standards")).body ?? "";
+  check(
+    "a French page has a French title",
+    /<title>Normes/.test(frStandards),
+    true,
+  );
+  check(
+    "  …and a French description",
+    /name="description" content="Cadre VAACA/.test(frStandards),
+    true,
+  );
+  check(
+    "the social card names the page, not the site",
+    /property="og:title" content="Normes/.test(frStandards),
+    true,
+  );
+  check(
+    "a French chapter title reads as French",
+    /<title>Chapitre Gabon/.test((await req("/fr/chapters/gabon")).body ?? ""),
+    true,
   );
 
   section("Locale survives the gates");

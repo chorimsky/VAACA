@@ -13,5 +13,5 @@ export const SITE_URL =
 
 export const SITE_NAME = "VAACA";
 
-export const SITE_DESCRIPTION =
-  "The regional institution organizing Central Africa's virtual-asset economy. VAACA connects industry, regulators, researchers and innovators around shared standards across the six CEMAC states.";
+// The site description is no longer a constant here: it has to be translated,
+// so it lives with the rest of the copy in `meta.home` in the dictionaries.

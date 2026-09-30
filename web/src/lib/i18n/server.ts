@@ -6,6 +6,7 @@ import { dictionary, type Dictionary } from "./dictionaries";
 import {
   DEFAULT_LOCALE,
   LOCALE_HEADER,
+  PATH_HEADER,
   isLocale,
   localePath,
   type Locale,
@@ -18,6 +19,16 @@ import {
 export async function getLocale(): Promise<Locale> {
   const value = (await headers()).get(LOCALE_HEADER);
   return isLocale(value) ? value : DEFAULT_LOCALE;
+}
+
+/**
+ * The current route with any locale prefix removed, as middleware saw it.
+ * Falls back to the home page, which is the only sensible guess when the
+ * header is missing (a request middleware never touched).
+ */
+export async function getPath(): Promise<string> {
+  const value = (await headers()).get(PATH_HEADER);
+  return value?.startsWith("/") ? value : "/";
 }
 
 /** The locale and its dictionary, which is what most pages actually want. */

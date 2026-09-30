@@ -2,12 +2,17 @@ import type { Metadata } from "next";
 import { Container, Eyebrow, Shell } from "@/components/Shell";
 import { INSTITUTIONS, PRIORITY_INSTITUTIONS } from "@/lib/institutions";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: "Ecosystem",
-  description:
-    "Who VAACA connects across CEMAC — banks, VASPs, fintechs, regulators and academia — and its engagement posture with COSUMAF, COBAC, BEAC and GABAC.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.ecosystem;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 export default async function EcosystemPage() {
   const { t } = await getTranslations();

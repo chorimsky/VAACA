@@ -1,11 +1,12 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useTransition } from "react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import {
   LOCALES,
   LOCALE_LABEL,
+  LOCALE_TAG,
   localePath,
   splitLocale,
   type Locale,
@@ -14,9 +15,15 @@ import {
 /**
  * Switches between English and French.
  *
- * It navigates to the same page in the other locale rather than toggling a
- * setting in place, because each locale has its own address — so the URL a
- * visitor copies after switching is the one that reproduces what they see.
+ * These are links, not buttons. Each locale has its own address, so the other
+ * language is a place — which means it should behave like one: openable in a
+ * new tab, copyable from the context menu, followable by a crawler, and
+ * working with no JavaScript at all. As buttons calling `router.push` it did
+ * none of those.
+ *
+ * The href carries the current query string, because losing it is not
+ * cosmetic: switching language on `/login?next=/dashboard` used to drop the
+ * destination and send the visitor somewhere else after signing in.
  */
 export function LanguageSwitcher({
   locale,
@@ -29,13 +36,27 @@ export function LanguageSwitcher({
   label: string;
 }) {
   const pathname = usePathname() || "/";
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
 
   // The rewrite means `usePathname()` can report either the prefixed or the
   // bare path depending on how the page was reached; normalise before
   // rebuilding, so switching never stacks a second prefix.
   const { path } = splitLocale(pathname);
+
+  /**
+   * The query travels with the switch, but a `next` destination has to move
+   * languages too — otherwise choosing English on `/fr/login?next=/fr/dashboard`
+   * signs you in and drops you back on the French page you just left.
+   */
+  const queryFor = (option: Locale) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const next = params.get("next");
+    if (next?.startsWith("/") && !next.startsWith("//")) {
+      params.set("next", localePath(option, splitLocale(next).path));
+    }
+    const query = params.toString();
+    return query ? `?${query}` : "";
+  };
 
   // Both halves set a background. Leaving `bg-transparent` in the shared class
   // list and only overriding it here does not work: Tailwind resolves two
@@ -46,11 +67,11 @@ export function LanguageSwitcher({
     tone === "dark"
       ? {
           on: "bg-white/20 text-white",
-          off: "bg-transparent text-on-dark hover:text-white",
+          off: "bg-transparent text-on-dark hover:bg-white/10 hover:text-white",
         }
       : {
           on: "bg-navy text-white",
-          off: "bg-transparent text-body hover:text-navy",
+          off: "bg-transparent text-body hover:bg-canvas-alt hover:text-navy",
         };
 
   return (
@@ -61,27 +82,30 @@ export function LanguageSwitcher({
     >
       {LOCALES.map((option) => {
         const active = option === locale;
+        const href = `${localePath(option, path)}${queryFor(option)}`;
         return (
-          <button
+          <Link
             key={option}
-            type="button"
-            lang={option}
-            aria-current={active ? "true" : undefined}
-            disabled={pending}
-            onClick={() =>
-              startTransition(() => {
-                router.push(localePath(option, path));
-                router.refresh();
-              })
-            }
-            className={`-my-1 cursor-pointer rounded-full border-none px-2.5 py-1 text-[12px] font-semibold disabled:cursor-wait ${
+            href={href}
+            // `hreflang` tells a crawler what it will find there; `lang` tells
+            // a screen reader to say "Français" with a French voice rather
+            // than reading it as English.
+            hrefLang={LOCALE_TAG[option]}
+            lang={LOCALE_TAG[option]}
+            // The other language is this same page in another translation —
+            // which is what `rel="alternate"` says.
+            rel={active ? undefined : "alternate"}
+            // The active link points at the page already open, so `page` is
+            // the precise value; `true` would only say "current in this set".
+            aria-current={active ? "page" : undefined}
+            className={`-my-1 rounded-full px-2.5 py-1 text-[12px] font-semibold no-underline transition-colors ${
               active ? styles.on : styles.off
             }`}
           >
             {/* The name of each language in that language, which is what a
                 reader looking for their own can actually recognise. */}
             {LOCALE_LABEL[option]}
-          </button>
+          </Link>
         );
       })}
     </div>

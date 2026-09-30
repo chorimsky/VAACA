@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { TopRule } from "./TopRule";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import type { Locale } from "@/lib/i18n/locale";
 
 /**
  * Chrome for the standalone portal screens (login, registration): rule, a
@@ -11,6 +13,8 @@ export function AuthShell({
   asideLinkLabel,
   asideHref,
   footer,
+  locale,
+  languageLabel,
   align = "center",
   children,
 }: {
@@ -19,6 +23,9 @@ export function AuthShell({
   asideHref: string;
   /** Already translated by the caller. */
   footer: string;
+  locale: Locale;
+  /** Accessible name for the language switcher, already translated. */
+  languageLabel: string;
   align?: "center" | "start";
   children: React.ReactNode;
 }) {
@@ -28,11 +35,16 @@ export function AuthShell({
 
       <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-center justify-between gap-4 px-8 py-5">
         <Logo />
-        <div className="text-[13.5px] font-medium">
-          {asideText}{" "}
-          <Link href={asideHref} className="font-bold text-navy">
-            {asideLinkLabel}
-          </Link>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="text-[13.5px] font-medium">
+            {asideText}{" "}
+            <Link href={asideHref} className="font-bold text-navy">
+              {asideLinkLabel}
+            </Link>
+          </div>
+          {/* Every page needs a way out of the language it is in — these
+              portal screens had none. */}
+          <LanguageSwitcher locale={locale} label={languageLabel} />
         </div>
       </div>
 

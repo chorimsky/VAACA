@@ -4,6 +4,7 @@ import { Card, Container, Eyebrow, Shell } from "@/components/Shell";
 import { routes } from "@/lib/routes";
 import { listPublicDocuments } from "@/lib/server/documents";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 import { fill } from "@/lib/i18n/dictionaries";
 import {
   DOMAIN_IDS,
@@ -13,11 +14,15 @@ import {
   THRESHOLD_BAND,
 } from "@/lib/member-types";
 
-export const metadata: Metadata = {
-  title: "Standards",
-  description:
-    "VAACA Framework 01 — the PSAN Regulatory Readiness Framework: three perimeter gates, eight readiness domains, a 24-point scale.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.standards;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 export const dynamic = "force-dynamic";
 

@@ -20,6 +20,14 @@ export const DEFAULT_LOCALE: Locale = "en";
 /** The header middleware sets so server components can read the locale. */
 export const LOCALE_HEADER = "x-vaaca-locale";
 
+/**
+ * The header carrying the route beneath the locale prefix (`/standards` for
+ * both `/standards` and `/fr/standards`). The root layout builds the canonical
+ * URL and the `hreflang` alternates from it, which it cannot do otherwise —
+ * layout metadata has no access to the request's path.
+ */
+export const PATH_HEADER = "x-vaaca-path";
+
 /** Remembers a visitor's choice across visits. */
 export const LOCALE_COOKIE = "vaaca_locale";
 

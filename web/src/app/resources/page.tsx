@@ -7,30 +7,44 @@ import { routes } from "@/lib/routes";
 import { DocumentIcon, DownloadIcon } from "@/components/icons";
 import { listPublicDocuments } from "@/lib/server/documents";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import type { PublicDocument } from "@/lib/document-types";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Resources",
-  description:
-    "VAACA founding documents, standards drafts and briefings. Items marked as working drafts are circulated for comment, not final positions.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.resources;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 function DocBody({
   doc,
   t,
 }: {
   doc: PublicDocument;
-  t: {
-    documents: Record<string, { title: string; description: string }>;
-    unavailable: Record<string, string>;
-    generatedOnRequest: string;
-  };
+  t: Dictionary["resources"];
 }) {
   // A document added after this dictionary was written falls back to whatever
   // the store holds, rather than rendering an empty label.
-  const copy = t.documents[doc.id];
+  const copy = (
+    t.documents as Record<
+      string,
+      { title: string; description: string } | undefined
+    >
+  )[doc.id];
   const title = copy?.title ?? doc.title;
   const description = copy?.description ?? doc.description;
+  // The store keeps an English sentence; the recognised ones are translated and
+  // anything unrecognised still says something rather than nothing.
+  const reason = doc.unavailableKey
+    ? t.unavailable[doc.unavailableKey]
+    : doc.unavailableReason;
+  const size = doc.generated ? `CSV · ${t.generatedOnRequest}` : doc.sizeLabel;
   return (
     <>
       <span className="flex min-w-0 items-center gap-3.5">
@@ -44,9 +58,9 @@ function DocBody({
           </span>
           {/* The reason a document cannot be downloaded is content, not a
               tooltip: `title` never reaches a keyboard or touch user. */}
-          {doc.unavailableReason ? (
+          {reason ? (
             <span className="mt-[3px] block text-[12px] text-body-softer italic">
-              {doc.unavailableReason}
+              {reason}
             </span>
           ) : null}
         </span>
@@ -55,16 +69,16 @@ function DocBody({
       <span className="flex shrink-0 items-center gap-3">
         {doc.href ? (
           <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted">
-            {doc.sizeLabel}
+            {size}
             <DownloadIcon size="xs" />
           </span>
         ) : (
           <span className="text-[12px] text-muted italic">
-            Not yet published
+            {t.notYetPublished}
           </span>
         )}
         <Tag tone={doc.tone} className="px-3 py-[5px]">
-          {doc.statusLabel}
+          {t.status[doc.status]}
         </Tag>
       </span>
     </>
@@ -74,7 +88,7 @@ function DocBody({
 export const dynamic = "force-dynamic";
 
 export default async function ResourcesPage() {
-  const { t, path } = await getTranslations();
+  const { t, path, locale } = await getTranslations();
   const r = t.resources;
   const documents = await listPublicDocuments();
 
@@ -84,12 +98,15 @@ export default async function ResourcesPage() {
 
       <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-center justify-between gap-4 px-8 py-5">
         <Logo />
-        <Link
-          href={path(routes.home)}
-          className="text-[13.5px] font-semibold text-navy no-underline"
-        >
-          <span aria-hidden>←</span> {t.nav.backToVaaca}
-        </Link>
+        <div className="flex flex-wrap items-center gap-4">
+          <Link
+            href={path(routes.home)}
+            className="text-[13.5px] font-semibold text-navy no-underline"
+          >
+            <span aria-hidden>←</span> {t.nav.backToVaaca}
+          </Link>
+          <LanguageSwitcher locale={locale} label={t.language.label} />
+        </div>
       </div>
 
       <main

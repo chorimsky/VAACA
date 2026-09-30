@@ -4,11 +4,18 @@ import { getStaffSession } from "@/lib/server/auth";
 import { staffCount } from "@/lib/server/store";
 import { StaffLoginForm } from "./StaffLoginForm";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: "Secretariat Sign-in",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.staffLogin;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+    robots: { index: false, follow: false },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +47,7 @@ export default async function StaffLoginPage({
       locale={locale}
       t={t.auth}
       backLabel={t.nav.backToVaaca}
+      languageLabel={t.language.label}
     />
   );
 }

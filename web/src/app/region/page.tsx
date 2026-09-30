@@ -7,13 +7,18 @@ import { CHAPTERS, FOUNDING_CHAPTER } from "@/lib/chapters";
 import { countByCountry } from "@/lib/server/store";
 import { membersByCountry } from "@/lib/server/members";
 import { getTranslations } from "@/lib/i18n/server";
+import { documentMetadata } from "@/lib/i18n/metadata";
 import { fill } from "@/lib/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Region",
-  description:
-    "Cameroon's founding chapter and the five CEMAC states next in line — one region, multiple markets, a shared institutional architecture.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // The title, the description and the social card all follow the
+  // page's language, and the canonical URL names this page.
+  const { t } = await getTranslations();
+  const m = t.meta.region;
+  return {
+    ...(await documentMetadata(m.title, m.description)),
+  };
+}
 
 export const dynamic = "force-dynamic";
 
