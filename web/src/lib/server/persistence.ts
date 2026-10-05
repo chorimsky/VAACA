@@ -4,16 +4,28 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import { pgRead, pgWrite } from "./pg-driver";
+
+/** Which backing is in use. One variable, checked per call so tests can switch. */
+const usingPostgres = () => Boolean(process.env.DATABASE_URL);
+
 /**
- * Small JSON-file persistence layer shared by the application, member and gap
- * stores. This is the seam BACKEND_NOTES.md describes: everything the app reads
- * or writes goes through here, so moving to a real database means replacing
- * this module and nothing else.
+ * The document store — the seam BACKEND_NOTES.md describes. Everything the app
+ * reads or writes goes through these three functions.
  *
- * Caveat for deployment: serverless filesystems are ephemeral and often
- * read-only, so writes will not survive on Vercel. Point `VAACA_DATA_DIR` at a
- * persistent volume, or swap this for a database client, before running
- * anywhere but a single long-lived server.
+ * There are two backings and the choice is made by one environment variable:
+ *
+ * - **Postgres**, when `DATABASE_URL` is set. Writes survive a redeploy, two
+ *   instances see the same data, and a read-modify-write is serialised across
+ *   processes. This is the one to use anywhere that holds something real.
+ * - **JSON files**, otherwise. Fine for local development and for a single
+ *   long-lived server. On a serverless host it is not persistence: the writable
+ *   directory is `/tmp`, which is per-instance and erased on every redeploy.
+ *
+ * The API is identical either way, which is why adding the database changed no
+ * caller. The file backing stays because the read-only check depends on it —
+ * a public page must still render when the store refuses writes — and because
+ * a developer should not need a database to run the site.
  */
 
 /**
@@ -60,6 +72,7 @@ export const isStoreUnavailable = (
 const filePath = (name: string) => path.join(DATA_DIR, name);
 
 export async function readStore<T>(name: string, fallback: T): Promise<T> {
+  if (usingPostgres()) return pgRead<T>(name, fallback);
   try {
     return JSON.parse(await readFile(filePath(name), "utf8")) as T;
   } catch {
@@ -83,8 +96,8 @@ async function writeFileAtomic(name: string, value: unknown): Promise<void> {
 
 /**
  * Serialises read-modify-write cycles per file within this process. It does not
- * guard against multiple processes — another reason this is a single-server
- * store rather than a database.
+ * guard against multiple processes — which is one of the things the Postgres
+ * backing exists to fix.
  */
 const queues = new Map<string, Promise<unknown>>();
 
@@ -110,6 +123,9 @@ export async function writeStore<T, R>(
   fallback: T,
   mutate: (current: T) => Promise<{ next: T; result: R }>,
 ): Promise<R> {
+  // Postgres holds the lock itself, for the length of the transaction, across
+  // every process. The in-process queue below cannot do either.
+  if (usingPostgres()) return pgWrite<T, R>(name, fallback, mutate);
   return exclusive(name, async () => {
     const current = await readStore<T>(name, fallback);
     const { next, result } = await mutate(current);

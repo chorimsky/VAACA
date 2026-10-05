@@ -8,7 +8,7 @@ import {
   readOrSeed,
   readStore,
   writeStore,
-} from "./json-store";
+} from "./persistence";
 import { syncMemberStatusForApplication } from "./members";
 import type { StaffRole } from "@/lib/staff-roles";
 import { STATUS_LABEL } from "@/lib/application-types";

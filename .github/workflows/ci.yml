@@ -21,6 +21,22 @@ jobs:
       run:
         working-directory: web
 
+    # The store has two backings and both have to work: JSON files for local
+    # development and the read-only check, Postgres everywhere that holds
+    # something real. A regression in either is a regression.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v5
 
@@ -50,7 +66,7 @@ jobs:
       - name: Read-only filesystem
         run: npm run test:readonly
 
-      - name: End to end
+      - name: End to end — file store
         env:
           # A disposable store: the suite writes real records.
           VAACA_DATA_DIR: ${{ runner.temp }}/vaaca-e2e
@@ -67,3 +83,33 @@ jobs:
             sleep 1
           done
           npm run test:e2e
+          kill %1
+
+      - name: End to end — Postgres
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          STAFF_SEED_EMAIL: secretariat@vaaca.org
+          STAFF_SEED_PASSWORD: correct-horse-battery-staple
+        run: |
+          # No staff:add here: that script writes a file, and this run has no
+          # file store. The account seeds itself from the environment on the
+          # first read, which is also how it will work in production.
+          export SESSION_SECRET="$(openssl rand -base64 32)"
+          npx next start -p 3007 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3007/ >/dev/null && break
+            sleep 1
+          done
+          npm run test:e2e
+          kill %1
+
+      # The one thing the file store could not do on a serverless host, and the
+      # reason this backing exists at all.
+      - name: Writes survive a restart
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          STAFF_SEED_EMAIL: secretariat@vaaca.org
+          STAFF_SEED_PASSWORD: correct-horse-battery-staple
+        run: |
+          export SESSION_SECRET="$(openssl rand -base64 32)"
+          npm run test:persistence

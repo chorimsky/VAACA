@@ -1,6 +1,6 @@
 import "server-only";
 
-import { readOrSeed, writeStore } from "./json-store";
+import { readOrSeed, writeStore } from "./persistence";
 import {
   COUNCIL_DEFINITIONS,
   activationBlockers,

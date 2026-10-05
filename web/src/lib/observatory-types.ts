@@ -73,8 +73,10 @@ export type ObservatorySource = { label: string; url: string | null };
 export type Localised = { en: string; fr: string };
 
 /** Picks a language, falling back rather than rendering nothing. */
-export const say = (text: Localised | null, locale: "en" | "fr"): string | null =>
-  text ? (text[locale] || text.en || null) : null;
+export const say = (
+  text: Localised | null,
+  locale: "en" | "fr",
+): string | null => (text ? text[locale] || text.en || null : null);
 
 /** Wraps text that exists in one language only. */
 const both = (value: unknown): Localised | null => {
@@ -175,10 +177,10 @@ export function fromStoredGap(row: Record<string, unknown>): ObservatoryItem {
     date: (row.date as string) ?? null,
     status: (row.status as ObservatoryStatus) ?? "not_started",
     owner: (row.owner as GapOwner) ?? "Unassigned",
-    whatChanged:
-      both(row.whatChanged) ?? both(row.description) ?? { en: "", fr: "" },
-    whyItMatters:
-      both(row.whyItMatters) ?? both(row.consequence) ?? { en: "", fr: "" },
+    whatChanged: both(row.whatChanged) ??
+      both(row.description) ?? { en: "", fr: "" },
+    whyItMatters: both(row.whyItMatters) ??
+      both(row.consequence) ?? { en: "", fr: "" },
     whoIsAffected: both(row.whoIsAffected),
     whatIsUnclear: both(row.whatIsUnclear),
     sources: Array.isArray(row.sources)

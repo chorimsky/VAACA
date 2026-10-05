@@ -34,6 +34,9 @@ chmodSync(DIR, 0o500); // read + execute only: no writes
 const server = spawn("npx", ["next", "start", "-p", PORT], {
   env: {
     ...process.env,
+    // This check is about a filesystem that refuses writes, so it must run
+    // against the file backing even when a database is configured.
+    DATABASE_URL: "",
     SESSION_SECRET: "readonly-check-secret-at-least-32-chars",
     VAACA_DATA_DIR: `${DIR}/data`,
     // Set deliberately: with a seed password configured, the first read of the

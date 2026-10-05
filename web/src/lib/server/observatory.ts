@@ -1,6 +1,6 @@
 import "server-only";
 
-import { readStore, writeStore } from "./json-store";
+import { readStore, writeStore } from "./persistence";
 import { GAP_EFFECT, type GapOwner } from "@/lib/gap-types";
 import {
   fromStoredGap,

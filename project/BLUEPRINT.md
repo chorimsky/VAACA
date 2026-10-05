@@ -357,16 +357,29 @@ are institutional participation rather than software delivery.
 
 ## 7. Two things the master prompt does not address
 
-**Persistence.** Everything above assumes a database. The platform currently
-stores every entity as JSON files, and on the deployed host those files live in
-`/tmp` — per-instance, erased on redeploy. That is survivable for six documents
-and ten gaps. It is not survivable for a directory of institutions, a
-consultation with deadlines, or a document review chain with version history.
+**Persistence — now resolved in code, pending one environment variable.**
+Everything above assumes a database. The store had two problems on the deployed
+host: `/tmp` is per-instance, and it is erased on every redeploy. A directory
+whose contents can vanish is worse than no directory, because an institution
+that registers and disappears has been told something false about how seriously
+it was taken.
 
-A directory whose contents can vanish is worse than no directory, because an
-institution that registers and disappears has been told something false about
-how seriously it was taken. **Stage 1 cannot ship on the current store.** The
-database swap is a prerequisite, not a parallel workstream.
+The store now has two backings behind the same three functions. Set
+`DATABASE_URL` and it writes to Postgres — one JSON document per key, under an
+advisory lock held for the transaction, so a write survives a redeploy and two
+instances agree. Leave it unset and it writes files, which is what local
+development and the read-only check need. No caller changed.
+
+What is still needed: **the connection string.** Provisioning the database is
+not something that can be done from the repository. Until it is set, the
+deployed site is running on the file fallback and Stage 1 cannot ship.
+
+The Postgres backing is a document store, not a relational model, and that is
+deliberate — it is the smallest change that fixes the thing actually wrong.
+The signal to move to real tables is when something needs to be *queried*
+rather than loaded: a directory of a few thousand institutions filtered in
+memory is fine, one needing `WHERE chamber = $1 AND country = $2` across tens
+of thousands of rows is not.
 
 **Who maintains it.** The Observatory, the directory and the Knowledge Commons
 are not features; they are publications with a cadence. §12 assigns IAFN the

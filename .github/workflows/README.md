@@ -22,11 +22,14 @@ and every pull request:
 | `eslint --max-warnings=0` | unused imports and dead code from half-finished refactors |
 | `next build` | the thing Vercel is about to do anyway, but where you can see it fail |
 | `test:readonly` | every public page renders against a store it cannot write to — Vercel's filesystem |
-| `test:e2e` | routing, both auth boundaries, the member and secretariat lifecycles, validation, persistence, tamper resistance |
+| `test:e2e` (twice) | routing, both auth boundaries, the member and secretariat lifecycles, validation, tamper resistance — run against the file store **and** against Postgres, because both backings are supported |
+| `test:persistence` | a write survives the process that made it: register, restart the server, sign in again |
 
-The end-to-end step generates its own `SESSION_SECRET` and provisions its own
-staff account into a temporary directory. There are no repository secrets to
-configure, and nothing it creates exists outside the run.
+The end-to-end steps generate their own `SESSION_SECRET` and provision their own
+staff account — into a temporary directory for the file run, and from
+`STAFF_SEED_*` for the Postgres run, which is how it works in production.
+Postgres comes from a service container. There are no repository secrets to
+configure, and nothing any of it creates exists outside the run.
 
 ## Gating the deploy
 
@@ -57,9 +60,17 @@ Production needs these set in the Vercel project, not here:
 | `STAFF_SEED_PASSWORD` | read once, at seed time, and stored scrypt-hashed |
 | `NEXT_PUBLIC_SITE_URL` | canonical origin for `sitemap.xml`, `robots.txt`, `hreflang` and social cards |
 
-`VAACA_DATA_DIR` is the one to watch: unset, the store falls back to
-`/tmp/vaaca-data` on Vercel, which is per-instance and lost on redeploy. Sign-in
-survives that because the account re-seeds from the variables above, but
-anything written through the admin area does not. Point it at a persistent
-volume, or replace `src/lib/server/json-store.ts` with a database client, before
-the internal surfaces hold anything that matters.
+`DATABASE_URL` is the one that matters most. Set it and the store writes to
+Postgres: a write survives a redeploy, two instances see the same data, and a
+read-modify-write is serialised across processes. Leave it unset and the store
+falls back to JSON files — which on Vercel means `/tmp`, per-instance and
+erased on every redeploy.
+
+| variable | why |
+| --- | --- |
+| `DATABASE_URL` | Postgres connection string. Without it nothing written on Vercel survives. |
+
+Sign-in survives the file fallback because the staff account re-seeds from the
+environment, but nothing written through the admin area does. **Set
+`DATABASE_URL` before the internal surfaces hold anything that matters** —
+before the first accession request, not after.

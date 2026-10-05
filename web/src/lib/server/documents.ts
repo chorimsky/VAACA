@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
-import { readOrSeed, writeStore } from "./json-store";
+import { readOrSeed, writeStore } from "./persistence";
 import { listGaps } from "./gaps";
 import { GAP_STATUS_LABEL } from "@/lib/gap-types";
 import {

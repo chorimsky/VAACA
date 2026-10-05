@@ -6,7 +6,7 @@ import {
   verifyAgainstAbsentAccount,
   verifyPassword,
 } from "./auth";
-import { readStore, writeStore } from "./json-store";
+import { readStore, writeStore } from "./persistence";
 import { listObservatory } from "./gaps";
 import {
   DOMAIN_IDS,
