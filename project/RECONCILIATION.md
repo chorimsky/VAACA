@@ -59,9 +59,9 @@ scoring, and the chamber-class pairing on accession.
 
 ---
 
-## 2. Open — these need a decision
+## 2. Decided
 
-### 2.1 Twelve councils or eight?
+### 2.1 Twelve councils or eight? — **decided: ten**
 
 | A §10 | C §9 |
 | --- | --- |
@@ -90,12 +90,19 @@ council about VAACA's own perimeter a sub-topic of infrastructure.
 Professional Standards is the one that produces certification and audit
 guidance — a named revenue engine in B §4.
 
-**Recommendation: eight, plus those two, so ten.** C is right that twelve is
-too many to stand up and that payments did not need two councils. But both
-omissions are load-bearing, and all twelve currently ship as `proposed` with no
-composition, so consolidating costs nothing — no council has been stood up yet.
+**Decided: the eight, plus those two, so ten.** C is right that twelve is too
+many to stand up and that payments did not need two councils. Both omissions
+are load-bearing, and no council had been stood up, so consolidating cost
+nothing.
 
-### 2.2 A nine-seat Coordination Council or an eleven-to-fifteen Governing Council?
+Built. `payments-settlement` folded into Banking, Payments & Digital Money;
+`digital-identity-cyber` into Technology, Infrastructure & Cybersecurity. The
+eight remaining ids keep their names and take C's titles. A council removed
+from the list is filtered out on read, so a store seeded with twelve stops
+showing the two that went — and a council removed from the architecture
+disappears rather than lingering because a row survives.
+
+### 2.2 A nine-seat Coordination Council or an eleven-to-fifteen Governing Council? — **decided: nine, for now**
 
 | Built (from A) | C §5 |
 | --- | --- |
@@ -110,13 +117,16 @@ code. Moving to eleven–fifteen means amending the Founding Coalition &
 Alliance Architecture, re-deriving the bloc balance, and republishing — none of
 it hard, but it is a constitutional change rather than a configuration one.
 
-**Recommendation: keep nine until the Council is actually seated, then grow to
-eleven.** Nine of nine seats are currently vacant. Designing a fifteen-member
-body before filling a nine-member one adds six more vacancies to report. The
-roles C adds that the nine lack — vice-chair, risk expert, IAFN — are the right
-additions when the body exists.
+**Decided: keep nine until the Council is seated, then grow to eleven.** Nine
+of nine seats are vacant. Designing a fifteen-member body before filling a
+nine-member one adds six more vacancies to report. The roles C adds that the
+nine lack — vice-chair, independent risk expert, IAFN — are the right additions
+when the body exists, and the trigger for revisiting this is the ninth
+appointment, not a date.
 
-### 2.3 Where do working groups live?
+## 3. Open — these still need a decision
+
+### 3.1 Where do working groups live?
 
 C §10 introduces working groups as a distinct entity: a mandate, a scope, a
 chair, members, deliverables, a timeline, a reporting line, and — the part that
@@ -132,7 +142,7 @@ it is done, or the institution accumulates committees.
 A working group with no closing date cannot be opened; one past its date shows
 as overdue until it is closed or extended by a named decision.
 
-### 2.4 Three standing committees, or working groups?
+### 3.2 Three standing committees, or working groups?
 
 C creates three permanent committees — Ethics & Standards (§11), Audit &
 Finance (§12), Risk & Technology (§13) — and then says in §28: *"Use temporary
@@ -148,7 +158,7 @@ carrying data for paying subscribers.
 until the platform holds third-party data.** B §7 already flagged that research
 ethics and conflict of interest cannot wait past the first sponsored programme.
 
-### 2.5 Six directorates, or two posts?
+### 3.3 Six directorates, or two posts?
 
 C §14 specifies a Secretariat of six directorates. The institution has two
 established posts — Secretary General and Standards & Assessment Officer — and
@@ -162,7 +172,7 @@ each would be the kind of thing that reads as serious and is not.
 
 ---
 
-## 3. Where C restates what B already settled
+## 4. Where C restates what B already settled
 
 C §22's revenue mix and 15% concentration ceiling are identical to B §39, and
 the model enforces both — the mix converges on every band by Year 5 and the
@@ -175,7 +185,7 @@ for sale.* It needs writing as a policy, not restating a third time.
 
 ---
 
-## 4. What C adds that nothing else has, and nothing has been built for
+## 5. What C adds that nothing else has, and nothing has been built for
 
 In rough order of how soon each is needed:
 

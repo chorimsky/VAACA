@@ -34,9 +34,19 @@ export const COUNCIL_STATUS_TONE: Record<CouncilStatus, Tone> = {
 };
 
 /**
- * The twelve from the institutional architecture, each attached to the chamber
- * it draws from. Ids are stored on records and must never move; names and
- * mandates are translated.
+ * Ten councils: the eight the architecture names, plus two it drops.
+ *
+ * Digital assets is the subject the institution exists for, and folding it into
+ * a general technology council would make the only council about VAACA's own
+ * perimeter a sub-topic of infrastructure. Professional standards is what
+ * produces certification and audit guidance, which is a named revenue line.
+ *
+ * Two earlier councils are gone: payments and settlement, which did not need to
+ * be separate from banking and payments, and digital identity and
+ * cybersecurity, now inside technology and infrastructure.
+ *
+ * Ids are stored on records and must never move; names and mandates are
+ * translated.
  */
 /**
  * The chamber that convenes each council. It is *not* the council's
@@ -46,17 +56,15 @@ export const COUNCIL_STATUS_TONE: Record<CouncilStatus, Tone> = {
  */
 export const COUNCIL_DEFINITIONS = [
   { id: "banking-payments", chamberId: "financial" },
-  { id: "microfinance-inclusion", chamberId: "financial" },
   { id: "insurance-risk", chamberId: "financial" },
   { id: "capital-markets", chamberId: "financial" },
+  { id: "microfinance-inclusion", chamberId: "financial" },
   { id: "fintech-infrastructure", chamberId: "technology" },
-  { id: "digital-identity-cyber", chamberId: "technology" },
   { id: "digital-assets", chamberId: "technology" },
   { id: "sme-real-economy", chamberId: "enterprise" },
   { id: "academic-research", chamberId: "academia" },
   { id: "civil-society", chamberId: "civil-society" },
   { id: "professional-standards", chamberId: "professional" },
-  { id: "payments-settlement", chamberId: "financial" },
 ] as const satisfies readonly { id: string; chamberId: ChamberId }[];
 
 export type CouncilId = (typeof COUNCIL_DEFINITIONS)[number]["id"];

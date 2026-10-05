@@ -32,8 +32,19 @@ const seed = (): CouncilRecord[] =>
 
 const load = () => readOrSeed<CouncilRecord[]>(COUNCILS, seed);
 
+/**
+ * Known councils only, in the order the architecture lists them.
+ *
+ * A store seeded before the list was consolidated still holds rows for
+ * councils that no longer exist. Filtering on read means they stop appearing
+ * without a migration — and a council removed from the architecture should
+ * stop appearing, rather than linger because a row survives.
+ */
 export async function listCouncils(): Promise<CouncilRecord[]> {
-  return load();
+  const stored = await load();
+  const byId = new Map(stored.map((c) => [c.id, c]));
+  const blank = new Map(seed().map((c) => [c.id, c]));
+  return COUNCIL_DEFINITIONS.map((d) => byId.get(d.id) ?? blank.get(d.id)!);
 }
 
 export async function getCouncil(

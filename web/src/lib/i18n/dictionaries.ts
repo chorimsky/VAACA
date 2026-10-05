@@ -770,16 +770,12 @@ export const en = {
     backToCouncils: "All councils",
     names: {
       "banking-payments": {
-        name: "Banking & Payments",
-        mandate: "Settlement, custody and the bank–VASP interface.",
-      },
-      "microfinance-inclusion": {
-        name: "Microfinance & Financial Inclusion",
+        name: "Banking, Payments & Digital Money",
         mandate:
-          "Reach into underserved and rural markets without importing new risk.",
+          "Settlement, custody, the bank–VASP interface, and the corridors money already moves through.",
       },
       "insurance-risk": {
-        name: "Insurance & Risk",
+        name: "Insurance, Risk & Protection",
         mandate:
           "Digital-asset, cyber and custody risk, and what is insurable today.",
       },
@@ -787,15 +783,15 @@ export const en = {
         name: "Capital Markets & Tokenization",
         mandate: "Tokenized securities, settlement and investor protection.",
       },
-      "fintech-infrastructure": {
-        name: "Fintech & Digital Infrastructure",
+      "microfinance-inclusion": {
+        name: "Financial Inclusion & Microfinance",
         mandate:
-          "Technical interoperability between payments, identity and ledgers.",
+          "Reach into underserved and rural markets without importing new risk.",
       },
-      "digital-identity-cyber": {
-        name: "Digital Identity & Cybersecurity",
+      "fintech-infrastructure": {
+        name: "Technology, Infrastructure & Cybersecurity",
         mandate:
-          "Identity assurance, key management and operational resilience.",
+          "Interoperability between payments, identity and ledgers, and the resilience underneath them.",
       },
       "digital-assets": {
         name: "Digital Assets & Virtual Asset Infrastructure",
@@ -803,25 +799,23 @@ export const en = {
           "Custody, exchange and the infrastructure the PSAN framework assesses.",
       },
       "sme-real-economy": {
-        name: "SME & Real Economy",
+        name: "Enterprise, SME & Real Economy",
         mandate:
           "Bankability, trade finance and the assets behind tokenization.",
       },
       "academic-research": {
-        name: "Academic & Research",
-        mandate: "The evidence base, independent of industry positions.",
+        name: "Academia, Research & Professional Education",
+        mandate:
+          "The evidence base, independent of industry positions, and the curriculum built on it.",
       },
       "civil-society": {
-        name: "Public Interest & Civil Society",
-        mandate: "Consumer protection, inclusion, digital rights and literacy.",
+        name: "Consumer Protection, Financial Literacy & Public Interest",
+        mandate:
+          "Redress, inclusion, digital rights and what a consumer is actually told.",
       },
       "professional-standards": {
         name: "Professional Standards",
         mandate: "Certification, audit guidance and compliance frameworks.",
-      },
-      "payments-settlement": {
-        name: "Payments & Settlement",
-        mandate: "A working group on corridors, interoperability and finality.",
       },
     },
   },
@@ -1845,16 +1839,12 @@ export const fr: Dictionary = {
     backToCouncils: "Tous les conseils",
     names: {
       "banking-payments": {
-        name: "Banque et paiements",
-        mandate: "Règlement, conservation et interface entre banques et PSAN.",
-      },
-      "microfinance-inclusion": {
-        name: "Microfinance et inclusion financière",
+        name: "Banque, paiements et monnaie numérique",
         mandate:
-          "Atteindre les marchés mal desservis et ruraux sans importer de nouveaux risques.",
+          "Règlement, conservation, interface banques-PSAN et corridors par lesquels l'argent circule déjà.",
       },
       "insurance-risk": {
-        name: "Assurance et risques",
+        name: "Assurance, risques et protection",
         mandate:
           "Risques liés aux actifs numériques, au cyber et à la conservation, et ce qui est assurable aujourd'hui.",
       },
@@ -1863,15 +1853,15 @@ export const fr: Dictionary = {
         mandate:
           "Titres tokenisés, règlement-livraison et protection des investisseurs.",
       },
-      "fintech-infrastructure": {
-        name: "Fintech et infrastructure numérique",
+      "microfinance-inclusion": {
+        name: "Inclusion financière et microfinance",
         mandate:
-          "Interopérabilité technique entre paiements, identité et registres.",
+          "Atteindre les marchés mal desservis et ruraux sans importer de nouveaux risques.",
       },
-      "digital-identity-cyber": {
-        name: "Identité numérique et cybersécurité",
+      "fintech-infrastructure": {
+        name: "Technologie, infrastructure et cybersécurité",
         mandate:
-          "Garantie d'identité, gestion des clés et résilience opérationnelle.",
+          "Interopérabilité entre paiements, identité et registres, et la résilience qui les soutient.",
       },
       "digital-assets": {
         name: "Actifs numériques et infrastructure PSAN",
@@ -1879,28 +1869,23 @@ export const fr: Dictionary = {
           "Conservation, échange et l'infrastructure évaluée par le cadre PSAN.",
       },
       "sme-real-economy": {
-        name: "PME et économie réelle",
+        name: "Entreprises, PME et économie réelle",
         mandate:
           "Bancabilité, financement du commerce et actifs sous-jacents à la tokenisation.",
       },
       "academic-research": {
-        name: "Universités et recherche",
+        name: "Universités, recherche et formation professionnelle",
         mandate:
-          "La base de données probantes, indépendante des positions du secteur.",
+          "La base de données probantes, indépendante des positions du secteur, et les cursus qui s'y appuient.",
       },
       "civil-society": {
-        name: "Société civile et intérêt public",
+        name: "Protection des consommateurs, éducation financière et intérêt public",
         mandate:
-          "Protection des consommateurs, inclusion, droits numériques et éducation financière.",
+          "Recours, inclusion, droits numériques et ce qui est réellement dit au consommateur.",
       },
       "professional-standards": {
         name: "Normes professionnelles",
         mandate: "Certification, orientations d'audit et cadres de conformité.",
-      },
-      "payments-settlement": {
-        name: "Paiements et règlement",
-        mandate:
-          "Groupe de travail sur les corridors, l'interopérabilité et le caractère définitif.",
       },
     },
   },

@@ -1444,7 +1444,18 @@ async function run() {
   // seats can meet, and enough of them filled to reach it.
   const councils = (await req("/councils")).body ?? "";
   // The ampersand in several names arrives HTML-escaped; pick one without.
-  check("all twelve are listed", councils.includes("Microfinance"), true);
+  check("all ten are listed", councils.includes("Microfinance"), true);
+  check(
+    "  …including the two the architecture drops",
+    councils.includes("Digital Assets") &&
+      councils.includes("Professional Standards"),
+    true,
+  );
+  check(
+    "a council removed from the list is gone",
+    (await req("/councils/payments-settlement")).status,
+    404,
+  );
   check(
     "  …and they start proposed",
     councils.includes("Composition not yet set"),
