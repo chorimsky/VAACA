@@ -10,6 +10,7 @@ export const routes = {
   founders: "/institution#founders",
   secretariat: "/institution#secretariat",
   standards: "/standards",
+  competency: "/competency",
   ecosystem: "/ecosystem",
   membership: "/membership",
   governance: "/governance",

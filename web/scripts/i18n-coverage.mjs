@@ -29,6 +29,7 @@ const PAGES = [
   "/resources",
   "/councils",
   "/observatory",
+  "/competency",
   "/observatory/g3",
   "/councils/academic-research",
   "/login",

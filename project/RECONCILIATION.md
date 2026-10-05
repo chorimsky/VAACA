@@ -126,6 +126,17 @@ appointment, not a date.
 
 ## 3. Open — these still need a decision
 
+### 3.0 Two things are called Framework 01
+
+`/standards` publishes "VAACA Framework 01 — PSAN Regulatory Readiness". The
+education architecture introduces VAACA-RDFECF-01 and names the broader
+standard V-RDFAS. Two families resolve it in principle; the live page carries no
+family designation, so in practice there are two Framework 01s.
+
+**Recommendation: rename the readiness framework to V-RDFAS-01, by Council
+decision.** Not done — renaming a published standard is not an editorial
+change. See [EDUCATION.md](EDUCATION.md) §3.
+
 ### 3.1 Where do working groups live?
 
 C §10 introduces working groups as a distinct entity: a mandate, a scope, a

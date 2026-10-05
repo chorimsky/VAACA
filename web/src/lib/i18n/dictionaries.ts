@@ -15,6 +15,7 @@ export const en = {
       institution: "Institution",
       standards: "Standards",
       observatory: "Regulatory Observatory",
+      competency: "Competency framework",
       ecosystem: "Ecosystem",
       membership: "Membership",
       governance: "Governance",
@@ -56,6 +57,7 @@ export const en = {
       secretariat: "Secretariat",
       standards: "Standards",
       observatory: "Regulatory Observatory",
+      competency: "Competency framework",
       ecosystem: "Ecosystem",
       membership: "Membership",
       region: "Region",
@@ -749,6 +751,146 @@ export const en = {
       closed: "Closed",
     },
   },
+  competency: {
+    eyebrow: "VAACA-RDFECF-01",
+    title: "Regional Digital Financial Literacy Framework",
+    lede: "What a person in Central Africa should be able to do to take part in the digital financial economy safely, responsibly and productively. A competency standard, not a syllabus — it says what someone can do, not what they were taught.",
+    counterpart:
+      "The education counterpart to the PSAN Regulatory Readiness Framework. That standard asks what an institution must be able to evidence; this one asks what a person must be able to do.",
+    principle: "Understand before participating.",
+    principleBody:
+      "Digital assets are assessed at the comprehension level in this framework, not at use. A literacy standard that taught people to transact would be teaching participation. This one teaches them to recognise what they are looking at first — including when the honest answer is that it is not for them.",
+    levelsEyebrow: "Progression",
+    levelsTitle: "Seven levels, one language.",
+    levelsLede:
+      "Shared by every framework in the family, so a citizen, a student, a professional and a supervisor are described on one scale. A level is named by what the learner can do, never by how long they sat in a room.",
+    ceiling:
+      "This framework addresses levels 0 to 2. Citizens are not expected to design regional market infrastructure, and saying so is part of the standard rather than a gap in it.",
+    levels: {
+      awareness: {
+        verb: "Know",
+        name: "Awareness",
+        example:
+          "Knows that mobile money, stablecoins and tokenized assets are different things.",
+      },
+      literacy: {
+        verb: "Understand",
+        name: "Literacy",
+        example:
+          "Explains how a bank deposit, a mobile-money balance and a stablecoin differ in who owes what.",
+      },
+      application: {
+        verb: "Apply",
+        name: "Application",
+        example:
+          "Assesses a digital financial product and names its risks before using it.",
+      },
+      practice: {
+        verb: "Perform",
+        name: "Professional practice",
+        example: "Carries out a digital-asset compliance assessment.",
+      },
+      design: {
+        verb: "Design",
+        name: "Design",
+        example: "Designs a tokenization-readiness programme for an SME.",
+      },
+      leadership: {
+        verb: "Lead",
+        name: "Leadership",
+        example: "Sets a bank's digital-asset strategy and its risk framework.",
+      },
+      transformation: {
+        verb: "Transform",
+        name: "Institutional transformation",
+        example:
+          "Shapes a regional framework for interoperable tokenized markets.",
+      },
+    },
+    stagesEyebrow: "Within a level",
+    stagesTitle: "Understand, apply, evaluate, create.",
+    stages: {
+      understand: { name: "Understand", body: "Can explain it." },
+      apply: { name: "Apply", body: "Can use it safely." },
+      evaluate: {
+        name: "Evaluate",
+        body: "Can compare, judge the risk, and decide.",
+      },
+      create: {
+        name: "Create",
+        body: "Can build with it. Optional for citizens, expected of students and professionals.",
+      },
+    },
+    domainsEyebrow: "Six domains",
+    domainsTitle: "What a competent person can do.",
+    domainsLede:
+      "Each domain carries one competency statement, the stage it is assessed to, and how. A domain assessed only by a knowledge test is a domain that can be passed by reading.",
+    assessedTo: "Assessed to",
+    assessedBy: "Assessed by",
+    covers: "Covers",
+    methods: {
+      knowledge: "Knowledge test",
+      scenario: "Scenario judgement",
+      practical: "Practical exercise",
+      ethics: "Ethics",
+    },
+    domains: {
+      money: {
+        name: "Money & financial systems",
+        competency:
+          "Distinguishes the forms money takes and what each institution actually does with it.",
+        covers:
+          "Cash, bank deposits, central-bank money, electronic money, mobile money, microfinance, insurance, credit, savings, markets",
+      },
+      services: {
+        name: "Digital financial services",
+        competency:
+          "Chooses an appropriate digital financial service and uses it safely.",
+        covers:
+          "Mobile money, digital banking, QR and card payments, gateways, remittances, authentication, digital identity",
+      },
+      assets: {
+        name: "Digital assets",
+        competency:
+          "Recognises what a digital asset is, who owes what, and where the risk sits — before deciding whether to hold one.",
+        covers:
+          "Bitcoin, wallets and keys, custody and self-custody, stablecoins and reserve models, depeg and issuer risk, tokenization, distributed ledgers, smart contracts",
+      },
+      safety: {
+        name: "Digital safety",
+        competency:
+          "Judges an approach, a message or a platform as safe, suspicious or fraudulent — and acts on that judgement.",
+        covers:
+          "Phishing, social engineering, SIM-swap, account takeover, fake wallets and exchanges, Ponzi schemes, seed-phrase theft, impersonation and deepfakes, data privacy",
+      },
+      decisions: {
+        name: "Financial decision-making",
+        competency:
+          "Compares financial products on their real cost and risk, and decides accordingly.",
+        covers:
+          "Budgeting, saving, debt, risk, diversification, fees, exchange rates, product comparison, conflicts of interest",
+      },
+      rights: {
+        name: "Rights, regulation & consumer protection",
+        competency:
+          "Knows what protections apply, which do not, and how to complain.",
+        covers:
+          "Consumer rights, complaints and redress, data protection, fraud reporting, regulated against unregulated, why KYC exists, AML/CFT in outline, provider obligations",
+      },
+    },
+    matrixEyebrow: "Mapping",
+    matrixTitle: "Every programme maps to this.",
+    matrixLede:
+      "A course that cannot say which domain and which stage it develops is not teaching to the standard. The matrix is how a university module, a bank's induction and a village workshop are compared.",
+    evidenceEyebrow: "Evidence",
+    evidenceTitle: "A certificate is not attendance.",
+    evidenceBody:
+      "Above the application level, no practical assessment means no certification. That single rule is what separates this from the certificate markets it will be compared with — and it binds VAACA, which owns the standard, not only the provider delivering against it.",
+    ownership:
+      "VAACA owns the competency architecture, the standard and the recognition of it. IAFN, a founding member, delivers the training and administers assessment against it. The standard is deliberately published in full so that any provider can teach to it.",
+    status:
+      "Draft for consultation. Not yet adopted by the Coordination Council.",
+  },
   councils: {
     eyebrow: "Sector councils",
     title: "Twelve councils, stood up as they are needed.",
@@ -1069,6 +1211,7 @@ export const fr: Dictionary = {
       institution: "L'institution",
       standards: "Normes",
       observatory: "Observatoire réglementaire",
+      competency: "Référentiel de compétences",
       ecosystem: "Écosystème",
       membership: "Adhésion",
       governance: "Gouvernance",
@@ -1110,6 +1253,7 @@ export const fr: Dictionary = {
       secretariat: "Secrétariat",
       standards: "Normes",
       observatory: "Observatoire réglementaire",
+      competency: "Référentiel de compétences",
       ecosystem: "Écosystème",
       membership: "Adhésion",
       region: "Région",
@@ -1816,6 +1960,148 @@ export const fr: Dictionary = {
       blocked: "Bloqué",
       closed: "Clôturé",
     },
+  },
+  competency: {
+    eyebrow: "VAACA-RDFECF-01",
+    title: "Cadre régional de littératie financière numérique",
+    lede: "Ce qu'une personne en Afrique centrale devrait être capable de faire pour participer à l'économie financière numérique de façon sûre, responsable et productive. Un référentiel de compétences, non un programme — il énonce ce que la personne sait faire, non ce qu'on lui a enseigné.",
+    counterpart:
+      "Le pendant éducatif du Cadre de maturité réglementaire PSAN. Celui-ci demande ce qu'une institution doit pouvoir démontrer ; celui-là, ce qu'une personne doit savoir faire.",
+    principle: "Comprendre avant de participer.",
+    principleBody:
+      "Les actifs numériques sont évalués ici au niveau de la compréhension, non de l'usage. Un référentiel de littératie qui apprendrait à transiger enseignerait la participation. Celui-ci apprend d'abord à reconnaître ce que l'on a sous les yeux — y compris lorsque la réponse honnête est que cela ne convient pas.",
+    levelsEyebrow: "Progression",
+    levelsTitle: "Sept niveaux, un seul langage.",
+    levelsLede:
+      "Communs à tous les cadres de la famille, afin qu'un citoyen, un étudiant, un professionnel et un superviseur soient décrits sur une même échelle. Un niveau se nomme par ce que l'apprenant sait faire, jamais par le temps passé en salle.",
+    ceiling:
+      "Ce cadre couvre les niveaux 0 à 2. On n'attend pas des citoyens qu'ils conçoivent des infrastructures de marché régionales, et le dire fait partie du référentiel plutôt que d'en être une lacune.",
+    levels: {
+      awareness: {
+        verb: "Savoir",
+        name: "Sensibilisation",
+        example:
+          "Sait que monnaie mobile, stablecoins et actifs tokenisés sont des choses différentes.",
+      },
+      literacy: {
+        verb: "Comprendre",
+        name: "Littératie",
+        example:
+          "Explique en quoi un dépôt bancaire, un solde de monnaie mobile et un stablecoin diffèrent quant à qui doit quoi.",
+      },
+      application: {
+        verb: "Appliquer",
+        name: "Application",
+        example:
+          "Évalue un produit financier numérique et en nomme les risques avant de l'utiliser.",
+      },
+      practice: {
+        verb: "Exercer",
+        name: "Pratique professionnelle",
+        example: "Conduit une évaluation de conformité sur actifs numériques.",
+      },
+      design: {
+        verb: "Concevoir",
+        name: "Conception",
+        example:
+          "Conçoit un programme de préparation à la tokenisation pour une PME.",
+      },
+      leadership: {
+        verb: "Diriger",
+        name: "Direction",
+        example:
+          "Définit la stratégie d'une banque en matière d'actifs numériques et son cadre de risques.",
+      },
+      transformation: {
+        verb: "Transformer",
+        name: "Transformation institutionnelle",
+        example:
+          "Façonne un cadre régional pour des marchés tokenisés interopérables.",
+      },
+    },
+    stagesEyebrow: "Au sein d'un niveau",
+    stagesTitle: "Comprendre, appliquer, évaluer, créer.",
+    stages: {
+      understand: { name: "Comprendre", body: "Sait l'expliquer." },
+      apply: { name: "Appliquer", body: "Sait l'utiliser en sécurité." },
+      evaluate: {
+        name: "Évaluer",
+        body: "Sait comparer, juger le risque et décider.",
+      },
+      create: {
+        name: "Créer",
+        body: "Sait construire avec. Facultatif pour les citoyens, attendu des étudiants et des professionnels.",
+      },
+    },
+    domainsEyebrow: "Six domaines",
+    domainsTitle: "Ce qu'une personne compétente sait faire.",
+    domainsLede:
+      "Chaque domaine porte un énoncé de compétence, le stade auquel il est évalué, et par quels moyens. Un domaine évalué par un seul questionnaire est un domaine qu'on peut valider en lisant.",
+    assessedTo: "Évalué au stade",
+    assessedBy: "Évalué par",
+    covers: "Couvre",
+    methods: {
+      knowledge: "Questionnaire de connaissances",
+      scenario: "Jugement sur mise en situation",
+      practical: "Exercice pratique",
+      ethics: "Déontologie",
+    },
+    domains: {
+      money: {
+        name: "Monnaie et systèmes financiers",
+        competency:
+          "Distingue les formes que prend la monnaie et ce que chaque institution en fait réellement.",
+        covers:
+          "Espèces, dépôts bancaires, monnaie de banque centrale, monnaie électronique, monnaie mobile, microfinance, assurance, crédit, épargne, marchés",
+      },
+      services: {
+        name: "Services financiers numériques",
+        competency:
+          "Choisit un service financier numérique approprié et l'utilise en sécurité.",
+        covers:
+          "Monnaie mobile, banque en ligne, paiements par QR et par carte, passerelles, transferts, authentification, identité numérique",
+      },
+      assets: {
+        name: "Actifs numériques",
+        competency:
+          "Reconnaît ce qu'est un actif numérique, qui doit quoi et où se situe le risque — avant de décider d'en détenir.",
+        covers:
+          "Bitcoin, portefeuilles et clés, conservation et auto-conservation, stablecoins et modèles de réserve, risque de décrochage et d'émetteur, tokenisation, registres distribués, contrats intelligents",
+      },
+      safety: {
+        name: "Sécurité numérique",
+        competency:
+          "Juge une sollicitation, un message ou une plateforme comme sûr, suspect ou frauduleux — et agit en conséquence.",
+        covers:
+          "Hameçonnage, ingénierie sociale, échange de carte SIM, prise de contrôle de compte, faux portefeuilles et fausses plateformes, systèmes de Ponzi, vol de phrase de récupération, usurpation et hypertrucages, protection des données",
+      },
+      decisions: {
+        name: "Décision financière",
+        competency:
+          "Compare les produits financiers sur leur coût et leur risque réels, et décide en conséquence.",
+        covers:
+          "Budget, épargne, endettement, risque, diversification, frais, taux de change, comparaison de produits, conflits d'intérêts",
+      },
+      rights: {
+        name: "Droits, réglementation et protection des consommateurs",
+        competency:
+          "Sait quelles protections s'appliquent, lesquelles ne s'appliquent pas, et comment réclamer.",
+        covers:
+          "Droits du consommateur, réclamations et recours, protection des données, signalement de fraude, régulé ou non régulé, raison d'être du KYC, LBC/FT dans ses grandes lignes, obligations des prestataires",
+      },
+    },
+    matrixEyebrow: "Correspondance",
+    matrixTitle: "Tout programme s'y rattache.",
+    matrixLede:
+      "Un cours incapable d'indiquer quel domaine et quel stade il développe n'enseigne pas selon le référentiel. La matrice permet de comparer un module universitaire, l'intégration d'une banque et un atelier villageois.",
+    evidenceEyebrow: "Preuve",
+    evidenceTitle: "Un certificat n'est pas une présence.",
+    evidenceBody:
+      "Au-delà du niveau application, pas d'évaluation pratique, pas de certification. Cette seule règle distingue ce référentiel des marchés du certificat auxquels il sera comparé — et elle engage VAACA, qui détient le référentiel, autant que l'organisme qui forme.",
+    ownership:
+      "VAACA détient l'architecture des compétences, le référentiel et sa reconnaissance. IAFN, membre fondateur, assure la formation et administre l'évaluation au regard de ce référentiel. Le référentiel est publié intégralement afin que tout organisme puisse enseigner selon ses termes.",
+    status:
+      "Projet soumis à consultation. Non encore adopté par le Conseil de coordination.",
   },
   councils: {
     eyebrow: "Conseils sectoriels",

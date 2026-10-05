@@ -1331,6 +1331,76 @@ async function run() {
     null,
   );
 
+  section("Competency framework");
+  // A competency standard, not a syllabus: it states what a person can do, the
+  // stage each domain is assessed to, and how. A domain assessed only by a
+  // knowledge test is a domain that can be passed by reading.
+  const competency = (await req("/competency")).body ?? "";
+  check(
+    "the framework is published",
+    competency.includes("VAACA-RDFECF-01"),
+    true,
+  );
+  check(
+    "  …with all six domains",
+    [
+      "Money &amp; financial systems",
+      "Digital financial services",
+      "Digital assets",
+      "Digital safety",
+      "Financial decision-making",
+      "Rights, regulation",
+    ].every((d) => competency.includes(d)),
+    true,
+  );
+  check(
+    "  …and all seven levels",
+    [
+      "Awareness",
+      "Literacy",
+      "Application",
+      "Professional practice",
+      "Design",
+      "Leadership",
+      "Institutional transformation",
+    ].every((name) => competency.includes(name)),
+    true,
+  );
+  check(
+    "digital assets are assessed at comprehension, not use",
+    /Understand before participating/.test(competency),
+    true,
+  );
+  check(
+    "the evidence rule is stated",
+    /no practical assessment means no certification/i.test(competency),
+    true,
+  );
+  check(
+    "it says who owns the standard and who delivers against it",
+    competency.includes("IAFN, a founding member, delivers"),
+    true,
+  );
+  check(
+    "it is marked as a draft, not an adopted standard",
+    /Draft for consultation/.test(competency),
+    true,
+  );
+  const frCompetency = (await req("/fr/competency")).body ?? "";
+  check(
+    "the French standard is French",
+    frCompetency.includes("Comprendre avant de participer"),
+    true,
+  );
+  check(
+    "  …including the competency statements",
+    frCompetency.includes("Reconnaît ce qu'est un actif numérique") ||
+      frCompetency.includes(
+        "Reconna&#xEE;t ce qu&#x27;est un actif num&#xE9;rique",
+      ),
+    true,
+  );
+
   section("Regulatory Observatory");
   // The gap register was the Observatory's first ten entries, not a different
   // thing. Generalising rather than replacing keeps the one piece of this that

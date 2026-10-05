@@ -22,6 +22,7 @@ export async function Footer() {
       links: [
         { label: f.links.standards, href: routes.standards },
         { label: f.links.observatory, href: routes.observatory },
+        { label: f.links.competency, href: routes.competency },
         { label: f.links.ecosystem, href: routes.ecosystem },
         { label: f.links.membership, href: routes.membership },
         { label: f.links.region, href: routes.region },
