@@ -50,12 +50,12 @@ handle*.
 
 ---
 
-## 2. Four decisions that have to be made before building
+## 2. Four decisions
 
-These are governance choices, not implementation details. Each one changes what
-gets built, and three of them change text that is already published.
+These are governance choices, not implementation details. Two are **resolved and
+built**; two remain open.
 
-### 2.1 Does the chamber replace the class, or sit beside it?
+### 2.1 Does the chamber replace the class, or sit beside it? — **resolved: two axes**
 
 The platform has five accession classes (A Operating, B Adjacent, C
 Professional, D Academic, E Institutional), stated on `/membership` as coming
@@ -81,23 +81,40 @@ society and students, or replace A–E with §32's nine levels. The first is a
 Charter *amendment*; the second is a Charter *rewrite*, and it invalidates the
 class recorded on every existing application.
 
-Recommendation: **two axes, extend A–E.** The five classes encode something the
-nine levels do not — who is inside the virtual-asset perimeter and therefore
-scorable. That distinction is load-bearing for the readiness framework and
-should not be thrown away to gain a membership taxonomy.
+**Decided: two axes, A–E extended to A–G.** The five classes encode something
+the nine levels do not — who is inside the virtual-asset perimeter and therefore
+scorable. That distinction is load-bearing for the readiness framework and was
+not worth trading for a membership taxonomy.
 
-### 2.2 Who is scored?
+Built: seven chambers in `lib/chambers.ts`; classes **F — Civil Society** and
+**G — Student** added; `CHAMBER_CLASSES` narrows which classes a chamber may
+accede under, checked on the endpoint as well as in the form. Both axes are
+recorded on the application and on the member.
+
+Charter consequence: Part 4 gains two classes and a chamber axis. The existing
+five keep their letters and their voting rights, so no record in the queue is
+invalidated.
+
+### 2.2 Who is scored? — **resolved: the perimeter, not the class**
 
 Classes A and B are assessed against the PSAN framework; C–E are not. With seven
 chambers, the rule needs restating in chamber terms, or the two taxonomies will
 drift apart within a release.
 
-Proposed rule: **scoring follows the perimeter gate, not the chamber.** An
-entity is scored if and only if it passes Gate 1 — its activity falls inside the
-virtual-asset perimeter. That is already how the framework is written; making it
-the single rule removes the need to maintain a class-to-scoring map at all.
+**Decided: scoring follows Gate 1 and nothing else.** A member is assessed if
+and only if their activity falls inside the virtual-asset perimeter.
 
-### 2.3 What is a sector council, operationally?
+Built: `perimeter: boolean | null` on the member record, `null` meaning the
+secretariat has not ruled and the class default stands. `PATCH
+/api/members/:id/perimeter` records the finding, and bringing a member inside
+opens their scorecard immediately.
+
+This also closed a hole that predates the chambers: the perimeter question was
+previously answered by a dropdown the applicant filled in themselves, so an
+exchange that described itself as "professional" was never scored, and the
+secretariat had nowhere to say otherwise.
+
+### 2.3 What is a sector council, operationally? — **open**
 
 The master prompt lists twelve (§10). The platform has one Coordination Council
 of nine seats, with a rule enforced in code: no single bloc may hold a majority
@@ -111,7 +128,7 @@ rather than all operating simultaneously"* — is the right instinct, and should
 be made structural: a council has a **status** (`proposed`, `active`,
 `dormant`), and only an active council can publish.
 
-### 2.4 Does the Regulatory Observatory replace or extend the Gap Register?
+### 2.4 Does the Regulatory Observatory replace or extend the Gap Register? — **open**
 
 The Gap Register tracks ten named instruction gaps, each capping a readiness
 domain until it closes. Closing a gap lifts its cap everywhere. It is small,

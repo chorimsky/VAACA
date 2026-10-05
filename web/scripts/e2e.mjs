@@ -762,15 +762,17 @@ async function run() {
     }),
   ).toString("base64url");
   for (const [label, cookie] of [
-    // Flip the last character to something it is not. Appending a fixed
-    // letter is a no-op whenever the signature already ends with it, which
-    // silently turns this into an assertion that a VALID cookie is rejected —
-    // and the signature changes every run, so it fails only sometimes.
+    // Flip the FIRST character, not the last. A 32-byte HMAC is 43 base64url
+    // characters, and the final character carries only two significant bits —
+    // the other four are padding, so some swaps there decode to exactly the
+    // same bytes and the "tampered" cookie is still valid. That turned a
+    // security assertion into one that passed by luck most runs. The first
+    // character is always fully significant.
     [
       "tampered signature",
-      `vaaca_staff_session=${payload}.${sig.slice(0, -1)}${
-        sig.endsWith("A") ? "B" : "A"
-      }`,
+      `vaaca_staff_session=${payload}.${
+        sig.startsWith("A") ? "B" : "A"
+      }${sig.slice(1)}`,
     ],
     ["forged payload", `vaaca_staff_session=${forged}.${sig}`],
     ["garbage cookie", "vaaca_staff_session=not-a-token"],
@@ -808,6 +810,7 @@ async function run() {
         name: `List Check ${slug}`,
         email: `list-${slug}-${uniq}@testbed.cm`,
         country,
+        chamberId: "professional",
         classKey: "C",
         password: "a-long-enough-password",
       }),
@@ -828,6 +831,7 @@ async function run() {
           name: "Outside Ltd",
           email: `outside-${uniq}@testbed.cm`,
           country: "Nigeria",
+          chamberId: "professional",
           classKey: "C",
           password: "a-long-enough-password",
         }),
@@ -844,6 +848,7 @@ async function run() {
         name: "X",
         email: "a@b.co",
         country: "Cameroon",
+        chamberId: "technology",
         classKey: "A",
         password: "longenough",
       },
@@ -854,6 +859,7 @@ async function run() {
         name: "Valid Ltd",
         email: "not-an-email",
         country: "Cameroon",
+        chamberId: "technology",
         classKey: "A",
         password: "longenough",
       },
@@ -864,6 +870,7 @@ async function run() {
         name: "Valid Ltd",
         email: "a@b.co",
         country: "France",
+        chamberId: "technology",
         classKey: "A",
         password: "longenough",
       },
@@ -874,6 +881,7 @@ async function run() {
         name: "Valid Ltd",
         email: "a@b.co",
         country: "Cameroon",
+        chamberId: "technology",
         classKey: "Z",
         password: "longenough",
       },
@@ -884,6 +892,7 @@ async function run() {
         name: "Valid Ltd",
         email: "a@b.co",
         country: "Cameroon",
+        chamberId: "technology",
         classKey: "A",
         password: "short",
       },
@@ -899,6 +908,7 @@ async function run() {
     name: `E2E Exchange ${uniq} SARL`,
     email: `e2e-${uniq}@testbed.cm`,
     country: "Gabon",
+    chamberId: "technology",
     classKey: "A",
     password: "a-long-enough-password",
   };
@@ -1146,6 +1156,7 @@ async function run() {
       name: "Duplicate Ltd",
       email: member.email,
       country: "Cameroon",
+      chamberId: "technology",
       classKey: "A",
       password: "longenough",
     }),
@@ -1156,7 +1167,7 @@ async function run() {
   check(
     "  …each one of them",
     (invalid.body?.fields ?? []).join(","),
-    "name,email,country,classKey,password",
+    "name,email,country,chamberId,classKey,password",
   );
 
   section("Sign-in keeps the language");
@@ -1171,6 +1182,137 @@ async function run() {
     "a French staff sign-in lands on the French queue",
     frStaffLogin.includes(String.raw`\"/fr/admin\"`),
     true,
+  );
+
+  section("Chambers and classes");
+  // Two axes on purpose: the chamber says where you sit, the class says how you
+  // take part. Civil society and students had no class at all before, which
+  // meant the two groups the institution most needs in the room could not
+  // complete an accession request.
+  const accede = (chamberId, classKey, suffix) =>
+    req(
+      "/api/applications",
+      json({
+        name: `Chamber Test ${uniq}${suffix} Ltd`,
+        email: `e2e-${suffix}-${uniq}@testbed.cm`,
+        country: "Cameroon",
+        chamberId,
+        classKey,
+        password: "longenough",
+      }),
+    );
+  check("civil society can accede", (await accede("civil-society", "F", "f")).status, 201);
+  check("a student can accede", (await accede("academia", "G", "g")).status, 201);
+  const mismatch = await accede("academia", "A", "x");
+  check("a chamber and class the charter does not pair is refused", mismatch.status, 400);
+  check("  …naming the class, not the chamber", (mismatch.body?.fields ?? []).join(","), "classKey");
+  check(
+    "a chamber is required",
+    (
+      await req(
+        "/api/applications",
+        json({
+          name: `No Chamber ${uniq} Ltd`,
+          email: `e2e-nochamber-${uniq}@testbed.cm`,
+          country: "Cameroon",
+          classKey: "A",
+          password: "longenough",
+        }),
+      )
+    ).body?.fields?.includes("chamberId"),
+    true,
+  );
+  check(
+    "an unknown chamber is refused",
+    (await accede("not-a-chamber", "A", "y")).status,
+    400,
+  );
+  check(
+    "the public page lists all seven chambers",
+    // The ampersand arrives HTML-escaped; assert on a part that does not.
+    ((await req("/membership")).body ?? "").includes("Diaspora"),
+    true,
+  );
+  check(
+    "  …in French",
+    ((await req("/fr/membership")).body ?? "").includes(
+      "Diaspora et partenaires internationaux",
+    ),
+    true,
+  );
+
+  section("Scoring follows Gate 1");
+  // It used to follow the class, which meant the question "is this activity
+  // inside the perimeter?" was answered by a dropdown the applicant filled in
+  // themselves, with no way for the secretariat to rule otherwise.
+  const outside = await req(
+    "/api/applications",
+    json({
+      name: `Perimeter Test ${uniq} Ltd`,
+      email: `e2e-perimeter-${uniq}@testbed.cm`,
+      country: "Cameroon",
+      chamberId: "professional",
+      classKey: "C",
+      password: "longenough",
+    }),
+  );
+  check("a class outside the perimeter accedes", outside.status, 201);
+  const outsideSession = jarOf(
+    (
+      await req(
+        "/api/member/session",
+        json({
+          email: `e2e-perimeter-${uniq}@testbed.cm`,
+          password: "longenough",
+        }),
+      )
+    ).setCookie,
+  );
+  const outsideMe = await req("/api/member/me", withCookie(outsideSession));
+  const outsideId = outsideMe.body?.member?.id;
+  check("  …with no scorecard", (outsideMe.body?.scores ?? []).length, 0);
+  check("  …and no ruling yet", outsideMe.body?.member?.perimeter, null);
+
+  const perimeter = (value, cookie = staff) =>
+    json({ perimeter: value }, { method: "PATCH", headers: { cookie } });
+  check(
+    "recording Gate 1 requires staff",
+    (
+      await req(`/api/members/${outsideId}/perimeter`, {
+        ...perimeter(true),
+        headers: {},
+      })
+    ).status,
+    401,
+  );
+  check(
+    "a non-boolean ruling is refused",
+    (await req(`/api/members/${outsideId}/perimeter`, perimeter("maybe")))
+      .status,
+    400,
+  );
+  check(
+    "unknown member 404s",
+    (await req("/api/members/mem_nope/perimeter", perimeter(true))).status,
+    404,
+  );
+  check(
+    "the secretariat can bring a member inside the perimeter",
+    (await req(`/api/members/${outsideId}/perimeter`, perimeter(true))).body
+      ?.member?.perimeter,
+    true,
+  );
+  check(
+    "  …which opens the assessment there and then",
+    (await req("/api/member/me", withCookie(outsideSession))).body?.scores
+      ?.length,
+    8,
+  );
+  check(
+    "withdrawing the ruling returns the class default",
+    (await req(`/api/members/${outsideId}/perimeter`, perimeter(null))).body
+      ?.member?.perimeter,
+    null,
   );
 
   section("Registration form");
@@ -1206,6 +1348,7 @@ async function run() {
     name: `Second Member ${uniq} Ltd`,
     email: `e2e-other-${uniq}@testbed.cm`,
     country: "Chad",
+    chamberId: "professional",
     classKey: "C",
     password: "another-long-password",
   };

@@ -11,7 +11,7 @@ import { listGaps } from "./gaps";
 import { GAP_EFFECT } from "@/lib/gap-types";
 import {
   DOMAIN_IDS,
-  isScoredClass,
+  isScored,
   type DomainId,
   type Member,
   type MemberStatus,
@@ -19,6 +19,7 @@ import {
   type ScoreStatus,
 } from "@/lib/member-types";
 import type { ClassKey } from "@/lib/application-types";
+import type { ChamberId } from "@/lib/chambers";
 
 /**
  * Member accounts and their readiness scores.
@@ -42,7 +43,9 @@ const publicView = (m: StoredMember): Member => ({
   name: m.name,
   email: m.email,
   country: m.country,
+  chamberId: m.chamberId,
   classKey: m.classKey,
+  perimeter: m.perimeter ?? null,
   status: m.status,
   createdAt: m.createdAt,
   applicationId: m.applicationId,
@@ -83,6 +86,8 @@ export async function countMembers(): Promise<
     C: of("C"),
     D: of("D"),
     E: of("E"),
+    F: of("F"),
+    G: of("G"),
   };
 }
 
@@ -116,6 +121,7 @@ export type NewMember = {
   name: string;
   email: string;
   country: string;
+  chamberId: ChamberId;
   classKey: ClassKey;
   password: string;
   applicationId: string | null;
@@ -133,7 +139,10 @@ export async function createMember(input: NewMember): Promise<Member> {
       name: input.name.trim(),
       email,
       country: input.country,
+      chamberId: input.chamberId,
       classKey: input.classKey,
+      // Gate 1 has not been run yet; the class default stands until it is.
+      perimeter: null,
       status: "applicant",
       createdAt: new Date().toISOString(),
       applicationId: input.applicationId,
@@ -156,6 +165,30 @@ export class MemberExistsError extends Error {
  * defines was previously unreachable: nothing called this, so the only way to
  * reach it was by rejecting an application, which is a different thing.
  */
+/**
+ * Record Gate 1's finding. `null` returns the member to the class default.
+ *
+ * Raising or lowering this is what opens or closes a readiness assessment, so
+ * it is a secretariat act with the same weight as an accession decision.
+ */
+export async function setMemberPerimeter(
+  id: string,
+  perimeter: boolean | null,
+): Promise<Member | null> {
+  return writeStore<StoredMember[], Member | null>(
+    MEMBERS,
+    [],
+    async (members) => {
+      const index = members.findIndex((m) => m.id === id);
+      if (index === -1) return { next: members, result: null };
+      const updated = { ...members[index], perimeter };
+      const next = [...members];
+      next[index] = updated;
+      return { next, result: publicView(updated) };
+    },
+  );
+}
+
 export async function setMemberStatus(
   id: string,
   status: MemberStatus,
@@ -383,12 +416,12 @@ export async function getScores(memberId: string): Promise<ReadinessScore[]> {
   return table[memberId] ?? [];
 }
 
-/** Classes A and B are scored; C–E are not assessed against the framework. */
+/** A scorecard exists only for members inside the perimeter — see `isScored`. */
 export async function ensureScorecard(
   memberId: string,
-  classKey: ClassKey,
+  member: { classKey: ClassKey; perimeter?: boolean | null },
 ): Promise<ReadinessScore[]> {
-  if (!isScoredClass(classKey)) return [];
+  if (!isScored(member)) return [];
 
   return writeStore<ScoreTable, ReadinessScore[]>(SCORES, {}, async (table) => {
     if (table[memberId]?.length) {

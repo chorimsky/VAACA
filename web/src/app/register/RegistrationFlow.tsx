@@ -13,6 +13,7 @@ import {
 import { routes } from "@/lib/routes";
 import { CheckIcon } from "@/components/icons";
 import { COUNTRIES, type ClassKey } from "@/lib/application-types";
+import type { ChamberId } from "@/lib/chambers";
 import { MIN_PASSWORD_LENGTH, isValidEmail } from "@/lib/validate";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { fill } from "@/lib/i18n/dictionaries";
@@ -31,6 +32,7 @@ export function RegistrationFlow({
   languageLabel,
   t,
   classes,
+  chambers,
   countries,
 }: {
   locale: Locale;
@@ -38,6 +40,13 @@ export function RegistrationFlow({
   t: Dictionary["auth"];
   /** Class letters and descriptions, already translated. */
   classes: { key: ClassKey; letter: string; who: string }[];
+  /** The seven chambers, already translated, each with the classes it allows. */
+  chambers: {
+    id: ChamberId;
+    name: string;
+    who: string;
+    classes: ClassKey[];
+  }[];
   /** The canonical country value, with the label in the reader's language. */
   countries: { value: string; label: string }[];
 }) {
@@ -48,7 +57,25 @@ export function RegistrationFlow({
     t.register.steps.review,
   ];
   const [step, setStep] = useState(1);
+  const [selectedChamber, setSelectedChamber] = useState<ChamberId | null>(
+    null,
+  );
   const [selectedClass, setSelectedClass] = useState<ClassKey | null>(null);
+
+  // The chamber narrows the classes on offer, so changing it has to clear a
+  // selection the new chamber does not allow — otherwise the form submits a
+  // pairing the endpoint rejects, and the applicant is told nothing useful.
+  const chamber = chambers.find((c) => c.id === selectedChamber) ?? null;
+  const availableClasses = chamber
+    ? classes.filter((c) => chamber.classes.includes(c.key))
+    : [];
+  const chooseChamber = (id: ChamberId) => {
+    setSelectedChamber(id);
+    const allowed = chambers.find((c) => c.id === id)?.classes ?? [];
+    setSelectedClass((current) =>
+      current && allowed.includes(current) ? current : null,
+    );
+  };
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState<string>(COUNTRIES[0]);
@@ -83,7 +110,7 @@ export function RegistrationFlow({
    */
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (step === 1 && selectedClass) setStep(2);
+    if (step === 1 && selectedChamber && selectedClass) setStep(2);
     else if (step === 2 && detailsValid) setStep(3);
     else if (step === 3) void submit();
   };
@@ -121,6 +148,7 @@ export function RegistrationFlow({
           name: name.trim(),
           email: email.trim(),
           country,
+          chamberId: selectedChamber,
           classKey: selectedClass,
           password,
         }),
@@ -184,46 +212,46 @@ export function RegistrationFlow({
         )}
 
         <form onSubmit={onSubmit}>
-          {/* STEP 1 — CLASS */}
+          {/* STEP 1 — CHAMBER, THEN CLASS */}
           {step === 1 && (
             <div className="vaaca-fade-in">
               <h1 className="mb-2 font-serif text-[26px] font-semibold text-navy">
-                {t.register.chooseClass}
+                {t.register.chooseChamber}
               </h1>
               <p className="mb-[26px] text-[14px] leading-[1.6] text-body-soft">
-                {t.register.lede}
+                {t.register.chamberLede}
               </p>
 
-              <fieldset className="m-0 flex flex-col gap-2.5 border-0 p-0">
-                <legend className="sr-only">{t.register.classLegend}</legend>
-                {classes.map((cls) => {
-                  const on = selectedClass === cls.key;
+              <fieldset className="m-0 grid grid-cols-[repeat(auto-fit,minmax(230px,1fr))] gap-2.5 border-0 p-0">
+                <legend className="sr-only">{t.register.chamberLegend}</legend>
+                {chambers.map((c) => {
+                  const on = selectedChamber === c.id;
                   return (
                     <label
-                      key={cls.key}
-                      className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border-2 bg-white px-[18px] py-4 transition-[border-color,transform] duration-150 hover:-translate-y-px hover:shadow-[0_6px_16px_-10px_rgba(14,42,68,.3)] ${
+                      key={c.id}
+                      className={`flex cursor-pointer items-start justify-between gap-3 rounded-xl border-2 bg-white px-4 py-3.5 transition-[border-color,transform] duration-150 hover:-translate-y-px hover:shadow-[0_6px_16px_-10px_rgba(14,42,68,.3)] ${
                         on ? "border-teal" : "border-line"
                       }`}
                     >
                       <input
                         type="radio"
-                        name="member-class"
-                        value={cls.key}
+                        name="member-chamber"
+                        value={c.id}
                         checked={on}
-                        onChange={() => setSelectedClass(cls.key)}
+                        onChange={() => chooseChamber(c.id)}
                         className="sr-only"
                       />
                       <span>
-                        <span className="block text-[14.5px] font-bold text-navy">
-                          {cls.letter}
+                        <span className="block text-[13.5px] font-bold text-navy">
+                          {c.name}
                         </span>
-                        <span className="mt-1 block text-[12.5px] text-muted">
-                          {cls.who}
+                        <span className="mt-1 block text-[12px] leading-[1.5] text-muted">
+                          {c.who}
                         </span>
                       </span>
                       <span
                         aria-hidden
-                        className={`h-5 w-5 shrink-0 rounded-full border-2 ${
+                        className={`mt-0.5 h-[18px] w-[18px] shrink-0 rounded-full border-2 ${
                           on
                             ? "border-teal-deep bg-teal-deep"
                             : "border-line bg-white"
@@ -234,8 +262,66 @@ export function RegistrationFlow({
                 })}
               </fieldset>
 
+              {/* The classes appear only once a chamber is chosen, because
+                  which of them are open depends on it. */}
+              {chamber && (
+                <div className="vaaca-fade-in mt-9">
+                  <h2 className="mb-2 font-serif text-[20px] font-semibold text-navy">
+                    {t.register.chooseClass}
+                  </h2>
+                  <p className="mb-[18px] text-[13.5px] leading-[1.6] text-body-soft">
+                    {t.register.lede}
+                  </p>
+
+                  <fieldset className="m-0 flex flex-col gap-2.5 border-0 p-0">
+                    <legend className="sr-only">
+                      {t.register.classLegend}
+                    </legend>
+                    {availableClasses.map((cls) => {
+                      const on = selectedClass === cls.key;
+                      return (
+                        <label
+                          key={cls.key}
+                          className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border-2 bg-white px-[18px] py-4 transition-[border-color,transform] duration-150 hover:-translate-y-px hover:shadow-[0_6px_16px_-10px_rgba(14,42,68,.3)] ${
+                            on ? "border-teal" : "border-line"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="member-class"
+                            value={cls.key}
+                            checked={on}
+                            onChange={() => setSelectedClass(cls.key)}
+                            className="sr-only"
+                          />
+                          <span>
+                            <span className="block text-[14.5px] font-bold text-navy">
+                              {cls.letter}
+                            </span>
+                            <span className="mt-1 block text-[12.5px] text-muted">
+                              {cls.who}
+                            </span>
+                          </span>
+                          <span
+                            aria-hidden
+                            className={`h-5 w-5 shrink-0 rounded-full border-2 ${
+                              on
+                                ? "border-teal-deep bg-teal-deep"
+                                : "border-line bg-white"
+                            }`}
+                          />
+                        </label>
+                      );
+                    })}
+                  </fieldset>
+                </div>
+              )}
+
               <div className="mt-[30px] flex justify-end">
-                <PrimaryButton type="submit" disabled={!selectedClass}>
+                <PrimaryButton
+                  type="submit"
+                  disabled={!selectedChamber || !selectedClass}
+                >
                   {t.register.continueLabel}
                 </PrimaryButton>
               </div>
@@ -343,6 +429,7 @@ export function RegistrationFlow({
 
               <dl className="m-0 flex flex-col gap-3.5 rounded-[14px] border border-line bg-white px-6 py-[22px]">
                 {[
+                  { label: t.register.chamberRow, value: chamber?.name ?? "" },
                   { label: t.register.steps.class, value: selectedLabel },
                   { label: t.register.rowName, value: name },
                   { label: t.register.email, value: email },

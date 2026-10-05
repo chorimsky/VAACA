@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { ChamberId } from "@/lib/chambers";
 import { randomUUID } from "node:crypto";
 import { hashPassword } from "./auth";
 import {
@@ -63,6 +64,7 @@ const SEED: Omit<Application, "history">[] = [
     name: "Kamdem Fintech Ltd.",
     email: "contact@kamdemfintech.cm",
     country: "Cameroon",
+    chamberId: "technology",
     classKey: "A",
     status: "submitted",
     submittedAt: "2026-09-02T09:00:00.000Z",
@@ -75,6 +77,7 @@ const SEED: Omit<Application, "history">[] = [
     name: "Coinbridge SARL",
     email: "ops@coinbridge.cm",
     country: "Cameroon",
+    chamberId: "technology",
     classKey: "A",
     status: "submitted",
     submittedAt: "2026-08-29T09:00:00.000Z",
@@ -87,6 +90,7 @@ const SEED: Omit<Application, "history">[] = [
     name: "Afriland Payments",
     email: "partnerships@afriland.cm",
     country: "Cameroon",
+    chamberId: "financial",
     classKey: "B",
     status: "approved",
     submittedAt: "2026-08-21T09:00:00.000Z",
@@ -99,6 +103,7 @@ const SEED: Omit<Application, "history">[] = [
     name: "Aïcha N.",
     email: "aicha.n@example.com",
     country: "Cameroon",
+    chamberId: "professional",
     classKey: "C",
     status: "approved",
     submittedAt: "2026-08-15T09:00:00.000Z",
@@ -111,6 +116,7 @@ const SEED: Omit<Application, "history">[] = [
     name: "NovaChain PSP",
     email: "legal@novachain.ga",
     country: "Gabon",
+    chamberId: "technology",
     classKey: "A",
     status: "in_review",
     submittedAt: "2026-09-04T09:00:00.000Z",
@@ -123,6 +129,7 @@ const SEED: Omit<Application, "history">[] = [
     name: "Dr. Eyenga M.",
     email: "eyenga@univ-ydn.cm",
     country: "Cameroon",
+    chamberId: "academia",
     classKey: "D",
     status: "rejected",
     submittedAt: "2026-07-30T09:00:00.000Z",
@@ -217,6 +224,7 @@ export type NewApplication = {
   name: string;
   email: string;
   country: string;
+  chamberId: ChamberId;
   classKey: ClassKey;
 };
 

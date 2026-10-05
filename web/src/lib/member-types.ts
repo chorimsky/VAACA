@@ -1,4 +1,5 @@
 import type { ClassKey } from "./application-types";
+import type { ChamberId } from "./chambers";
 
 /**
  * Member and readiness-score shapes, shared by the store, the API and the
@@ -20,8 +21,15 @@ export type Member = {
   name: string;
   email: string;
   country: string;
+  chamberId: ChamberId;
   classKey: ClassKey;
   status: MemberStatus;
+  /**
+   * Gate 1's answer: does this member's activity fall inside the virtual-asset
+   * perimeter? `null` means the secretariat has not ruled yet, and the class
+   * default stands in the meantime.
+   */
+  perimeter: boolean | null;
   createdAt: string;
   /** The accession request this member registered with. */
   applicationId: string | null;
@@ -162,9 +170,35 @@ export const totalScore = (scores: ReadinessScore[]) =>
 export const openDomains = (scores: ReadinessScore[]) =>
   scores.filter((s) => s.status !== "scored");
 
-/** Only operating and adjacent classes are scored against the framework. */
-export const isScoredClass = (classKey: ClassKey) =>
-  classKey === "A" || classKey === "B";
+/**
+ * What the class implies about the perimeter, before anyone has ruled.
+ *
+ * A reasonable opening assumption, not a finding: an applicant chooses their
+ * own class on a public form, and whether their activity is inside the
+ * perimeter is the first thing the framework asks the secretariat to decide.
+ */
+export const PERIMETER_BY_CLASS: Record<ClassKey, boolean> = {
+  A: true,
+  B: true,
+  C: false,
+  D: false,
+  E: false,
+  F: false,
+  G: false,
+};
+
+/**
+ * Whether a member is assessed against the Readiness Framework.
+ *
+ * It follows Gate 1 — the perimeter test — and nothing else. It used to follow
+ * the class, which meant the question "is this activity inside the perimeter?"
+ * was answered by a dropdown the applicant filled in themselves, and a
+ * secretariat finding to the contrary had nowhere to live.
+ */
+export const isScored = (member: {
+  classKey: ClassKey;
+  perimeter?: boolean | null;
+}) => member.perimeter ?? PERIMETER_BY_CLASS[member.classKey];
 
 export const isMemberStatus = (v: unknown): v is MemberStatus =>
   typeof v === "string" && (MEMBER_STATUSES as readonly string[]).includes(v);

@@ -1,4 +1,5 @@
 import { CHAPTERS } from "./chapters";
+import { CHAMBER_IDS, isChamberId, type ChamberId } from "./chambers";
 
 /**
  * The application record shape, shared by the store, the API and the admin UI.
@@ -43,6 +44,20 @@ export const MEMBER_CLASSES = [
     letter: "E — Institutional",
     who: "Regulators, ministries, partners",
   },
+  // F and G were added when the chambers were introduced. Civil society and
+  // students had no class at all before, which meant the two groups the
+  // institution most needs in the room could not complete an accession
+  // request — the form had nothing for them to select.
+  {
+    key: "F",
+    letter: "F — Civil Society",
+    who: "NGOs, consumer and public-interest organizations",
+  },
+  {
+    key: "G",
+    letter: "G — Student",
+    who: "Students, early-career researchers",
+  },
 ] as const;
 
 export const CLASS_KEYS = MEMBER_CLASSES.map((c) => c.key);
@@ -57,6 +72,29 @@ export type ClassKey = (typeof MEMBER_CLASSES)[number]["key"];
  */
 export const COUNTRIES = CHAPTERS.map((c) => c.name);
 
+/**
+ * Which classes a chamber can accede under.
+ *
+ * Not a hierarchy — a narrowing. It keeps the registration form from offering a
+ * university the operating class, and gives the endpoint a rule to check rather
+ * than accepting any pairing a client sends.
+ */
+export const CHAMBER_CLASSES: Record<ChamberId, readonly ClassKey[]> = {
+  financial: ["A", "B", "C", "E"],
+  technology: ["A", "B", "C"],
+  academia: ["D", "G"],
+  "civil-society": ["F", "C"],
+  professional: ["C", "D"],
+  enterprise: ["B", "C"],
+  international: ["E", "D", "F"],
+};
+
+export const isClassInChamber = (chamber: ChamberId, key: ClassKey) =>
+  CHAMBER_CLASSES[chamber].includes(key);
+
+export { CHAMBER_IDS, isChamberId };
+export type { ChamberId };
+
 export type AuditEvent = {
   at: string;
   actor: string;
@@ -69,6 +107,7 @@ export type Application = {
   name: string;
   email: string;
   country: string;
+  chamberId: ChamberId;
   classKey: ClassKey;
   status: ApplicationStatus;
   submittedAt: string;

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { RegistrationFlow } from "./RegistrationFlow";
 import { getTranslations } from "@/lib/i18n/server";
 import { documentMetadata } from "@/lib/i18n/metadata";
-import { CLASS_KEYS } from "@/lib/application-types";
+import { CHAMBER_CLASSES, CLASS_KEYS } from "@/lib/application-types";
+import { CHAMBER_IDS } from "@/lib/chambers";
 import { CHAPTERS } from "@/lib/chapters";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,12 +31,20 @@ export default async function RegisterPage() {
     label: t.chapters.names[chapter.slug as keyof typeof t.chapters.names].full,
   }));
 
+  const chambers = CHAMBER_IDS.map((id) => ({
+    id,
+    name: t.membership.chambers[id].name,
+    who: t.membership.chambers[id].who,
+    classes: [...CHAMBER_CLASSES[id]],
+  }));
+
   return (
     <RegistrationFlow
       locale={locale}
       languageLabel={t.language.label}
       t={t.auth}
       classes={classes}
+      chambers={chambers}
       countries={countries}
     />
   );

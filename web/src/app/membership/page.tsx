@@ -5,7 +5,7 @@ import { routes } from "@/lib/routes";
 import { getTranslations } from "@/lib/i18n/server";
 import { documentMetadata } from "@/lib/i18n/metadata";
 import { fill } from "@/lib/i18n/dictionaries";
-import { CLASS_KEYS } from "@/lib/application-types";
+import { CHAMBER_IDS, CLASS_KEYS } from "@/lib/application-types";
 
 export async function generateMetadata(): Promise<Metadata> {
   // The title, the description and the social card all follow the
@@ -27,6 +27,10 @@ export default async function MembershipPage() {
     C: m.voting.limited,
     D: m.voting.limited,
     E: m.voting.observer,
+    // Civil society sits on its own council in the governance architecture, so
+    // it votes; a student membership is a way in, not a stake.
+    F: m.voting.limited,
+    G: m.voting.observer,
   } as const;
 
   const STEPS = [
@@ -52,6 +56,29 @@ export default async function MembershipPage() {
         <p className="mb-[30px] max-w-[720px] text-[14.5px] leading-[1.6] text-body-soft">
           {m.lede}
         </p>
+
+        {/* Chambers first: where you sit, before how you take part. */}
+        <Eyebrow>{m.chambersEyebrow}</Eyebrow>
+        <h2 className="m-0 mb-2.5 font-serif text-[22px] font-semibold text-navy">
+          {m.chambersTitle}
+        </h2>
+        <p className="mb-5 max-w-[720px] text-[14px] leading-[1.6] text-body-soft">
+          {m.chambersLede}
+        </p>
+        <ul className="m-0 mb-9 grid list-none grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3 p-0">
+          {CHAMBER_IDS.map((id) => (
+            <li key={id}>
+              <Card className="h-full px-5 py-[18px]">
+                <div className="text-[13.5px] font-bold text-navy">
+                  {m.chambers[id].name}
+                </div>
+                <div className="mt-1.5 text-[12.5px] leading-[1.55] text-muted">
+                  {m.chambers[id].who}
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ul>
 
         <div className="mb-6 overflow-x-auto rounded-[14px] border border-line bg-white">
           <table className="w-full border-collapse">

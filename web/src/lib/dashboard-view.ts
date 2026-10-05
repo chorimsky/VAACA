@@ -3,7 +3,7 @@ import type { Member, ReadinessScore } from "./member-types";
 import {
   MAX_SCORE,
   THRESHOLD_LABEL,
-  isScoredClass,
+  isScored,
   openDomains,
   thresholdFor,
   totalScore,
@@ -25,6 +25,8 @@ export const CLASS_LABEL: Record<ClassKey, string> = {
   C: "Class C — Professional Member",
   D: "Class D — Academic / Research",
   E: "Class E — Institutional Partner",
+  F: "Class F — Civil Society",
+  G: "Class G — Student",
 };
 
 /** What each class's dashboard is for, and what it may never contain. */
@@ -49,6 +51,14 @@ export const CLASS_NOTE: Record<ClassKey, { title: string; body: string }> = {
     title: "Observer status",
     body: "Institutional members do not vote and never receive case-level applicant data — only aggregate, anonymized reporting.",
   },
+  F: {
+    title: "Public interest",
+    body: "Civil-society members hold limited voting rights, sit on the Public Interest Council, and are consulted on anything touching consumer protection, inclusion or digital rights.",
+  },
+  G: {
+    title: "Student status",
+    body: "Student membership is a way into the network, not a stake in it: no vote, full access to the research library, and eligibility for working groups and research calls.",
+  },
 };
 
 export const SUBLINE: Record<ClassKey, string> = {
@@ -57,6 +67,8 @@ export const SUBLINE: Record<ClassKey, string> = {
   C: "Track your accession status, certifications and working-group participation.",
   D: "Track your accession status and access to the research library.",
   E: "Observer-status access to aggregate readiness data and consultation activity.",
+  F: "Track your accession status and the consultations open for public-interest comment.",
+  G: "Track your accession status and your access to the research library and working groups.",
 };
 
 export function dashboardStats(
@@ -64,7 +76,7 @@ export function dashboardStats(
   scores: ReadinessScore[],
   applicationStatusLabel: string,
 ): Stat[] {
-  if (isScoredClass(member.classKey) && scores.length) {
+  if (isScored(member) && scores.length) {
     const total = totalScore(scores);
     const threshold = thresholdFor(total);
     const open = openDomains(scores).length;

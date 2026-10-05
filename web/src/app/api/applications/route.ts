@@ -14,7 +14,10 @@ import {
 import {
   COUNTRIES,
   isApplicationStatus,
+  isChamberId,
+  isClassInChamber,
   isClassKey,
+  type ChamberId,
   type ApplicationStatus,
   type ClassKey,
 } from "@/lib/application-types";
@@ -63,10 +66,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Expected JSON body" }, { status: 400 });
   }
 
-  const { name, email, country, classKey, password } = (body ?? {}) as Record<
-    string,
-    unknown
-  >;
+  const { name, email, country, chamberId, classKey, password } = (body ??
+    {}) as Record<string, unknown>;
 
   // Reported as field names as well as prose: the message is English because
   // this is an API, and the field list is what the form translates so an
@@ -79,7 +80,13 @@ export async function POST(request: NextRequest) {
     !(COUNTRIES as readonly string[]).includes(country)
   )
     invalid.push("country");
+  if (!isChamberId(chamberId)) invalid.push("chamberId");
   if (!isClassKey(classKey)) invalid.push("classKey");
+  // The pairing is checked too, not just each half: a chamber and a class the
+  // charter does not put together is not a valid accession request, however
+  // well-formed each value is on its own.
+  else if (isChamberId(chamberId) && !isClassInChamber(chamberId, classKey))
+    invalid.push("classKey");
   if (typeof password !== "string" || password.length < MIN_PASSWORD_LENGTH)
     invalid.push("password");
 
@@ -111,6 +118,7 @@ export async function POST(request: NextRequest) {
     name: (name as string).trim(),
     email: normalisedEmail,
     country: country as string,
+    chamberId: chamberId as ChamberId,
     classKey: classKey as ClassKey,
   });
 
@@ -119,11 +127,12 @@ export async function POST(request: NextRequest) {
       name: (name as string).trim(),
       email: normalisedEmail,
       country: country as string,
+      chamberId: chamberId as ChamberId,
       classKey: classKey as ClassKey,
       password: password as string,
       applicationId: application.id,
     });
-    await ensureScorecard(member.id, member.classKey);
+    await ensureScorecard(member.id, member);
   } catch (error) {
     // Roll back so a failed sign-up never leaves an unowned application.
     await deleteApplication(application.id);

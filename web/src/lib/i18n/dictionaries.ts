@@ -204,6 +204,40 @@ export const en = {
     title: "Open and non-exclusive. Five classes, no discretionary refusal.",
     lede: "Any applicant that meets a class's criteria is admitted. Membership status is never a substitute for regulatory authorization.",
     table: { class: "Class", who: "Who", voting: "Voting" },
+    chambersEyebrow: "Chambers",
+    chambersTitle: "Seven chambers, one network.",
+    chambersLede:
+      "A chamber is where you sit in the ecosystem. A class is how you take part. They are separate on purpose — a bank and a university can both hold a full vote, and two organizations in the same chamber can join on very different terms.",
+    chambers: {
+      financial: {
+        name: "Financial System",
+        who: "Banks, microfinance, insurance, payments, capital markets",
+      },
+      technology: {
+        name: "Technology & Digital Infrastructure",
+        who: "Fintechs, virtual-asset firms, identity, cybersecurity, cloud",
+      },
+      academia: {
+        name: "Academia, Research & Knowledge",
+        who: "Universities, research centres, think tanks, students",
+      },
+      "civil-society": {
+        name: "Civil Society & Public Interest",
+        who: "NGOs, consumer and digital-rights organizations, inclusion",
+      },
+      professional: {
+        name: "Professional Services",
+        who: "Law, audit, accounting, tax, compliance, risk",
+      },
+      enterprise: {
+        name: "Enterprise & Real Economy",
+        who: "SMEs, industry, chambers of commerce, employers",
+      },
+      international: {
+        name: "Diaspora & International Partners",
+        who: "Diaspora, development institutions, international partners",
+      },
+    },
     voting: { full: "Full", limited: "Limited", observer: "Observer" },
     stepLabel: "Step {n}",
     steps: {
@@ -583,6 +617,11 @@ export const en = {
       link: "Log in",
       lede: "Membership is open and non-exclusive — every applicant meeting a class's criteria is admitted.",
       steps: { class: "Class", details: "Details", review: "Review" },
+      chooseChamber: "Where do you sit in the ecosystem?",
+      chamberLede:
+        "The chamber places you in the network. The class, next, sets how you take part — the two are separate.",
+      chamberLegend: "Institutional chamber",
+      chamberRow: "Chamber",
       chooseClass: "Choose your membership class",
       classLegend: "Membership class",
       reviewTitle: "Review your application",
@@ -827,6 +866,14 @@ export const en = {
       E: {
         letter: "E — Institutional",
         who: "Regulators, ministries, partners",
+      },
+      F: {
+        letter: "F — Civil Society",
+        who: "NGOs, consumer and public-interest organizations",
+      },
+      G: {
+        letter: "G — Student",
+        who: "Students, early-career researchers",
       },
     },
   },
@@ -1084,6 +1131,40 @@ export const fr: Dictionary = {
       "Ouverte et non exclusive. Cinq classes, aucun refus discrétionnaire.",
     lede: "Tout candidat qui remplit les critères d'une classe est admis. Le statut de membre ne remplace jamais une autorisation réglementaire.",
     table: { class: "Classe", who: "Qui", voting: "Vote" },
+    chambersEyebrow: "Chambres",
+    chambersTitle: "Sept chambres, un seul réseau.",
+    chambersLede:
+      "La chambre indique votre place dans l'écosystème. La classe indique vos modalités de participation. Les deux sont distinctes à dessein — une banque et une université peuvent toutes deux disposer d'une voix pleine, et deux organisations d'une même chambre peuvent adhérer à des conditions très différentes.",
+    chambers: {
+      financial: {
+        name: "Système financier",
+        who: "Banques, microfinance, assurance, paiements, marchés de capitaux",
+      },
+      technology: {
+        name: "Technologie et infrastructure numérique",
+        who: "Fintechs, PSAN, identité, cybersécurité, cloud",
+      },
+      academia: {
+        name: "Universités, recherche et savoir",
+        who: "Universités, centres de recherche, think tanks, étudiants",
+      },
+      "civil-society": {
+        name: "Société civile et intérêt public",
+        who: "ONG, associations de consommateurs et de droits numériques, inclusion",
+      },
+      professional: {
+        name: "Services professionnels",
+        who: "Droit, audit, comptabilité, fiscalité, conformité, risques",
+      },
+      enterprise: {
+        name: "Entreprises et économie réelle",
+        who: "PME, industrie, chambres de commerce, organisations patronales",
+      },
+      international: {
+        name: "Diaspora et partenaires internationaux",
+        who: "Diaspora, institutions de développement, partenaires internationaux",
+      },
+    },
     voting: { full: "Plein", limited: "Limité", observer: "Observateur" },
     stepLabel: "Étape {n}",
     steps: {
@@ -1472,6 +1553,11 @@ export const fr: Dictionary = {
         details: "Informations",
         review: "Vérification",
       },
+      chooseChamber: "Quelle est votre place dans l'écosystème ?",
+      chamberLede:
+        "La chambre vous situe dans le réseau. La classe, ensuite, définit vos modalités de participation — les deux sont distinctes.",
+      chamberLegend: "Chambre institutionnelle",
+      chamberRow: "Chambre",
       chooseClass: "Choisissez votre classe d'adhésion",
       classLegend: "Classe d'adhésion",
       reviewTitle: "Vérifiez votre candidature",
@@ -1717,6 +1803,14 @@ export const fr: Dictionary = {
       E: {
         letter: "E — Institutionnel",
         who: "Régulateurs, ministères, partenaires",
+      },
+      F: {
+        letter: "F — Société civile",
+        who: "ONG, organisations de consommateurs et d'intérêt public",
+      },
+      G: {
+        letter: "G — Étudiant",
+        who: "Étudiants, chercheurs en début de carrière",
       },
     },
   },

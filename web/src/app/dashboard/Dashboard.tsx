@@ -12,7 +12,7 @@ import {
   MAX_SCORE,
   MEMBER_STATUS_LABEL,
   SCORE_STATUS_LABEL,
-  isScoredClass,
+  isScored,
   totalScore,
   type Member,
   type ReadinessScore,
@@ -75,7 +75,7 @@ export function Dashboard({
   scores: ReadinessScore[];
   application: ApplicationView | null;
 }) {
-  const scored = isScoredClass(member.classKey) && scores.length > 0;
+  const scored = isScored(member) && scores.length > 0;
   const stats = dashboardStats(
     member,
     scores,
