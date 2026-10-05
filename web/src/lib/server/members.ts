@@ -7,8 +7,7 @@ import {
   verifyPassword,
 } from "./auth";
 import { readStore, writeStore } from "./json-store";
-import { listGaps } from "./gaps";
-import { GAP_EFFECT } from "@/lib/gap-types";
+import { listObservatory } from "./gaps";
 import {
   DOMAIN_IDS,
   isScored,
@@ -364,12 +363,14 @@ export type DomainCap = {
  * Where two open gaps hit the same domain, the tighter one wins.
  */
 export async function activeCaps(): Promise<Map<DomainId, DomainCap>> {
-  const gaps = await listGaps();
+  // Read from the Observatory rather than the gap view: the cap lives on the
+  // entry itself now, so an entry that is not a gap could carry one too.
+  const items = await listObservatory();
   const caps = new Map<DomainId, DomainCap>();
 
-  for (const gap of gaps) {
-    const effect = GAP_EFFECT[gap.id];
-    if (!effect || gap.status === "closed") continue;
+  for (const item of items) {
+    const effect = item.effect;
+    if (!effect || item.status === "closed") continue;
 
     const current = caps.get(effect.domain);
     if (current && current.cap <= effect.cap) continue;
@@ -377,8 +378,8 @@ export async function activeCaps(): Promise<Map<DomainId, DomainCap>> {
     caps.set(effect.domain, {
       domain: effect.domain,
       cap: effect.cap,
-      gapId: gap.id,
-      reason: gap.description,
+      gapId: item.id,
+      reason: item.whatChanged.en,
     });
   }
   return caps;

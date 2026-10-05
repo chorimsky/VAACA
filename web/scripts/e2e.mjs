@@ -1331,6 +1331,112 @@ async function run() {
     null,
   );
 
+  section("Regulatory Observatory");
+  // The gap register was the Observatory's first ten entries, not a different
+  // thing. Generalising rather than replacing keeps the one piece of this that
+  // already does real work: a closed entry lifts its cap on scoring everywhere.
+  const observatory = (await req("/observatory")).body ?? "";
+  check(
+    "the register is published",
+    observatory.includes("travel-rule guidance"),
+    true,
+  );
+  check(
+    "  …saying how many entries cap a score",
+    /open entries currently cap a readiness domain/.test(observatory),
+    true,
+  );
+  // The entry's own title, not a phrase that also appears in the framework
+  // copy elsewhere on the page.
+  const G3_TITLE = "not adapted for virtual assets";
+  check(
+    "filtering by topic narrows it",
+    ((await req("/observatory?topic=tax")).body ?? "").includes(G3_TITLE),
+    false,
+  );
+  check(
+    "  …and keeps the entries that match",
+    ((await req("/observatory?topic=aml-cft")).body ?? "").includes(G3_TITLE),
+    true,
+  );
+  check(
+    "an unrecognised filter shows the register rather than nothing",
+    ((await req("/observatory?topic=not-a-topic")).body ?? "").includes(
+      G3_TITLE,
+    ),
+    true,
+  );
+
+  const entry = (await req("/observatory/g3")).body ?? "";
+  check("an entry answers what changed", entry.includes("What changed"), true);
+  check("  …why it matters", entry.includes("Why it matters"), true);
+  check("  …who is affected", entry.includes("Who is affected"), true);
+  check(
+    "  …and what is still unclear",
+    entry.includes("remains unclear"),
+    true,
+  );
+  // G6, not G3: a later section closes G3 to prove a closed entry lifts its
+  // cap, and the store persists between runs.
+  check(
+    "  …and what it does to scoring",
+    /Caps Consumer Protection at 1\/3/.test(
+      (await req("/observatory/g6")).body ?? "",
+    ),
+    true,
+  );
+  check(
+    "an entry that blocks a domain says so",
+    /cannot be scored/.test((await req("/observatory/g5")).body ?? ""),
+    true,
+  );
+  // Entry ids are written G1–G10; every URL here is canonical lowercase.
+  check("entry URLs are lowercase", (await req("/observatory/G3")).status, 308);
+  check("an unknown entry 404s", (await req("/observatory/g99")).status, 404);
+  check("  …in French too", (await req("/fr/observatory/g99")).status, 404);
+  check(
+    "the French register is French",
+    ((await req("/fr/observatory")).body ?? "").includes(
+      "Observatoire réglementaire",
+    ),
+    true,
+  );
+  // Entries are data the secretariat writes, not dictionary strings, so they
+  // carry both languages themselves. Five of six CEMAC states work in French.
+  check(
+    "  …including the entries, not just the chrome",
+    ((await req("/fr/observatory/g3")).body ?? "").includes("règle du voyage"),
+    true,
+  );
+
+  // The institutional response is the Observatory's own field, and the console
+  // writes it through the same endpoint it already used for the register.
+  const responded = await req(
+    "/api/gaps/G3",
+    json(
+      { response: `Position noted ${uniq}` },
+      { method: "PATCH", headers: { cookie: staff } },
+    ),
+  );
+  check("staff can record a response", responded.status, 200);
+  check(
+    "  …and it appears on the entry",
+    ((await req("/observatory/g3")).body ?? "").includes(
+      `Position noted ${uniq}`,
+    ),
+    true,
+  );
+  check(
+    "  …while the register keeps its shape",
+    responded.body?.gap?.description,
+    (
+      await req(
+        "/api/gaps/G3",
+        json({ note: null }, { method: "PATCH", headers: { cookie: staff } }),
+      )
+    ).body?.gap?.description,
+  );
+
   section("Sector councils");
   // A council that cannot be refused is furniture. Activation is the only
   // transition the code guards, and it guards the things that make a

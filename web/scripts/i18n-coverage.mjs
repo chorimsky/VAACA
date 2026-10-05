@@ -28,6 +28,8 @@ const PAGES = [
   "/region",
   "/resources",
   "/councils",
+  "/observatory",
+  "/observatory/g3",
   "/councils/academic-research",
   "/login",
   "/login/reset",

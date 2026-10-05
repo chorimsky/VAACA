@@ -7,6 +7,7 @@ import {
 } from "@/lib/session-token";
 import { CHAPTERS } from "@/lib/chapters";
 import { COUNCIL_IDS } from "@/lib/council-types";
+import { OBSERVATORY_ITEM_SLUGS } from "@/lib/observatory-types";
 import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE,
@@ -21,6 +22,7 @@ import {
 
 const CHAPTER_SLUGS = new Set(CHAPTERS.map((c) => c.slug));
 const COUNCIL_SLUGS = new Set(COUNCIL_IDS as readonly string[]);
+const OBSERVATORY_SLUGS = new Set(OBSERVATORY_ITEM_SLUGS);
 
 /**
  * A path with no route, so Next answers it with `not-found.tsx` and a genuine
@@ -106,6 +108,7 @@ export async function middleware(request: NextRequest) {
   for (const [prefix, members] of [
     ["/chapters/", CHAPTER_SLUGS],
     ["/councils/", COUNCIL_SLUGS],
+    ["/observatory/", OBSERVATORY_SLUGS],
   ] as const) {
     if (!path.startsWith(prefix)) continue;
     const slug = path.slice(prefix.length);

@@ -52,8 +52,8 @@ handle*.
 
 ## 2. Four decisions
 
-These are governance choices, not implementation details. Three are **resolved
-and built**; one remains open.
+These are governance choices, not implementation details. All four are
+**resolved and built**.
 
 ### 2.1 Does the chamber replace the class, or sit beside it? — **resolved: two axes**
 
@@ -147,7 +147,7 @@ five seats each is sixty appointments' worth of governance, and that belongs to
 the Coordination Council. What is in the code is the rule those appointments
 have to satisfy.
 
-### 2.4 Does the Regulatory Observatory replace or extend the Gap Register? — **open**
+### 2.4 Does the Regulatory Observatory replace or extend the Gap Register? — **resolved: generalise**
 
 The Gap Register tracks ten named instruction gaps, each capping a readiness
 domain until it closes. Closing a gap lifts its cap everywhere. It is small,
@@ -158,10 +158,33 @@ regulatory fact with a status, a source, an affected population and an
 institutional response. A gap is an Observatory entry whose consequence happens
 to be a scoring cap.
 
-Recommendation: **generalise, do not replace.** One `RegulatoryItem` entity;
-`GAP_EFFECT` becomes one optional field on it. This is the single highest-value
-module to build next because it reuses machinery that already works and is
-already trusted by the scoring rule.
+**Decided: generalise, do not replace.** One `ObservatoryItem` entity; the
+scoring cap is one optional field on it, and the Instruction Gap Register is a
+view over the Observatory filtered to `kind: "gap"`. The console, the API and
+the scoring rule all kept the shape they already read, so none of them changed.
+
+Built: the five §15 editorial fields on every entry — what changed, why it
+matters, who is affected, what is still unclear, and VAACA's own response —
+public pages at `/observatory` with filters by type, topic and status, and the
+cap shown on the entry that imposes it.
+
+Entry text carries both languages in the record rather than in the dictionary,
+because entries are data the secretariat writes and the register is published
+to a bloc where five of six states work in French.
+
+Two things this surfaced:
+
+- **A guessed value becomes a fact the moment it is written back.** Reading old
+  rows forward filled in the fields they lacked, and the first secretariat edit
+  persisted those guesses — G3 was filed under "virtual assets" rather than
+  AML/CFT, with nothing in the data saying it had been guessed. The read now
+  splits the two halves: an entry's *description* comes from the register and
+  its *state* from the store.
+- **An open set cannot soft-404.** `notFound()` from a dynamic page — and from
+  its metadata — can only swap the body under a 200 once the response has
+  committed, so middleware answers for unknown entry ids the way it does for
+  chapters and councils. An endpoint that creates entries has to extend that
+  check; the constant that holds the ids says so.
 
 ---
 

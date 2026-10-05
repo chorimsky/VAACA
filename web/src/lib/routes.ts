@@ -14,6 +14,7 @@ export const routes = {
   membership: "/membership",
   governance: "/governance",
   councils: "/councils",
+  observatory: "/observatory",
   region: "/region",
   resources: "/resources",
   login: "/login",
@@ -24,6 +25,9 @@ export const routes = {
   documents: "/documents",
   chapter: (slug: string) => `/chapters/${slug}`,
   council: (id: string) => `/councils/${id}`,
+  // Lowercase: entry ids are written G1–G10, but every URL here is canonical
+  // lowercase and middleware 308s a mis-cased path.
+  observatoryItem: (id: string) => `/observatory/${id.toLowerCase()}`,
 } as const;
 
 /** Nav keys that can render as the active item. */
