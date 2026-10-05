@@ -6,8 +6,15 @@ turning it into numbers, the things it does not settle, and what the model says
 once the numbers are in.
 
 The model itself is [`model/VAACA-financial-model.xlsx`](model/VAACA-financial-model.xlsx)
-— twelve sheets, driver-based, with a scenario switch. Every figure is a unit
+— thirteen sheets, driver-based, with a scenario switch. Every figure is a unit
 count times a price, or a cost driver. Nothing in it is typed in as a result.
+
+**The two-entity question is settled, and not the way this specification
+proposed it.** There is no VAACA Services subsidiary. VAACA stays a non-profit
+and the services are delivered by IAFN, a founding member whose mandate is
+already education, certification and capacity. The Entity Split sheet carries
+the consequences, which are not free: break-even moves from Year 2 to Year 3.
+See [STRUCTURE.md](STRUCTURE.md).
 
 ---
 
@@ -73,6 +80,13 @@ chambers, the seven accession classes and the Gate 1 perimeter test are in the
 platform; the revenue model's six membership tiers in §6 are a *pricing*
 ladder, not a second taxonomy. An organisation sits in one chamber, accedes in
 one class, and pays at the tier matching its size.
+
+**There is no commercial subsidiary.** §4's Entity B is replaced by a service
+agreement with IAFN — see [STRUCTURE.md](STRUCTURE.md). Membership,
+partnerships, events, research publication, intelligence, data and platform
+stay with the non-profit, because each is VAACA selling its own institutional
+output. Education, certification, advisory and commissioned research go to
+IAFN, because each is selling someone a service.
 
 **The surplus is spent.** A 40% operating margin is not a target for an
 institution of this kind — left unspent it would say the public-interest half
