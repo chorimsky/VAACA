@@ -1201,11 +1201,27 @@ async function run() {
         password: "longenough",
       }),
     );
-  check("civil society can accede", (await accede("civil-society", "F", "f")).status, 201);
-  check("a student can accede", (await accede("academia", "G", "g")).status, 201);
+  check(
+    "civil society can accede",
+    (await accede("civil-society", "F", "f")).status,
+    201,
+  );
+  check(
+    "a student can accede",
+    (await accede("academia", "G", "g")).status,
+    201,
+  );
   const mismatch = await accede("academia", "A", "x");
-  check("a chamber and class the charter does not pair is refused", mismatch.status, 400);
-  check("  …naming the class, not the chamber", (mismatch.body?.fields ?? []).join(","), "classKey");
+  check(
+    "a chamber and class the charter does not pair is refused",
+    mismatch.status,
+    400,
+  );
+  check(
+    "  …naming the class, not the chamber",
+    (mismatch.body?.fields ?? []).join(","),
+    "classKey",
+  );
   check(
     "a chamber is required",
     (
@@ -1313,6 +1329,123 @@ async function run() {
     (await req(`/api/members/${outsideId}/perimeter`, perimeter(null))).body
       ?.member?.perimeter,
     null,
+  );
+
+  section("Sector councils");
+  // A council that cannot be refused is furniture. Activation is the only
+  // transition the code guards, and it guards the things that make a
+  // deliberative body one: a composition no bloc can capture, a quorum its
+  // seats can meet, and enough of them filled to reach it.
+  const councils = (await req("/councils")).body ?? "";
+  // The ampersand in several names arrives HTML-escaped; pick one without.
+  check("all twelve are listed", councils.includes("Microfinance"), true);
+  check(
+    "  …and they start proposed",
+    councils.includes("Composition not yet set"),
+    true,
+  );
+  check(
+    "  …in French too",
+    ((await req("/fr/councils")).body ?? "").includes(
+      "Composition non encore arrêtée",
+    ),
+    true,
+  );
+  check("an unknown council 404s", (await req("/councils/nope")).status, 404);
+
+  check(
+    "reading a council's blockers requires staff",
+    (await req("/api/councils/academic-research")).status,
+    401,
+  );
+  const asStaff = (payload) =>
+    json(payload, { method: "PATCH", headers: { cookie: staff } });
+  const councilUrl = "/api/councils/academic-research";
+
+  // Reset first: the store persists between runs, so a composition left by the
+  // previous run would make the empty-council assertion below pass vacuously.
+  await req(councilUrl, asStaff({ seats: [], quorum: 0, status: "proposed" }));
+  const empty = await req(councilUrl, asStaff({ status: "active" }));
+  check("an empty council cannot be activated", empty.status, 409);
+  check(
+    "  …and is told why",
+    (empty.body?.blockers ?? []).some((b) => b.includes("Composition not set")),
+    true,
+  );
+
+  const capturable = [
+    { name: "Industry A", bloc: "industry", status: "filled" },
+    { name: "Industry B", bloc: "industry", status: "filled" },
+    { name: "Industry C", bloc: "industry", status: "filled" },
+    { name: "Academic", bloc: "independent", status: "filled" },
+    { name: "Compliance", bloc: "professional", status: "filled" },
+  ];
+  await req(councilUrl, asStaff({ seats: capturable, quorum: 3 }));
+  const captured = await req(councilUrl, asStaff({ status: "active" }));
+  check("a capturable composition is refused", captured.status, 409);
+  check(
+    "  …naming the bloc that would hold it",
+    (captured.body?.blockers ?? []).some((b) => b.includes("Industry")),
+    true,
+  );
+
+  const balanced = [
+    { name: "Industry A", bloc: "industry", status: "filled" },
+    { name: "Industry B", bloc: "industry", status: "filled" },
+    { name: "Academic", bloc: "independent", status: "filled" },
+    { name: "Consumer", bloc: "independent", status: "vacant" },
+    { name: `Compliance ${uniq}`, bloc: "professional", status: "vacant" },
+  ];
+  await req(councilUrl, asStaff({ seats: balanced, quorum: 4 }));
+  const shortQuorum = await req(councilUrl, asStaff({ status: "active" }));
+  check("a quorum that cannot be met is refused", shortQuorum.status, 409);
+  check(
+    "  …counting the filled seats",
+    (shortQuorum.body?.blockers ?? []).some((b) => b.includes("3 of 4")),
+    true,
+  );
+
+  await req(councilUrl, asStaff({ seats: balanced, quorum: 3 }));
+  const activated = await req(councilUrl, asStaff({ status: "active" }));
+  check("a sound council activates", activated.status, 200);
+  check(
+    "  …and records who did it",
+    activated.body?.council?.activatedBy,
+    STAFF.email,
+  );
+  check(
+    "  …and only then publishes its composition",
+    ((await req("/councils/academic-research")).body ?? "").includes(
+      `Compliance ${uniq}`,
+    ),
+    true,
+  );
+  check(
+    "standing a council down is always allowed",
+    (await req(councilUrl, asStaff({ status: "dormant" }))).status,
+    200,
+  );
+  check(
+    "  …and it stops publishing",
+    ((await req("/councils/academic-research")).body ?? "").includes(
+      `Compliance ${uniq}`,
+    ),
+    false,
+  );
+  check(
+    "a bad quorum is rejected outright",
+    (await req(councilUrl, asStaff({ seats: balanced, quorum: -1 }))).status,
+    400,
+  );
+  check(
+    "a seat with no bloc is rejected",
+    (
+      await req(
+        councilUrl,
+        asStaff({ seats: [{ name: "Nameless", bloc: "nope" }], quorum: 3 }),
+      )
+    ).status,
+    400,
   );
 
   section("Registration form");

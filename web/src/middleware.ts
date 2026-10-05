@@ -6,6 +6,7 @@ import {
   verifyStaffSession,
 } from "@/lib/session-token";
 import { CHAPTERS } from "@/lib/chapters";
+import { COUNCIL_IDS } from "@/lib/council-types";
 import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE,
@@ -19,6 +20,7 @@ import {
 } from "@/lib/i18n/locale";
 
 const CHAPTER_SLUGS = new Set(CHAPTERS.map((c) => c.slug));
+const COUNCIL_SLUGS = new Set(COUNCIL_IDS as readonly string[]);
 
 /**
  * A path with no route, so Next answers it with `not-found.tsx` and a genuine
@@ -98,9 +100,16 @@ export async function middleware(request: NextRequest) {
   // every route dynamic, and once a route is dynamic `dynamicParams = false`
   // can no longer answer an unknown slug before the response starts — the page
   // renders and `notFound()` streams a 200 shell instead.
-  if (path.startsWith("/chapters/")) {
-    const slug = path.slice("/chapters/".length);
-    if (slug && !CHAPTER_SLUGS.has(slug)) {
+  // Both of these are closed sets, and both are read through a dynamic page, so
+  // `notFound()` inside the page would stream a 200 shell rather than answer
+  // 404. Checking here gives a real status in both locales.
+  for (const [prefix, members] of [
+    ["/chapters/", CHAPTER_SLUGS],
+    ["/councils/", COUNCIL_SLUGS],
+  ] as const) {
+    if (!path.startsWith(prefix)) continue;
+    const slug = path.slice(prefix.length);
+    if (slug && !members.has(slug)) {
       return NextResponse.rewrite(new URL(NOT_FOUND_PATH, request.url));
     }
   }

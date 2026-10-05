@@ -27,6 +27,8 @@ const PAGES = [
   "/governance",
   "/region",
   "/resources",
+  "/councils",
+  "/councils/academic-research",
   "/login",
   "/login/reset",
   "/register",

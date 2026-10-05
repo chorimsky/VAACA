@@ -52,8 +52,8 @@ handle*.
 
 ## 2. Four decisions
 
-These are governance choices, not implementation details. Two are **resolved and
-built**; two remain open.
+These are governance choices, not implementation details. Three are **resolved
+and built**; one remains open.
 
 ### 2.1 Does the chamber replace the class, or sit beside it? — **resolved: two axes**
 
@@ -114,7 +114,7 @@ previously answered by a dropdown the applicant filled in themselves, so an
 exchange that described itself as "professional" was never scored, and the
 secretariat had nowhere to say otherwise.
 
-### 2.3 What is a sector council, operationally? — **open**
+### 2.3 What is a sector council, operationally? — **resolved: one that can be refused**
 
 The master prompt lists twelve (§10). The platform has one Coordination Council
 of nine seats, with a rule enforced in code: no single bloc may hold a majority
@@ -123,10 +123,29 @@ is a constitutional constraint that the software refuses to violate.
 
 Twelve councils need: a membership rule, a chair, a quorum, an output type, and
 a relationship to the Coordination Council. Without those they are page
-furniture. §10's own hedge — *"activated according to strategic priorities
-rather than all operating simultaneously"* — is the right instinct, and should
-be made structural: a council has a **status** (`proposed`, `active`,
-`dormant`), and only an active council can publish.
+furniture.
+
+**Decided: a council is operational when it can be refused.** All twelve exist
+as `proposed` with no composition — which is what §10 asks for, councils stood
+up against strategic priorities rather than all at once — and activation is
+guarded:
+
+- at least five seats defined;
+- a composition **no single bloc could capture**, tested on the definitions
+  rather than on who happens to be appointed, so capture is impossible rather
+  than merely not-yet-happened;
+- a quorum of at least three that the seats can actually meet;
+- enough of those seats filled to reach it.
+
+A council that fails any of these cannot be activated, and the refusal says
+which. A council that is not active publishes nothing — no composition, no
+seats, no output. Standing one down is always allowed: a body that has stopped
+meeting should be able to say so.
+
+The seat compositions are deliberately **not** in the code. Twelve councils at
+five seats each is sixty appointments' worth of governance, and that belongs to
+the Coordination Council. What is in the code is the rule those appointments
+have to satisfy.
 
 ### 2.4 Does the Regulatory Observatory replace or extend the Gap Register? — **open**
 

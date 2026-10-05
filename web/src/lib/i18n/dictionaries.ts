@@ -51,6 +51,7 @@ export const en = {
       theInstitution: "The Institution",
       founders: "Founders",
       governance: "Governance",
+      councils: "Sector councils",
       secretariat: "Secretariat",
       standards: "Standards",
       ecosystem: "Ecosystem",
@@ -688,6 +689,78 @@ export const en = {
     standards_officer: "Standards & Assessment Officer",
     council_member: "Council Member",
   },
+  councils: {
+    eyebrow: "Sector councils",
+    title: "Twelve councils, stood up as they are needed.",
+    lede: "A council is not a name on a page. It cannot be activated until it has a composition no single interest can capture, a quorum its seats can meet, and enough of those seats filled to reach it — and a council that is not active publishes nothing.",
+    status: {
+      proposed: "Proposed",
+      active: "Active",
+      dormant: "Dormant",
+    },
+    quorum: "Quorum",
+    seats: "Seats",
+    filled: "Filled",
+    notYetStood: "Composition not yet set by the Coordination Council.",
+    reportsTo: "Reports to the Coordination Council.",
+    backToCouncils: "All councils",
+    names: {
+      "banking-payments": {
+        name: "Banking & Payments",
+        mandate: "Settlement, custody and the bank–VASP interface.",
+      },
+      "microfinance-inclusion": {
+        name: "Microfinance & Financial Inclusion",
+        mandate:
+          "Reach into underserved and rural markets without importing new risk.",
+      },
+      "insurance-risk": {
+        name: "Insurance & Risk",
+        mandate:
+          "Digital-asset, cyber and custody risk, and what is insurable today.",
+      },
+      "capital-markets": {
+        name: "Capital Markets & Tokenization",
+        mandate: "Tokenized securities, settlement and investor protection.",
+      },
+      "fintech-infrastructure": {
+        name: "Fintech & Digital Infrastructure",
+        mandate:
+          "Technical interoperability between payments, identity and ledgers.",
+      },
+      "digital-identity-cyber": {
+        name: "Digital Identity & Cybersecurity",
+        mandate:
+          "Identity assurance, key management and operational resilience.",
+      },
+      "digital-assets": {
+        name: "Digital Assets & Virtual Asset Infrastructure",
+        mandate:
+          "Custody, exchange and the infrastructure the PSAN framework assesses.",
+      },
+      "sme-real-economy": {
+        name: "SME & Real Economy",
+        mandate:
+          "Bankability, trade finance and the assets behind tokenization.",
+      },
+      "academic-research": {
+        name: "Academic & Research",
+        mandate: "The evidence base, independent of industry positions.",
+      },
+      "civil-society": {
+        name: "Civil Society & Public Interest",
+        mandate: "Consumer protection, inclusion, digital rights and literacy.",
+      },
+      "professional-standards": {
+        name: "Professional Standards",
+        mandate: "Certification, audit guidance and compliance frameworks.",
+      },
+      "payments-settlement": {
+        name: "Payments & Settlement",
+        mandate: "A working group on corridors, interoperability and finality.",
+      },
+    },
+  },
   errors: {
     notFound: {
       eyebrow: "Error 404",
@@ -974,6 +1047,7 @@ export const fr: Dictionary = {
       theInstitution: "L'institution",
       founders: "Fondateurs",
       governance: "Gouvernance",
+      councils: "Conseils sectoriels",
       secretariat: "Secrétariat",
       standards: "Normes",
       ecosystem: "Écosystème",
@@ -1624,6 +1698,83 @@ export const fr: Dictionary = {
     secretary_general: "Secrétaire général",
     standards_officer: "Responsable normes et évaluation",
     council_member: "Membre du Conseil",
+  },
+  councils: {
+    eyebrow: "Conseils sectoriels",
+    title: "Douze conseils, constitués au fur et à mesure des besoins.",
+    lede: "Un conseil n'est pas un nom sur une page. Il ne peut être activé tant qu'il n'a pas une composition qu'aucun intérêt ne peut capter, un quorum que ses sièges permettent d'atteindre et suffisamment de sièges pourvus pour y parvenir — et un conseil qui n'est pas actif ne publie rien.",
+    status: {
+      proposed: "Proposé",
+      active: "Actif",
+      dormant: "En sommeil",
+    },
+    quorum: "Quorum",
+    seats: "Sièges",
+    filled: "Pourvus",
+    notYetStood:
+      "Composition non encore arrêtée par le Conseil de coordination.",
+    reportsTo: "Rend compte au Conseil de coordination.",
+    backToCouncils: "Tous les conseils",
+    names: {
+      "banking-payments": {
+        name: "Banque et paiements",
+        mandate: "Règlement, conservation et interface entre banques et PSAN.",
+      },
+      "microfinance-inclusion": {
+        name: "Microfinance et inclusion financière",
+        mandate:
+          "Atteindre les marchés mal desservis et ruraux sans importer de nouveaux risques.",
+      },
+      "insurance-risk": {
+        name: "Assurance et risques",
+        mandate:
+          "Risques liés aux actifs numériques, au cyber et à la conservation, et ce qui est assurable aujourd'hui.",
+      },
+      "capital-markets": {
+        name: "Marchés de capitaux et tokenisation",
+        mandate:
+          "Titres tokenisés, règlement-livraison et protection des investisseurs.",
+      },
+      "fintech-infrastructure": {
+        name: "Fintech et infrastructure numérique",
+        mandate:
+          "Interopérabilité technique entre paiements, identité et registres.",
+      },
+      "digital-identity-cyber": {
+        name: "Identité numérique et cybersécurité",
+        mandate:
+          "Garantie d'identité, gestion des clés et résilience opérationnelle.",
+      },
+      "digital-assets": {
+        name: "Actifs numériques et infrastructure PSAN",
+        mandate:
+          "Conservation, échange et l'infrastructure évaluée par le cadre PSAN.",
+      },
+      "sme-real-economy": {
+        name: "PME et économie réelle",
+        mandate:
+          "Bancabilité, financement du commerce et actifs sous-jacents à la tokenisation.",
+      },
+      "academic-research": {
+        name: "Universités et recherche",
+        mandate:
+          "La base de données probantes, indépendante des positions du secteur.",
+      },
+      "civil-society": {
+        name: "Société civile et intérêt public",
+        mandate:
+          "Protection des consommateurs, inclusion, droits numériques et éducation financière.",
+      },
+      "professional-standards": {
+        name: "Normes professionnelles",
+        mandate: "Certification, orientations d'audit et cadres de conformité.",
+      },
+      "payments-settlement": {
+        name: "Paiements et règlement",
+        mandate:
+          "Groupe de travail sur les corridors, l'interopérabilité et le caractère définitif.",
+      },
+    },
   },
   errors: {
     notFound: {

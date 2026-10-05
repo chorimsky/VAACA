@@ -13,6 +13,7 @@ export const routes = {
   ecosystem: "/ecosystem",
   membership: "/membership",
   governance: "/governance",
+  councils: "/councils",
   region: "/region",
   resources: "/resources",
   login: "/login",
@@ -22,6 +23,7 @@ export const routes = {
   operatingSystem: "/operating-system",
   documents: "/documents",
   chapter: (slug: string) => `/chapters/${slug}`,
+  council: (id: string) => `/councils/${id}`,
 } as const;
 
 /** Nav keys that can render as the active item. */

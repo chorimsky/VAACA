@@ -13,6 +13,7 @@ export async function Footer() {
         { label: f.links.theInstitution, href: routes.institution },
         { label: f.links.founders, href: routes.founders },
         { label: f.links.governance, href: routes.governance },
+        { label: f.links.councils, href: routes.councils },
         { label: f.links.secretariat, href: routes.secretariat },
       ],
     },

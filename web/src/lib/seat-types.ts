@@ -163,8 +163,20 @@ export type BlocBalance = {
 export function blocBalance(
   seats: { n: number; status: SeatStatus }[],
 ): BlocBalance[] {
+  return blocBalanceOf(SEAT_DEFINITIONS, seats);
+}
+
+/**
+ * The same arithmetic for any body with blocked seats, so the Coordination
+ * Council and the sector councils are measured by one rule rather than two
+ * implementations that can drift.
+ */
+export function blocBalanceOf(
+  definitions: readonly { n: number; bloc: SeatBloc }[],
+  seats: { n: number; status: SeatStatus }[],
+): BlocBalance[] {
   const byBloc = new Map<SeatBloc, BlocBalance>();
-  for (const def of SEAT_DEFINITIONS) {
+  for (const def of definitions) {
     const entry = byBloc.get(def.bloc) ?? {
       bloc: def.bloc,
       label: BLOC_LABEL[def.bloc],
@@ -195,7 +207,41 @@ export const filledCount = (seats: { status: SeatStatus }[]) =>
 export function majorityHolder(
   seats: { n: number; status: SeatStatus }[],
 ): BlocBalance | null {
-  return blocBalance(seats).find((b) => b.filled * 2 > SEAT_COUNT) ?? null;
+  return majorityHolderOf(SEAT_DEFINITIONS, seats);
+}
+
+/** The majority test for any body: more than half of all its seats. */
+export function majorityHolderOf(
+  definitions: readonly { n: number; bloc: SeatBloc }[],
+  seats: { n: number; status: SeatStatus }[],
+): BlocBalance | null {
+  return (
+    blocBalanceOf(definitions, seats).find(
+      (b) => b.filled * 2 > definitions.length,
+    ) ?? null
+  );
+}
+
+/**
+ * Whether the seat *definitions* alone already let one bloc take control,
+ * before anybody is appointed.
+ *
+ * This is the stronger of the two tests and the one worth running before a
+ * council is stood up: the majority test above can only report a capture that
+ * has already happened, while this refuses a composition in which capture is
+ * possible at all.
+ */
+export function capturableBy(
+  definitions: readonly { n: number; bloc: SeatBloc }[],
+): SeatBloc | null {
+  const counts = new Map<SeatBloc, number>();
+  for (const def of definitions) {
+    counts.set(def.bloc, (counts.get(def.bloc) ?? 0) + 1);
+  }
+  for (const [bloc, count] of counts) {
+    if (count * 2 > definitions.length) return bloc;
+  }
+  return null;
 }
 
 /** The largest bloc the seat definitions allow, for the structural claim. */
