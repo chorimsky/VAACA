@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Card, Container, Eyebrow, Shell } from "@/components/Shell";
 import { Tag } from "@/components/Tag";
 import { getTranslations } from "@/lib/i18n/server";
+import { fill } from "@/lib/i18n/dictionaries";
 import { documentMetadata } from "@/lib/i18n/metadata";
 import { getCouncil } from "@/lib/server/councils";
 import {
@@ -49,7 +50,11 @@ export default async function CouncilPage({ params }: Params) {
         </Link>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Eyebrow>{t.membership.chambers[council.chamberId].name}</Eyebrow>
+          <Eyebrow>
+            {fill(c.convenedBy, {
+              chamber: t.membership.chambers[council.chamberId].name,
+            })}
+          </Eyebrow>
           <Tag tone={COUNCIL_STATUS_TONE[council.status]}>
             {c.status[council.status]}
           </Tag>
@@ -69,6 +74,10 @@ export default async function CouncilPage({ params }: Params) {
                 { label: c.seats, value: council.seatCount },
                 { label: c.filled, value: council.filled },
                 { label: c.quorum, value: council.quorum },
+                // The architecture requires a council to be cross-sector, so
+                // how many chambers it draws from is a fact about whether it
+                // is one — not decoration.
+                { label: c.chambersDrawn, value: council.chambers.length },
               ].map((stat) => (
                 <Card key={stat.label} className="min-w-[140px] px-5 py-3.5">
                   <div className="text-[11px] tracking-[0.06em] text-muted uppercase">
@@ -90,6 +99,7 @@ export default async function CouncilPage({ params }: Params) {
                         {seat.name}
                       </span>
                       <span className="mt-0.5 block text-[12px] text-muted">
+                        {t.membership.chambers[seat.chamberId].name} ·{" "}
                         {seat.blocLabel}
                       </span>
                     </span>

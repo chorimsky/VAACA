@@ -38,6 +38,12 @@ export const COUNCIL_STATUS_TONE: Record<CouncilStatus, Tone> = {
  * it draws from. Ids are stored on records and must never move; names and
  * mandates are translated.
  */
+/**
+ * The chamber that convenes each council. It is *not* the council's
+ * composition — the architecture requires every council to be cross-sector, and
+ * `activationBlockers` enforces that against the seats. This only says whose
+ * agenda the council sits on.
+ */
 export const COUNCIL_DEFINITIONS = [
   { id: "banking-payments", chamberId: "financial" },
   { id: "microfinance-inclusion", chamberId: "financial" },
@@ -69,6 +75,8 @@ export type CouncilSeat = {
   /** What the seat represents. Free text — each council's own composition. */
   name: string;
   bloc: SeatBloc;
+  /** Which chamber the seat is drawn from. The cross-sector test counts these. */
+  chamberId: ChamberId;
   status: SeatStatus;
   /** Published only once the seat is filled; the individual never is. */
   organisation: string | null;
@@ -87,6 +95,17 @@ export type CouncilRecord = {
 /** The minimum a deliberative body can be and still be one. */
 export const MIN_COUNCIL_SEATS = 5;
 export const MIN_QUORUM = 3;
+
+/**
+ * How many chambers a council has to draw from.
+ *
+ * The architecture is explicit that a council must not be composed only of one
+ * chamber, and the reason is the whole point of the institution: a council of
+ * banks discussing tokenisation produces a banking position, not a regional
+ * one. Three is the smallest number that makes a room genuinely cross-sector
+ * rather than a sector plus a guest.
+ */
+export const MIN_CHAMBERS_REPRESENTED = 3;
 
 /**
  * Why a council cannot be activated, in the order a reader would ask.
@@ -112,6 +131,13 @@ export function activationBlockers(council: CouncilRecord): string[] {
   if (capturable) {
     blockers.push(
       `Composition is capturable: ${BLOC_LABEL[capturable]} holds more than half the seats.`,
+    );
+  }
+
+  const chambers = new Set(seats.map((s) => s.chamberId));
+  if (chambers.size < MIN_CHAMBERS_REPRESENTED) {
+    blockers.push(
+      `Composition is not cross-sector: seats drawn from ${chambers.size} of at least ${MIN_CHAMBERS_REPRESENTED} chambers.`,
     );
   }
 
@@ -150,9 +176,12 @@ export type PublicCouncil = {
     n: number;
     name: string;
     blocLabel: string;
+    chamberId: ChamberId;
     organisation: string | null;
   }[];
   balance: { label: string; filled: number; total: number }[];
+  /** The chambers this council actually draws from. */
+  chambers: ChamberId[];
 };
 
 export function toPublicCouncil(
@@ -173,8 +202,12 @@ export function toPublicCouncil(
           n: s.n,
           name: s.name,
           blocLabel: BLOC_LABEL[s.bloc],
+          chamberId: s.chamberId,
           organisation: s.status === "filled" ? s.organisation : null,
         }))
+      : [],
+    chambers: published
+      ? [...new Set(council.seats.map((s) => s.chamberId))]
       : [],
     balance: published
       ? blocBalanceOf(council.seats, council.seats).map((b) => ({

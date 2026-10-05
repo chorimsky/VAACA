@@ -213,19 +213,19 @@ export const en = {
       "A chamber is where you sit in the ecosystem. A class is how you take part. They are separate on purpose — a bank and a university can both hold a full vote, and two organizations in the same chamber can join on very different terms.",
     chambers: {
       financial: {
-        name: "Financial System",
-        who: "Banks, microfinance, insurance, payments, capital markets",
+        name: "Finance & Financial Services",
+        who: "Banks, microfinance, insurance, payments, capital markets, cooperatives",
       },
       technology: {
-        name: "Technology & Digital Infrastructure",
-        who: "Fintechs, virtual-asset firms, identity, cybersecurity, cloud",
+        name: "Technology & Innovation",
+        who: "Blockchain, fintech, AI, cybersecurity, digital identity, infrastructure",
       },
       academia: {
         name: "Academia, Research & Knowledge",
         who: "Universities, research centres, think tanks, students",
       },
       "civil-society": {
-        name: "Civil Society & Public Interest",
+        name: "Public Interest & Civil Society",
         who: "NGOs, consumer and digital-rights organizations, inclusion",
       },
       professional: {
@@ -761,6 +761,10 @@ export const en = {
     quorum: "Quorum",
     seats: "Seats",
     filled: "Filled",
+    chambersDrawn: "Chambers",
+    convenedBy: "Convened by {chamber}",
+    crossSector:
+      "Every council draws from at least three chambers. A council of one sector produces that sector's position, not a regional one — so the composition is refused before it can be activated.",
     notYetStood: "Composition not yet set by the Coordination Council.",
     reportsTo: "Reports to the Coordination Council.",
     backToCouncils: "All councils",
@@ -808,7 +812,7 @@ export const en = {
         mandate: "The evidence base, independent of industry positions.",
       },
       "civil-society": {
-        name: "Civil Society & Public Interest",
+        name: "Public Interest & Civil Society",
         mandate: "Consumer protection, inclusion, digital rights and literacy.",
       },
       "professional-standards": {
@@ -1273,12 +1277,12 @@ export const fr: Dictionary = {
       "La chambre indique votre place dans l'écosystème. La classe indique vos modalités de participation. Les deux sont distinctes à dessein — une banque et une université peuvent toutes deux disposer d'une voix pleine, et deux organisations d'une même chambre peuvent adhérer à des conditions très différentes.",
     chambers: {
       financial: {
-        name: "Système financier",
-        who: "Banques, microfinance, assurance, paiements, marchés de capitaux",
+        name: "Finance et services financiers",
+        who: "Banques, microfinance, assurance, paiements, marchés de capitaux, coopératives",
       },
       technology: {
-        name: "Technologie et infrastructure numérique",
-        who: "Fintechs, PSAN, identité, cybersécurité, cloud",
+        name: "Technologie et innovation",
+        who: "Blockchain, fintech, IA, cybersécurité, identité numérique, infrastructures",
       },
       academia: {
         name: "Universités, recherche et savoir",
@@ -1831,6 +1835,10 @@ export const fr: Dictionary = {
     quorum: "Quorum",
     seats: "Sièges",
     filled: "Pourvus",
+    chambersDrawn: "Chambres",
+    convenedBy: "Convoqué par la chambre {chamber}",
+    crossSector:
+      "Chaque conseil puise dans au moins trois chambres. Un conseil composé d'un seul secteur produit la position de ce secteur, non une position régionale — la composition est donc refusée avant toute activation.",
     notYetStood:
       "Composition non encore arrêtée par le Conseil de coordination.",
     reportsTo: "Rend compte au Conseil de coordination.",

@@ -1480,11 +1480,36 @@ async function run() {
   );
 
   const capturable = [
-    { name: "Industry A", bloc: "industry", status: "filled" },
-    { name: "Industry B", bloc: "industry", status: "filled" },
-    { name: "Industry C", bloc: "industry", status: "filled" },
-    { name: "Academic", bloc: "independent", status: "filled" },
-    { name: "Compliance", bloc: "professional", status: "filled" },
+    {
+      name: "Industry A",
+      bloc: "industry",
+      chamberId: "financial",
+      status: "filled",
+    },
+    {
+      name: "Industry B",
+      bloc: "industry",
+      chamberId: "technology",
+      status: "filled",
+    },
+    {
+      name: "Industry C",
+      bloc: "industry",
+      chamberId: "enterprise",
+      status: "filled",
+    },
+    {
+      name: "Academic",
+      bloc: "independent",
+      chamberId: "academia",
+      status: "filled",
+    },
+    {
+      name: "Compliance",
+      bloc: "professional",
+      chamberId: "professional",
+      status: "filled",
+    },
   ];
   await req(councilUrl, asStaff({ seats: capturable, quorum: 3 }));
   const captured = await req(councilUrl, asStaff({ status: "active" }));
@@ -1496,11 +1521,36 @@ async function run() {
   );
 
   const balanced = [
-    { name: "Industry A", bloc: "industry", status: "filled" },
-    { name: "Industry B", bloc: "industry", status: "filled" },
-    { name: "Academic", bloc: "independent", status: "filled" },
-    { name: "Consumer", bloc: "independent", status: "vacant" },
-    { name: `Compliance ${uniq}`, bloc: "professional", status: "vacant" },
+    {
+      name: "Industry A",
+      bloc: "industry",
+      chamberId: "financial",
+      status: "filled",
+    },
+    {
+      name: "Industry B",
+      bloc: "industry",
+      chamberId: "technology",
+      status: "filled",
+    },
+    {
+      name: "Academic",
+      bloc: "independent",
+      chamberId: "academia",
+      status: "filled",
+    },
+    {
+      name: "Consumer",
+      bloc: "independent",
+      chamberId: "civil-society",
+      status: "vacant",
+    },
+    {
+      name: `Compliance ${uniq}`,
+      bloc: "professional",
+      chamberId: "professional",
+      status: "vacant",
+    },
   ];
   await req(councilUrl, asStaff({ seats: balanced, quorum: 4 }));
   const shortQuorum = await req(councilUrl, asStaff({ status: "active" }));
@@ -1548,10 +1598,79 @@ async function run() {
     (
       await req(
         councilUrl,
-        asStaff({ seats: [{ name: "Nameless", bloc: "nope" }], quorum: 3 }),
+        asStaff({
+          seats: [{ name: "Nameless", bloc: "nope", chamberId: "financial" }],
+          quorum: 3,
+        }),
       )
     ).status,
     400,
+  );
+  check(
+    "a seat with no chamber is rejected",
+    (
+      await req(
+        councilUrl,
+        asStaff({
+          seats: [{ name: "Chamberless", bloc: "industry" }],
+          quorum: 3,
+        }),
+      )
+    ).status,
+    400,
+  );
+
+  // A council of one sector produces that sector's position, not a regional
+  // one, so the architecture requires every council to draw from at least
+  // three chambers — and the composition is refused before activation.
+  const singleSector = [
+    {
+      name: "Bank A",
+      bloc: "industry",
+      chamberId: "financial",
+      status: "filled",
+    },
+    {
+      name: "Bank B",
+      bloc: "industry",
+      chamberId: "financial",
+      status: "filled",
+    },
+    {
+      name: "Insurer",
+      bloc: "independent",
+      chamberId: "financial",
+      status: "filled",
+    },
+    {
+      name: "PSP",
+      bloc: "professional",
+      chamberId: "financial",
+      status: "filled",
+    },
+    {
+      name: "MFI",
+      bloc: "independent",
+      chamberId: "financial",
+      status: "filled",
+    },
+  ];
+  await req(councilUrl, asStaff({ seats: singleSector, quorum: 3 }));
+  const oneChamber = await req(councilUrl, asStaff({ status: "active" }));
+  check("a single-chamber council is refused", oneChamber.status, 409);
+  check(
+    "  …as not cross-sector",
+    (oneChamber.body?.blockers ?? []).some((b) => b.includes("cross-sector")),
+    true,
+  );
+  await req(councilUrl, asStaff({ seats: balanced, quorum: 3 }));
+  await req(councilUrl, asStaff({ status: "active" }));
+  check(
+    "a cross-sector council publishes the chambers it draws from",
+    ((await req("/councils/academic-research")).body ?? "").includes(
+      "Academia, Research &amp; Knowledge",
+    ),
+    true,
   );
 
   section("Registration form");

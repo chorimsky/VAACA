@@ -13,6 +13,7 @@ import {
   isCouncilStatus,
   type CouncilSeat,
 } from "@/lib/council-types";
+import { isChamberId } from "@/lib/chambers";
 import { isSeatStatus } from "@/lib/seat-types";
 
 export const dynamic = "force-dynamic";
@@ -98,6 +99,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
           typeof seat.name !== "string" ||
           seat.name.trim().length < 2 ||
           !isBloc(seat.bloc) ||
+          !isChamberId(seat.chamberId) ||
           (seat.status !== undefined && !isSeatStatus(seat.status)) ||
           (seat.organisation !== undefined &&
             seat.organisation !== null &&
@@ -110,6 +112,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
           n: index + 1,
           name: seat.name.trim(),
           bloc: seat.bloc,
+          chamberId: seat.chamberId,
           status: isSeatStatus(seat.status) ? seat.status : "vacant",
           organisation:
             typeof seat.organisation === "string" ? seat.organisation : null,
